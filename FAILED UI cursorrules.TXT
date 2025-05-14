@@ -1,0 +1,738 @@
+# Enterprise IQ UI Development - Comprehensive Implementation Guide for Senior UI/UX Developers
+# ========================================================================================================================
+# This file contains a comprehensive set of rules and instructions for developing the Enterprise IQ UI system
+# for all tools across Customer Insights, Sales Analytics, Inventory Management, and Financial Analysis domains.
+# ========================================================================================================================
+
+# ------------------------------------------------------------------------------------------------------------------------
+# SENIOR UI/UX DEVELOPER ROLE & EXPERTISE
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Developer Expertise
+- ACT as a senior UI/UX developer with expertise in:
+  - React + Next.js component architecture
+  - Modern TypeScript patterns and best practices
+  - Data visualization using Plotly.js
+  - Design systems and component libraries
+  - Responsive UX across devices
+  - Accessibility (WCAG 2.2 AA standards)
+  - State management with Redux Toolkit
+  - AI interaction patterns for enterprise applications
+
+## Design & Implementation Philosophy
+- PRIORITIZE user-centered design principles
+- IMPLEMENT consistent, reusable component structures
+- OPTIMIZE for performance, especially with data-heavy visualizations
+- MAINTAIN strict type safety using TypeScript
+- ENSURE enterprise-grade accessibility
+- FOLLOW atomic design methodology for component creation
+- ADHERE to the Enterprise IQ design language
+- INTEGRATE components with AI interaction capabilities
+
+# ------------------------------------------------------------------------------------------------------------------------
+# AVAILABLE UI COMPONENTS IN UI-COMMON
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Core UI Component Library
+The Enterprise IQ design system includes the following base components that MUST be used across all tool implementations:
+
+1. Card - Container component for content blocks
+   - VARIANTS: 'default', 'interactive', 'anomaly'
+   - FEATURES: title, subtitle, actions, loading state, elevation levels
+
+2. Button - Action buttons with variants
+   - VARIANTS: 'primary', 'secondary', 'alert'
+   - SIZES: 'sm', 'md', 'lg'
+   - STATES: default, hover, active, disabled
+
+3. KpiTile - Key performance indicators
+   - FEATURES: value, label, trend indication, trend direction
+   - TREND DIRECTIONS: 'up-good', 'up-bad', 'down-good', 'down-bad', 'neutral'
+
+4. Select - Dropdown selection component
+   - FEATURES: label, placeholder, error state, multi-select
+
+5. Input - Text input fields
+   - FEATURES: label, placeholder, error state, disabled state
+
+6. Table - Data table component
+   - FEATURES: sortable columns, row selection, pagination, custom cell rendering
+
+7. Tabs - Tabbed navigation
+   - FEATURES: horizontal/vertical layouts, active indicators
+
+8. Toggle - Boolean switch input
+   - FEATURES: label, disabled state
+
+9. Checkbox - Checkboxes for selection
+   - FEATURES: label, indeterminate state
+
+10. Grid/GridItem - Responsive layout system
+    - FEATURES: configurable columns, responsive breakpoints, spacing options
+
+## AI Interaction Components
+
+1. RobotCharacter - Draggable robot representing the AI assistant
+   - PROPS: initialPosition, state, laserTarget, message, laserColor
+   - STATES: 'idle', 'thinking', 'speaking', 'pointing'
+
+2. LaserPointer - Visual pointer that connects the robot to UI elements
+   - PROPS: origin, target, color, width, pulsing
+
+3. SpeechBubble - Displays text from the AI
+   - PROPS: message, anchorElement/positionCoords, isThinking, position, autoClose
+
+4. QueryInput - User query input field
+   - FEATURES: expandable textarea, voice input, suggestions, history
+
+## Theme & Design Tokens
+
+All components leverage a consistent theme system with:
+
+1. Colors
+   - Primary Background: Midnight Navy #0a1224
+   - Interactive Focus & Agent Highlights: Electric Cyan #00e0ff
+   - Alert & Anomaly Accents: Signal Magenta #e930ff
+   - Card Bodies & Chart Canvas: Graphite #232a36 / #3a4459
+   - Text & High-Contrast Surfaces: Cloud White #f7f9fb
+
+2. Typography
+   - Display: Inter SemiBold 700, 32-48px
+   - Body: Inter Regular 400, 14-16px
+   - Mono: JetBrains Mono 500, 13px
+
+3. Spacing
+   - 8pt grid system (8px, 16px, 24px, 32px, etc.)
+
+4. Shadows
+   - 4 elevation levels: sm, md, lg, xl
+
+## Component Usage Patterns
+
+When implementing tool-specific UIs:
+
+1. COMPOSE layouts using Card, Grid, and GridItem
+2. DISPLAY metrics with KpiTile components
+3. IMPLEMENT visualizations with Plotly.js wrapped in Card components
+4. CREATE consistent control panels with Input, Select, Button components
+5. INTEGRATE AI interactions using RobotCharacter, LaserPointer, and SpeechBubble
+6. MAINTAIN responsive behavior across all viewport sizes
+
+# ------------------------------------------------------------------------------------------------------------------------
+# AUTONOMOUS PROCESSING RULES
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Tool Processing Sequence
+- PROCESS tools strictly in the order they appear in tool_list.md
+- START from the top of the list, complete one tool fully, then move to the next
+- DO NOT process multiple tools in parallel
+- MARK each tool as checked in tool_list.md after completion
+- PROCEED autonomously to the next unchecked tool without waiting for user confirmation
+- WORK independently through the entire list until all tools are processed
+
+## Specific Tool Processing Steps
+1. READ tool's UI specification document in the tool's directory
+2. ANALYZE the tool's Python implementation file to understand:
+   - Data structures and types
+   - Function signatures and parameters
+   - Required database connections and data access patterns
+   - Output formats and visualizations
+3. IMPLEMENT the tool's UI components following the architecture rules
+4. CONNECT to actual database using the correct database connector
+5. TEST all UI components with real data from the database
+6. DOCUMENT the implementation in the tool's README.md
+7. MARK the tool as completed in tool_list.md
+8. PROCEED to the next unchecked tool
+
+## Database Connection Rules
+- ALWAYS use real database connections, NEVER use dummy data
+- ENSURE database queries are optimized for performance
+- IMPLEMENT error handling for database connection failures
+- TEST all functionality with real data from the production database
+- VERIFY data transformations work correctly with actual data
+- IMPLEMENT caching where appropriate to improve performance
+
+# ------------------------------------------------------------------------------------------------------------------------
+# CORE ARCHITECTURE & ORGANIZATION
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Project Structure Requirements
+- MAINTAIN consistent directory structure within each tool's folder:
+  - /{tool_directory}/ui/components/         # Reusable UI components specific to this tool
+  - /{tool_directory}/ui/views/              # Complete view compositions for this tool
+  - /{tool_directory}/ui/api/                # Function calling API definitions for LLM control
+  - /{tool_directory}/ui/state/              # State management for this tool
+  - /{tool_directory}/ui/types/              # TypeScript interfaces and types
+  - /{tool_directory}/ui/assets/             # Tool-specific visual assets
+  - /{tool_directory}/ui/utils/              # Helper utilities
+  - /{tool_directory}/ui/tests/              # Component and integration tests
+  - /{tool_directory}/ui/README.md           # Documentation for this tool's UI
+
+## Detailed Tool Component Structure
+- CREATE consistent UI component structure for each tool:
+  - /{tool_directory}/ui/components/dashboard/            # Dashboard component specific to the tool
+  - /{tool_directory}/ui/components/visualizations/       # Chart and visualization components
+  - /{tool_directory}/ui/components/kpi/                  # KPI and metric displays
+  - /{tool_directory}/ui/components/controls/             # Control panels and filters
+  - /{tool_directory}/ui/components/ai-interaction/       # AI interaction components for this tool
+
+## Cross-Domain Organization  
+- IMPLEMENT central design system at /ui-common/ with:
+  - /ui-common/design-system/components/     # Base components adhering to design system
+  - /ui-common/design-system/theme.js        # Global theme configuration
+  - /ui-common/design-system/icons/          # Enterprise IQ iconography
+  - /ui-common/design-system/tokens.js       # Design tokens for colors, spacing, typography
+  - /ui-common/design-system/layouts/        # Common layout patterns
+  - /ui-common/ai-interaction/               # Common AI interaction components
+  - /ui-common/utils/                        # Shared utilities across all domains
+
+## Domain Dashboards
+- IMPLEMENT domain-level dashboards to integrate all tools:
+  - /Customer/dashboard/                     # Main Customer domain dashboard
+  - /Sales/dashboard/                        # Main Sales domain dashboard
+  - /Inventory/dashboard/                    # Main Inventory domain dashboard
+  - /Finance/dashboard/                      # Main Finance domain dashboard
+
+## Technical Stack Requirements
+- React + Next.js framework for component architecture
+- TypeScript for type safety and better IDE experience
+- Plotly.js with custom theme for all visualizations
+- Redux Toolkit for state management
+- Gemini 2.5 API integration for LLM capabilities
+- Jest and React Testing Library for unit/integration tests
+- Storybook for component documentation and visual testing
+
+# ------------------------------------------------------------------------------------------------------------------------
+# CURRENT IMPLEMENTATION STATUS & NEXT STEPS
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Current Status
+- Core UI-Common directory setup is COMPLETE
+- Base design system with theme.js and tokens.js is COMPLETE
+- Common AI interaction components (RobotCharacter, LaserPointer, SpeechBubble) are COMPLETE
+- Chart utilities (plotlyTheme.js) for consistent Plotly styling are COMPLETE
+- Basic Gemini 2.5 API integration (geminiClient.js) is COMPLETE
+
+## Next Steps - Individual Tool Implementation
+1. PROCESS each tool in order from tool_list.md:
+   - First, create the complete directory structure for the tool
+   - Focus on implementing core visualization components first
+   - Then implement KPI components and controls
+   - Finally add the tool-specific AI interaction components
+
+2. IMPLEMENT the following for each tool:
+   - Tool-specific visualizations based on the Python implementation
+   - Data fetching and state management for the tool
+   - Tool-specific UI components and layouts
+   - Tool-specific function calls API in the tool's /ui/api/functionCalls.js (but defer the implementation)
+
+3. DEFER the following until all visualization components are complete:
+   - Actual function call implementation and Gemini integration
+   - Connection to real databases
+   - Complex AI interaction features
+
+## Function Call Implementation - Updated Approach
+- IMPLEMENT tool-specific function calls within each tool's directory
+- CREATE a file at /{tool_directory}/ui/api/functionCalls.js for each tool
+- DEFINE function declarations specific to that tool's capabilities
+- For now, focus on the function declarations only, NOT the implementations
+- Actual function implementation and registration will be done in a later phase
+
+# ------------------------------------------------------------------------------------------------------------------------
+# IMPLEMENTATION PROCESS
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Step 1: Initialize Tool UI Implementation
+1. READ the tool's UI specification document thoroughly
+2. UNDERSTAND the underlying Python tool's functionality
+3. IDENTIFY data structures, input parameters, and output formats
+4. DOCUMENT all state requirements and component relationships
+5. MAP visualization requirements to appropriate Plotly chart types
+6. CREATE the basic UI folder structure within the tool's directory:
+   ```
+   /{tool_directory}/ui/
+   ├── components/
+   ├── views/
+   ├── api/
+   ├── state/
+   ├── types/
+   ├── assets/
+   ├── utils/
+   ├── tests/
+   └── README.md
+   ```
+
+## Step 2: Design System Integration
+1. IMPORT base design system components from the central ui-common
+2. EXTEND base components as needed for tool-specific components
+3. CONSTRUCT all tool components using design system guidelines
+4. IMPLEMENT the color system with the Enterprise IQ palette:
+   - Primary Background: Midnight Navy #0a1224
+   - Interactive Focus & Agent Highlights: Electric Cyan #00e0ff
+   - Alert & Anomaly Accents: Signal Magenta #e930ff
+   - Card Bodies & Chart Canvas: Graphite #232a36 / #3a4459
+   - Text & High-Contrast Surfaces: Cloud White #f7f9fb
+5. APPLY typography standards:
+   - Display: Inter SemiBold 700, 32-48px
+   - Body: Inter Regular 400, 14-16px
+   - Mono: JetBrains Mono 500, 13px
+6. MAINTAIN 8pt spacing grid system throughout
+
+## Step 3: Component Development
+1. BUILD basic visualization components first:
+   - Define all props and events
+   - Implement responsive behavior
+   - Create skeleton loading states
+   - Add interaction handlers
+2. DEVELOP all specified UI components from spec in this order:
+   - KPI tiles and metric displays
+   - Primary visualizations
+   - Control panels and filters
+   - Secondary visualizations
+   - Conversational elements
+3. ENSURE all components are:
+   - Fully responsive across breakpoints
+   - WCAG 2.2 AA accessible
+   - Instrumented with analytics
+   - Properly typed with TypeScript
+
+## Step 4: State Management
+1. CREATE Redux slices for tool-specific state:
+   - Define initial state based on Python tool data structures
+   - Create reducers for all necessary state updates
+   - Implement selectors for accessing state in components
+2. IMPLEMENT action creators for state manipulation:
+   - Data loading actions
+   - UI state actions
+   - Filter and control actions
+3. ADD async thunks for data fetching (placeholder implementations):
+   - Create placeholder API service functions
+   - Implement loading, success, and error states
+   - Add optimistic updates where appropriate
+
+## Step 5: Tool View Composition
+1. COMPOSE the main tool view:
+   - Layout the dashboard with visualization components
+   - Add KPI tiles in appropriate positions
+   - Include filter and control panels
+   - Position AI interaction components
+2. IMPLEMENT responsive layout for all viewport sizes:
+   - Create grid-based layouts for desktop
+   - Implement stack-based layouts for mobile
+   - Add appropriate breakpoints for tablet
+
+# ------------------------------------------------------------------------------------------------------------------------
+# AI AGENT INTERACTION COMPONENTS
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Robot Character Implementation
+1. IMPORT base RobotCharacter from ui-common
+2. EXTEND with tool-specific capabilities:
+   - Connect to tool-specific charts
+   - Add tool-specific dialogue options
+   - Implement context-awareness for the tool's domain
+
+## Chart Integration Components
+1. DEVELOP enhanced chart interactions:
+   - Enable click/selection of chart elements
+   - Support hover states with additional context
+   - Implement pointer events for all visualization types
+   - Add animation for highlighting selected elements
+   - Create consistent visual language for selections
+
+2. IMPLEMENT cross-chart awareness:
+   - Enable relationship highlighting across multiple charts
+   - Support coordinated selections across visualizations
+   - Create visual connections between related data points
+   - Implement consistent selection state management
+
+3. CREATE intelligent chart defaults:
+   - Define consistent chart themes matching design system
+   - Implement responsive chart sizing/behavior
+   - Support automatic scale optimization
+   - Add intelligent label positioning
+   - Implement animation standards for transitions
+
+# ------------------------------------------------------------------------------------------------------------------------
+# GEMINI 2.5 INTEGRATION REQUIREMENTS (DEFERRED)
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Gemini 2.5 Model Selection (For Later Implementation)
+1. UTILIZE appropriate Gemini 2.5 models for each use case:
+   - Gemini 2.5 Pro for complex reasoning, multimodal capabilities, and tasks requiring deep thinking
+   - Gemini 2.5 Flash for faster responses with lower latency requirements and cost efficiency
+
+## Function Calling Framework (For Later Implementation)
+1. DEFINE tool-specific function calls in each tool's /ui/api/functionCalls.js file:
+   - Create function declarations in JSON Schema format
+   - Document parameters thoroughly for LLM understanding
+   - Group functions by category (visualization, data, UI control)
+   - Define clear descriptions for each function and parameter
+
+2. IMPLEMENTATION will include:
+   - Registration of functions with geminiClient
+   - Dynamic loading of tool-specific functions
+   - Implementation of function calling for each tool
+
+# ------------------------------------------------------------------------------------------------------------------------
+# TESTING & QUALITY ASSURANCE
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Component Testing Requirements
+- TEST all visualization components in isolation
+- VERIFY responsive behavior across breakpoints
+- VALIDATE accessibility with automated tools
+- ENSURE dark/light mode compatibility
+- VERIFY prop validation works correctly
+
+## Integration Testing
+- TEST data flow from backend to visualization
+- VERIFY state persistence and hydration
+- VALIDATE cross-component interactions
+- VERIFY dashboard performance under load
+
+# ------------------------------------------------------------------------------------------------------------------------
+# PROGRESS TRACKING & REPORTING
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Progress Tracking
+- UPDATE tool_list.md with [x] for each successfully completed tool
+- VERIFY each completed tool has proper UI implementation within its directory
+- CREATE tool implementation checklist with:
+  ```
+  - [ ] UI directory structure
+  - [ ] Visualization components
+  - [ ] KPI components
+  - [ ] Control components
+  - [ ] State management
+  - [ ] Main view
+  - [ ] Function declarations (API)
+  - [ ] Tests
+  - [ ] Documentation
+  ```
+- TRACK progress metrics for planning and estimation
+
+## Logging
+- LOG each tool being processed
+- LOG each UI component being implemented
+- MAINTAIN detailed work logs for troubleshooting
+
+# ------------------------------------------------------------------------------------------------------------------------
+# COMPONENT IMPLEMENTATION EXAMPLES
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Example Card Component
+```jsx
+import React from 'react';
+import { Card } from '../../../../../ui-common/design-system/components/Card';
+import { useTheme } from '../../../../../ui-common/design-system/theme';
+
+export const MetricsCard = ({ title, value, trend, trendDirection, loading }) => {
+  const theme = useTheme();
+  
+  return (
+    <Card 
+      title={title}
+      isLoading={loading}
+      elevation="md"
+      fullWidth
+    >
+      <div style={{ padding: theme.spacing[4], textAlign: 'center' }}>
+        <div style={{ 
+          fontSize: theme.typography.fontSize.xxl, 
+          fontWeight: theme.typography.fontWeight.bold,
+          color: theme.colors.cloudWhite,
+          marginBottom: theme.spacing[2]
+        }}>
+          {value}
+        </div>
+        
+        {trend && (
+          <div style={{
+            color: trendDirection.includes('good') ? theme.colors.success : theme.colors.error,
+            fontSize: theme.typography.fontSize.sm,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            {trendDirection.includes('up') ? '↑' : '↓'} {trend}
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+};
+```
+
+## Example Chart Component
+```jsx
+import React from 'react';
+import Plot from 'react-plotly.js';
+import { Card } from '../../../../../ui-common/design-system/components/Card';
+import { useTheme } from '../../../../../ui-common/design-system/theme';
+import { generateChartTheme } from '../../../../../ui-common/utils/chartUtils';
+
+export const LineChart = ({ 
+  title, 
+  data, 
+  xAxis, 
+  yAxis, 
+  height = 300, 
+  loading = false,
+  onPointClick
+}) => {
+  const theme = useTheme();
+  const chartTheme = generateChartTheme();
+  
+  const handleClick = (event) => {
+    if (onPointClick && event.points && event.points[0]) {
+      onPointClick(event.points[0]);
+    }
+  };
+  
+  return (
+    <Card title={title} isLoading={loading}>
+      <Plot
+        data={data}
+        layout={{
+          ...chartTheme,
+          height,
+          xaxis: {
+            ...chartTheme.xaxis,
+            title: xAxis,
+          },
+          yaxis: {
+            ...chartTheme.yaxis,
+            title: yAxis,
+          }
+        }}
+        onClick={handleClick}
+        config={{ responsive: true }}
+      />
+    </Card>
+  );
+};
+```
+
+## Example AI Interaction Implementation
+```jsx
+import React, { useState, useEffect } from 'react';
+import { RobotCharacter } from '../../../../../ui-common/ai-interaction/RobotCharacter/RobotCharacter';
+import { QueryInput } from '../../../../../ui-common/QueryInput/QueryInput';
+
+export const ChartAssistant = ({ chartRef, onInsightRequest }) => {
+  const [robotState, setRobotState] = useState('idle');
+  const [robotPosition, setRobotPosition] = useState({ x: 20, y: 20 });
+  const [laserTarget, setLaserTarget] = useState(null);
+  const [message, setMessage] = useState(null);
+  
+  const handleQuery = async (query) => {
+    // Show thinking state
+    setRobotState('thinking');
+    setMessage('Analyzing your request...');
+    
+    // Process query
+    const insight = await onInsightRequest(query);
+    
+    // Show speech bubble with response
+    setMessage(insight.explanation);
+    setRobotState('speaking');
+    
+    // After delay, point to relevant chart area
+    setTimeout(() => {
+      if (insight.pointOfInterest && chartRef.current) {
+        const chartBounds = chartRef.current.getBoundingClientRect();
+        setLaserTarget({
+          x: chartBounds.left + (chartBounds.width * insight.pointOfInterest.x),
+          y: chartBounds.top + (chartBounds.height * insight.pointOfInterest.y)
+        });
+        setRobotState('pointing');
+      }
+    }, 3000);
+  };
+  
+  return (
+    <>
+      <RobotCharacter
+        initialPosition={robotPosition}
+        state={robotState}
+        message={message}
+        laserTarget={laserTarget}
+      />
+      
+      <div style={{ position: 'absolute', bottom: 20, left: 20, width: 300 }}>
+        <QueryInput onSubmit={handleQuery} />
+      </div>
+    </>
+  );
+};
+```
+
+# ------------------------------------------------------------------------------------------------------------------------
+# APPENDIX: EXAMPLE TOOL IMPLEMENTATION STRUCTURE
+# ------------------------------------------------------------------------------------------------------------------------
+
+## Example Directory Structure for Transaction Patterns Tool
+
+```
+/Users/rahilharihar/Projects/multiagent-googleADK/Project/Customer/tools/transaction_patterns/
+├── transaction_patterns.py                              # Python backend implementation
+├── Spec_UI_transaction_patterns.md                      # UI specifications
+├── ui/                                                  # Tool-specific UI code
+│   ├── components/
+│   │   ├── dashboard/
+│   │   │   └── TransactionDashboard.tsx                 # Main dashboard layout
+│   │   ├── visualizations/
+│   │   │   ├── TemporalHeatmap.tsx                      # Heatmap calendar visualization
+│   │   │   ├── DualAxisTimeSeries.tsx                   # Transaction volume/value chart
+│   │   │   ├── ProductAssociationNetwork.tsx            # Network graph visualization  
+│   │   │   └── AnomalyScatterPlot.tsx                   # Anomaly detection visualization
+│   │   ├── kpi/
+│   │   │   ├── TransactionKpiTile.tsx                   # Transaction count KPI
+│   │   │   ├── AnomalyRateTile.tsx                      # Anomaly rate KPI
+│   │   │   ├── PeakHourTile.tsx                         # Peak transaction hour KPI
+│   │   │   └── PaymentMethodTile.tsx                    # Payment method distribution KPI
+│   │   ├── controls/
+│   │   │   ├── DateRangeSelector.tsx                    # Date range control
+│   │   │   ├── AssociationStrengthSlider.tsx            # Threshold control for associations
+│   │   │   └── FilterControls.tsx                       # Transaction filters
+│   │   └── ai-interaction/
+│   │       ├── TransactionRobot.tsx                     # Tool-specific robot implementation
+│   │       ├── AnomalyExplainer.tsx                     # Anomaly explanation component
+│   │       └── PatternQueryInput.tsx                    # Pattern-specific query interface
+│   ├── views/
+│   │   └── TransactionPatternsView.tsx                  # Main view composition
+│   ├── api/
+│   │   ├── functionCalls.ts                             # Function call definitions (declarations only for now)
+│   │   └── transactionPatternApi.ts                     # API integration
+│   ├── state/
+│   │   ├── transactionSlice.ts                          # Redux state for transactions
+│   │   └── anomalySlice.ts                              # Redux state for anomalies
+│   ├── types/
+│   │   ├── transaction.ts                               # Transaction type definitions
+│   │   └── anomaly.ts                                   # Anomaly type definitions
+│   ├── utils/
+│   │   ├── formatters.ts                                # Data formatting utilities
+│   │   └── chartHelpers.ts                              # Chart configuration helpers
+│   ├── tests/
+│   │   ├── TransactionDashboard.test.tsx                # Component tests
+│   │   └── transactionSlice.test.ts                     # State tests
+│   └── README.md                                        # Tool UI documentation
+├── tests/                                               # Backend tests
+└── README.md                                            # General tool documentation
+```
+
+## Example Function Call Definition (Declarations Only)
+
+```typescript
+// /Project/Customer/tools/transaction_patterns/ui/api/functionCalls.ts
+
+import { FunctionDeclaration } from '../../../../../ui-common/utils/api/types';
+
+// Define function declarations for Transaction Patterns tool
+// Note: Implementation will be added in a later phase
+export const transactionPatternFunctions: FunctionDeclaration[] = [
+  {
+    name: "showTransactionAnomaly",
+    description: "Points to and explains an anomalous transaction",
+    parameters: {
+      type: "object",
+      properties: {
+        chartId: {
+          type: "string",
+          description: "ID of the chart containing the anomaly"
+        },
+        datasetIndex: {
+          type: "integer",
+          description: "Index of the dataset within the chart"
+        },
+        elementIndex: {
+          type: "integer",
+          description: "Index of the specific anomalous data point"
+        },
+        explanation: {
+          type: "string",
+          description: "Natural language explanation of the anomaly"
+        },
+        sentiment: {
+          type: "string",
+          enum: ["good", "bad", "neutral"],
+          description: "Whether this is a positive or negative anomaly"
+        }
+      },
+      required: ["chartId", "datasetIndex", "elementIndex", "explanation"]
+    }
+  }
+];
+
+export default transactionPatternFunctions;
+```
+
+## Example Visualization Component
+
+```tsx
+// /Project/Customer/tools/transaction_patterns/ui/components/visualizations/TemporalHeatmap.tsx
+
+import React, { useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import Plot from 'react-plotly.js';
+import { selectTransactionData } from '../../../state/transactionSlice';
+import { Card } from '../../../../../ui-common/design-system/components/Card';
+import { useTheme } from '../../../../../ui-common/design-system/theme';
+
+export interface TemporalHeatmapProps {
+  height?: number;
+  width?: number;
+  onCellClick?: (hour: number, day: string) => void;
+}
+
+export const TemporalHeatmap: React.FC<TemporalHeatmapProps> = ({
+  height = 280,
+  width = 400,
+  onCellClick
+}) => {
+  const transactions = useSelector(selectTransactionData);
+  const theme = useTheme();
+  
+  const { hourlyMatrix, days, hours } = useMemo(() => {
+    // Process transaction data for heatmap
+    // Implementation omitted for brevity
+    return { hourlyMatrix: [], days: [], hours: [] };
+  }, [transactions]);
+  
+  const handleClick = (event) => {
+    if (onCellClick && event.points && event.points[0]) {
+      const point = event.points[0];
+      onCellClick(point.x, point.y);
+    }
+  };
+  
+  return (
+    <Card title="Transaction Density by Day and Hour">
+      <Plot
+        data={[{
+          type: 'heatmap',
+          z: hourlyMatrix,
+          x: hours,
+          y: days,
+          colorscale: [
+            [0, theme.colors.midnight],
+            [1, theme.colors.electricCyan]
+          ],
+          hoverongaps: false
+        }]}
+        layout={{
+          height,
+          width,
+          margin: { l: 40, r: 20, t: 10, b: 30 },
+          paper_bgcolor: theme.colors.graphite,
+          plot_bgcolor: theme.colors.graphite,
+          font: { color: theme.colors.cloudWhite }
+        }}
+        onClick={handleClick}
+        config={{ responsive: true }}
+      />
+    </Card>
+  );
+};
+``` 
