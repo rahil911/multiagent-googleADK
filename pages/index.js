@@ -10,12 +10,14 @@ import { RobotCharacter } from '../ui-common/ai-interaction/RobotCharacter/Robot
 // Import reducers
 import purchaseFrequencyReducer from '../Customer/tools/purchase_frequency/ui/state/purchaseFrequencySlice';
 import customerSegmentationReducer from '../Customer/tools/customer_segmentation/ui/state/customerSegmentationSlice';
+import customerBehaviourReducer from '../Customer/tools/customer_behaviour/ui/state/customerBehaviourSlice';
 
 // Configure Redux store
 const store = configureStore({
   reducer: {
     purchaseFrequency: purchaseFrequencyReducer,
     customerSegmentation: customerSegmentationReducer,
+    customerBehaviour: customerBehaviourReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -34,6 +36,13 @@ const componentRegistry = {
   },
   'customer-segmentation': {
     dashboard: dynamic(() => import('../Customer/tools/customer_segmentation/pages/index.page')),
+  },
+  'customer-behaviour': {
+    dashboard: dynamic(() => import('../Customer/tools/customer_behaviour/pages/index.page')),
+    radar: dynamic(() => import('../Customer/tools/customer_behaviour/ui/components/visualizations/PatternRadarChart'), { ssr: false }),
+    histogram: dynamic(() => import('../Customer/tools/customer_behaviour/ui/components/visualizations/PatternIntervalHistogram'), { ssr: false }),
+    treemap: dynamic(() => import('../Customer/tools/customer_behaviour/ui/components/visualizations/CategoryTreemap'), { ssr: false }),
+    donut: dynamic(() => import('../Customer/tools/customer_behaviour/ui/components/visualizations/ChannelDonutChart'), { ssr: false }),
   },
 };
 
@@ -92,6 +101,23 @@ export default function ConversationalCanvas() {
     try {
       if (toolName === 'customer-segmentation') {
         const response = await fetch(`/api/customer-segmentation/data`);
+        if (!response.ok) throw new Error('Failed to fetch data');
+        const data = await response.json();
+        setComponents(prev => [
+          ...prev,
+          {
+            id,
+            type: componentType,
+            position: componentPosition,
+            size: { width: 900, height: 700 },
+            props: data,
+            Component: componentRegistry[toolName][componentName]
+          }
+        ]);
+        setLoading(false);
+        return id;
+      } else if (toolName === 'customer-behaviour') {
+        const response = await fetch(`/api/customer-behaviour/data`);
         if (!response.ok) throw new Error('Failed to fetch data');
         const data = await response.json();
         setComponents(prev => [
@@ -329,6 +355,38 @@ export default function ConversationalCanvas() {
             state: 'speaking',
             message: 'Here\'s a radar chart showing purchase regularity across different timeframes.',
           });
+        } else if (query.toLowerCase().includes('customer behaviour') || query.toLowerCase().includes('behavior')) {
+          const radarId = await spawnComponent('customer-behaviour.radar');
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here is a radar chart showing customer behaviour patterns.'
+          });
+          setLoading(false);
+        } else if (query.toLowerCase().includes('behaviour histogram')) {
+          const histId = await spawnComponent('customer-behaviour.histogram');
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here is a histogram of customer behaviour intervals.'
+          });
+          setLoading(false);
+        } else if (query.toLowerCase().includes('behaviour treemap')) {
+          const treemapId = await spawnComponent('customer-behaviour.treemap');
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here is a treemap of product category affinity.'
+          });
+          setLoading(false);
+        } else if (query.toLowerCase().includes('behaviour donut') || query.toLowerCase().includes('channel usage')) {
+          const donutId = await spawnComponent('customer-behaviour.donut');
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here is a donut chart of channel usage.'
+          });
+          setLoading(false);
         } else {
           setRobotState({
             ...robotState,
