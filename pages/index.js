@@ -9,11 +9,13 @@ import { RobotCharacter } from '../ui-common/ai-interaction/RobotCharacter/Robot
 
 // Import reducers
 import purchaseFrequencyReducer from '../Customer/tools/purchase_frequency/ui/state/purchaseFrequencySlice';
+import customerSegmentationReducer from '../Customer/tools/customer_segmentation/ui/state/customerSegmentationSlice';
 
 // Configure Redux store
 const store = configureStore({
   reducer: {
     purchaseFrequency: purchaseFrequencyReducer,
+    customerSegmentation: customerSegmentationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -29,8 +31,10 @@ const componentRegistry = {
     quadrant: dynamic(() => import('../Customer/tools/purchase_frequency/ui/components/visualizations/SegmentQuadrant')),
     regularity: dynamic(() => import('../Customer/tools/purchase_frequency/ui/components/visualizations/RegularityChart')),
     treemap: dynamic(() => import('../Customer/tools/purchase_frequency/ui/components/visualizations/ValueTreemap')),
-  }
-  // Additional tools can be added here when components are available
+  },
+  'customer-segmentation': {
+    dashboard: dynamic(() => import('../Customer/tools/customer_segmentation/pages/index.page')),
+  },
 };
 
 /**
@@ -74,71 +78,79 @@ export default function ConversationalCanvas() {
   const spawnComponent = async (componentType, props = {}, position = null) => {
     setLoading(true);
     const id = `component-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-    
     // Create default position if none provided
     const componentPosition = position || {
       x: Math.floor(Math.random() * (canvasRef.current.offsetWidth - 400)),
       y: Math.floor(Math.random() * (canvasRef.current.offsetHeight - 300)),
     };
-    
     const [toolName, componentName] = componentType.split('.');
-    
     if (!componentRegistry[toolName] || !componentRegistry[toolName][componentName]) {
       console.error(`Component not found: ${componentType}`);
       setLoading(false);
       return null;
     }
-    
     try {
-      // Fetch real data for the component based on its type
-      const response = await fetch(`/api/purchase-frequency/data`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      
-      const data = await response.json();
-      
-      // Map the component to its data
-      let componentData = {};
-      
-      switch (componentName) {
-        case 'histogram':
-          componentData = data.frequencyHistogram;
-          break;
-        case 'treemap':
-          componentData = { data: data.valueTreemap };
-          break;
-        case 'heatmap':
-          componentData = data.intervalHeatmap;
-          break;
-        case 'quadrant':
-          componentData = { data: data.segmentQuadrant };
-          break;
-        case 'regularity':
-          componentData = { data: data.regularityChart };
-          break;
-        default:
-          componentData = {};
-      }
-      
-      // Merge the fetched data with any provided props
-      const mergedProps = { ...componentData, ...props };
-      
-      setComponents(prev => [
-        ...prev,
-        {
-          id,
-          type: componentType,
-          position: componentPosition,
-          size: { width: 400, height: 300 }, // Default size that can be resized
-          props: mergedProps,
-          Component: componentRegistry[toolName][componentName]
+      if (toolName === 'customer-segmentation') {
+        const response = await fetch(`/api/customer-segmentation/data`);
+        if (!response.ok) throw new Error('Failed to fetch data');
+        const data = await response.json();
+        setComponents(prev => [
+          ...prev,
+          {
+            id,
+            type: componentType,
+            position: componentPosition,
+            size: { width: 900, height: 700 },
+            props: data,
+            Component: componentRegistry[toolName][componentName]
+          }
+        ]);
+        setLoading(false);
+        return id;
+      } else {
+        // Fetch real data for the component based on its type
+        const response = await fetch(`/api/purchase-frequency/data`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
         }
-      ]);
-      
-      setLoading(false);
-      return id;
+        const data = await response.json();
+        // Map the component to its data
+        let componentData = {};
+        switch (componentName) {
+          case 'histogram':
+            componentData = data.frequencyHistogram;
+            break;
+          case 'treemap':
+            componentData = { data: data.valueTreemap };
+            break;
+          case 'heatmap':
+            componentData = data.intervalHeatmap;
+            break;
+          case 'quadrant':
+            componentData = { data: data.segmentQuadrant };
+            break;
+          case 'regularity':
+            componentData = { data: data.regularityChart };
+            break;
+          default:
+            componentData = {};
+        }
+        // Merge the fetched data with any provided props
+        const mergedProps = { ...componentData, ...props };
+        setComponents(prev => [
+          ...prev,
+          {
+            id,
+            type: componentType,
+            position: componentPosition,
+            size: { width: 400, height: 300 }, // Default size that can be resized
+            props: mergedProps,
+            Component: componentRegistry[toolName][componentName]
+          }
+        ]);
+        setLoading(false);
+        return id;
+      }
     } catch (error) {
       handleFetchError(error);
       return null;
