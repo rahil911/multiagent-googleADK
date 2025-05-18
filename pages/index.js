@@ -11,6 +11,7 @@ import { RobotCharacter } from '../ui-common/ai-interaction/RobotCharacter/Robot
 import purchaseFrequencyReducer from '../Customer/tools/purchase_frequency/ui/state/purchaseFrequencySlice';
 import customerSegmentationReducer from '../Customer/tools/customer_segmentation/ui/state/customerSegmentationSlice';
 import customerBehaviourReducer from '../Customer/tools/customer_behaviour/ui/state/customerBehaviourSlice';
+import churnPredictionReducer from '../Customer/tools/churn_prediction/ui/state/churnPredictionSlice';
 
 // Configure Redux store
 const store = configureStore({
@@ -18,6 +19,7 @@ const store = configureStore({
     purchaseFrequency: purchaseFrequencyReducer,
     customerSegmentation: customerSegmentationReducer,
     customerBehaviour: customerBehaviourReducer,
+    churnPrediction: churnPredictionReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -43,6 +45,10 @@ const componentRegistry = {
     histogram: dynamic(() => import('../Customer/tools/customer_behaviour/ui/components/visualizations/PatternIntervalHistogram'), { ssr: false }),
     treemap: dynamic(() => import('../Customer/tools/customer_behaviour/ui/components/visualizations/CategoryTreemap'), { ssr: false }),
     donut: dynamic(() => import('../Customer/tools/customer_behaviour/ui/components/visualizations/ChannelDonutChart'), { ssr: false }),
+  },
+  'churn-prediction': {
+    dashboard: dynamic(() => import('../Customer/tools/churn_prediction/pages/index.page')),
+    riskPyramid: dynamic(() => import('../Customer/tools/churn_prediction/ui/components/visualizations/ChurnRiskPyramid'), { ssr: false }),
   },
 };
 
@@ -118,6 +124,23 @@ export default function ConversationalCanvas() {
         return id;
       } else if (toolName === 'customer-behaviour') {
         const response = await fetch(`/api/customer-behaviour/data`);
+        if (!response.ok) throw new Error('Failed to fetch data');
+        const data = await response.json();
+        setComponents(prev => [
+          ...prev,
+          {
+            id,
+            type: componentType,
+            position: componentPosition,
+            size: { width: 900, height: 700 },
+            props: data,
+            Component: componentRegistry[toolName][componentName]
+          }
+        ]);
+        setLoading(false);
+        return id;
+      } else if (toolName === 'churn-prediction') {
+        const response = await fetch(`/api/churn-prediction/data`);
         if (!response.ok) throw new Error('Failed to fetch data');
         const data = await response.json();
         setComponents(prev => [
@@ -317,7 +340,6 @@ export default function ConversationalCanvas() {
       setTimeout(async () => {
         if (query.toLowerCase().includes('purchase') && query.toLowerCase().includes('frequency')) {
           const histogramId = await spawnComponent('purchase-frequency.histogram');
-          
           setRobotState({
             ...robotState,
             state: 'speaking',
@@ -325,7 +347,6 @@ export default function ConversationalCanvas() {
           });
         } else if (query.toLowerCase().includes('customer segment')) {
           const quadrantId = await spawnComponent('purchase-frequency.quadrant');
-          
           setRobotState({
             ...robotState,
             state: 'speaking',
@@ -333,7 +354,6 @@ export default function ConversationalCanvas() {
           });
         } else if (query.toLowerCase().includes('interval') || query.toLowerCase().includes('heatmap')) {
           const heatmapId = await spawnComponent('purchase-frequency.heatmap');
-          
           setRobotState({
             ...robotState,
             state: 'speaking',
@@ -341,7 +361,6 @@ export default function ConversationalCanvas() {
           });
         } else if (query.toLowerCase().includes('value') || query.toLowerCase().includes('segment')) {
           const treemapId = await spawnComponent('purchase-frequency.treemap');
-          
           setRobotState({
             ...robotState,
             state: 'speaking',
@@ -349,12 +368,19 @@ export default function ConversationalCanvas() {
           });
         } else if (query.toLowerCase().includes('regularity')) {
           const regularityId = await spawnComponent('purchase-frequency.regularity');
-          
           setRobotState({
             ...robotState,
             state: 'speaking',
             message: 'Here\'s a radar chart showing purchase regularity across different timeframes.',
           });
+        } else if (query.toLowerCase().includes('churn')) {
+          const pyramidId = await spawnComponent('churn-prediction.riskPyramid');
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here is a churn risk pyramid showing customer risk distribution.'
+          });
+          setLoading(false);
         } else if (query.toLowerCase().includes('customer behaviour') || query.toLowerCase().includes('behavior')) {
           const radarId = await spawnComponent('customer-behaviour.radar');
           setRobotState({
