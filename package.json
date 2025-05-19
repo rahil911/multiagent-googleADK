@@ -21,6 +21,7 @@
     "react-dom": "^18.2.0",
     "react-plotly.js": "^2.6.0",
     "react-redux": "^8.1.2",
+    "recharts": "^2.15.3",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   },

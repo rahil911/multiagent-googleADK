@@ -3,3 +3,13 @@ node_modules/
 *.db
 *.node
 *.pack.gz
+
+
+# Ignore environment file
+.env
+
+# Ignore cursor directory (if it's not meant to be versioned)
+.cursor/
+
+# Ignore Python cache directories
+__pycache__/

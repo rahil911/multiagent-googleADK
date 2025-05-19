@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   
   try {
     // Open database connection
-    const dbPath = "/Users/rahilharihar/Projects/multiagent-googleADK/Project/Customer/database/customers.db";
+    const dbPath = "F:/Project/Customer/database/customers.db";
     const db = await open({
       filename: dbPath,
       driver: sqlite3.Database

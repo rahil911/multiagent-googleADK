@@ -29,6 +29,12 @@ const componentRegistry = {
     quadrant: dynamic(() => import('../Customer/tools/purchase_frequency/ui/components/visualizations/SegmentQuadrant')),
     regularity: dynamic(() => import('../Customer/tools/purchase_frequency/ui/components/visualizations/RegularityChart')),
     treemap: dynamic(() => import('../Customer/tools/purchase_frequency/ui/components/visualizations/ValueTreemap')),
+  },
+  'demand-forecast': {
+    linechart: dynamic(() => import('../Sales/tools/DemandForecastEngine/ui/components/dashboard/ForecastHorizonExplorer')),
+    performance: dynamic(() => import('../Sales/tools/DemandForecastEngine/ui/components/dashboard/ModelPerformanceAnalyzer')),
+    seasonal: dynamic(() => import('../Sales/tools/DemandForecastEngine/ui/components/dashboard/SeasonalPatternDetector')),
+    scenario: dynamic(() => import('../Sales/tools/DemandForecastEngine/ui/components/dashboard/ForecastScenarioBuilder')),
   }
   // Additional tools can be added here when components are available
 };
@@ -90,36 +96,118 @@ export default function ConversationalCanvas() {
     }
     
     try {
-      // Fetch real data for the component based on its type
-      const response = await fetch(`/api/purchase-frequency/data`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      
-      const data = await response.json();
-      
-      // Map the component to its data
+      // Fetch real data for the component based on its tool type
+      let data = {};
       let componentData = {};
+      let apiEndpoint = '';
       
-      switch (componentName) {
-        case 'histogram':
-          componentData = data.frequencyHistogram;
-          break;
-        case 'treemap':
-          componentData = { data: data.valueTreemap };
-          break;
-        case 'heatmap':
-          componentData = data.intervalHeatmap;
-          break;
-        case 'quadrant':
-          componentData = { data: data.segmentQuadrant };
-          break;
-        case 'regularity':
-          componentData = { data: data.regularityChart };
-          break;
-        default:
-          componentData = {};
+      if (toolName === 'purchase-frequency') {
+        apiEndpoint = '/api/purchase-frequency/data';
+        const response = await fetch(apiEndpoint);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        
+        data = await response.json();
+        
+        // Map the component to its data
+        switch (componentName) {
+          case 'histogram':
+            componentData = data.frequencyHistogram;
+            break;
+          case 'treemap':
+            componentData = { data: data.valueTreemap };
+            break;
+          case 'heatmap':
+            componentData = data.intervalHeatmap;
+            break;
+          case 'quadrant':
+            componentData = { data: data.segmentQuadrant };
+            break;
+          case 'regularity':
+            componentData = { data: data.regularityChart };
+            break;
+          default:
+            componentData = {};
+        }
+      } 
+      else if (toolName === 'demand-forecast') {
+        // For demand forecast components, we need to call different endpoints
+        // based on the component type
+        let endpoint = '';
+        switch (componentName) {
+          case 'linechart':
+            endpoint = 'forecast';
+            break;
+          case 'performance':
+            endpoint = 'performance';
+            break;
+          case 'seasonal':
+            endpoint = 'seasonal';
+            break;
+          case 'scenario':
+            endpoint = 'forecast';  // For scenario, we use the base forecast data first
+            break;
+          default:
+            endpoint = 'forecast';
+        }
+        
+        apiEndpoint = `/api/sales/demand-forecast/data?endpoint=${endpoint}`;
+        const response = await fetch(apiEndpoint);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        
+        data = await response.json();
+        
+        // Set up component-specific props based on the dashboard design
+        switch (componentName) {
+          case 'linechart':
+            componentData = {
+              data: data,
+              horizon: 'month',
+              metric: 'quantity',
+              confidenceLevel: 95,
+              filters: {},
+              onHorizonChange: () => {},
+              onMetricChange: () => {},
+              onConfidenceLevelChange: () => {},
+              onFilterChange: () => {},
+              onClearFilters: () => {}
+            };
+            break;
+          case 'performance':
+            componentData = {
+              data: data,
+              modelType: 'movingAverage',
+              horizon: 'month',
+              metric: 'quantity',
+              filters: {},
+              onModelTypeChange: () => {}
+            };
+            break;
+          case 'seasonal':
+            componentData = {
+              data: data,
+              horizon: 'month',
+              metric: 'quantity',
+              filters: {}
+            };
+            break;
+          case 'scenario':
+            componentData = {
+              data: data,
+              horizon: 'month',
+              metric: 'quantity',
+              confidenceLevel: 95,
+              filters: {}
+            };
+            break;
+          default:
+            componentData = {};
+        }
       }
       
       // Merge the fetched data with any provided props
@@ -131,7 +219,7 @@ export default function ConversationalCanvas() {
           id,
           type: componentType,
           position: componentPosition,
-          size: { width: 400, height: 300 }, // Default size that can be resized
+          size: { width: 500, height: 400 }, // Larger default size for forecast visualizations
           props: mergedProps,
           Component: componentRegistry[toolName][componentName]
         }
@@ -317,11 +405,43 @@ export default function ConversationalCanvas() {
             state: 'speaking',
             message: 'Here\'s a radar chart showing purchase regularity across different timeframes.',
           });
+        } else if (query.toLowerCase().includes('demand forecast') && query.toLowerCase().includes('line chart')) {
+          const linechartId = await spawnComponent('demand-forecast.linechart');
+          
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here\'s a line chart showing demand forecast data with confidence intervals.',
+          });
+        } else if (query.toLowerCase().includes('demand forecast') && query.toLowerCase().includes('performance')) {
+          const performanceId = await spawnComponent('demand-forecast.performance');
+          
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here\'s a visualization showing the performance metrics of different forecasting models.',
+          });
+        } else if (query.toLowerCase().includes('demand forecast') && query.toLowerCase().includes('seasonal')) {
+          const seasonalId = await spawnComponent('demand-forecast.seasonal');
+          
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here\'s a visualization showing seasonal patterns detected in the demand data.',
+          });
+        } else if (query.toLowerCase().includes('demand forecast') && query.toLowerCase().includes('scenario')) {
+          const scenarioId = await spawnComponent('demand-forecast.scenario');
+          
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here\'s the scenario builder for demand forecasting where you can customize different growth assumptions.',
+          });
         } else {
           setRobotState({
             ...robotState,
             state: 'speaking',
-            message: 'I understand you\'re asking about: ' + query + '. You can ask about purchase frequency, customer segments, value segments, regularity, or interval patterns.',
+            message: 'I understand you\'re asking about: ' + query + '. You can ask about purchase frequency, customer segments, value segments, regularity, interval patterns, or demand forecasts.',
           });
           
           setLoading(false);
@@ -502,7 +622,7 @@ export default function ConversationalCanvas() {
           }}>
             <QueryInput 
               onSubmit={handleQuerySubmit}
-              placeholder="Ask about purchase frequency or customer segments..."
+              placeholder="Ask about purchase frequency, customer segments, or demand forecasts..."
               disabled={loading}
             />
           </div>
