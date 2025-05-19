@@ -11,6 +11,7 @@ export interface CardProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  style?: Record<string, string | number>;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -23,7 +24,8 @@ export const Card: React.FC<CardProps> = ({
   fullWidth = false,
   children,
   className,
-  onClick
+  onClick,
+  style
 }) => {
   // Theme constants
   const colors = {
@@ -55,7 +57,7 @@ export const Card: React.FC<CardProps> = ({
   };
 
   // Card styles
-  const cardStyle: React.CSSProperties = {
+  const cardStyle: Record<string, string | number> = {
     backgroundColor: colors[variant].background,
     borderRadius: '8px',
     border: `1px solid ${colors[variant].border}`,
@@ -67,11 +69,12 @@ export const Card: React.FC<CardProps> = ({
     flexDirection: 'column',
     cursor: onClick ? 'pointer' : 'default',
     transition: 'transform 0.2s ease',
-    transform: 'scale(1)'
+    transform: 'scale(1)',
+    ...style
   };
 
   // Header styles
-  const headerStyle: React.CSSProperties = {
+  const headerStyle: Record<string, string | number> = {
     padding: '16px',
     borderBottom: title || subtitle ? `1px solid ${colors[variant].border}` : 'none',
     display: 'flex',
@@ -80,12 +83,12 @@ export const Card: React.FC<CardProps> = ({
   };
 
   // Content styles
-  const contentStyle: React.CSSProperties = {
+  const contentStyle: Record<string, string | number> = {
     flexGrow: 1
   };
 
   // Loading overlay styles
-  const loadingOverlayStyle: React.CSSProperties = {
+  const loadingOverlayStyle: Record<string, string | number> = {
     position: 'absolute',
     top: 0,
     left: 0,

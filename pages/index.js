@@ -29,6 +29,12 @@ const componentRegistry = {
     quadrant: dynamic(() => import('../Customer/tools/purchase_frequency/ui/components/visualizations/SegmentQuadrant')),
     regularity: dynamic(() => import('../Customer/tools/purchase_frequency/ui/components/visualizations/RegularityChart')),
     treemap: dynamic(() => import('../Customer/tools/purchase_frequency/ui/components/visualizations/ValueTreemap')),
+  },
+  'product-performance': {
+    salesExplorer: dynamic(() => import('../Sales/tools/ProductPerformanceAnalyzer/ui/components/visualizations/SalesPerformanceExplorer')),
+    marginAnalysis: dynamic(() => import('../Sales/tools/ProductPerformanceAnalyzer/ui/components/visualizations/MarginAnalysisVisualizer')),
+    priceBandDistribution: dynamic(() => import('../Sales/tools/ProductPerformanceAnalyzer/ui/components/visualizations/PriceBandDistribution')),
+    growthMatrix: dynamic(() => import('../Sales/tools/ProductPerformanceAnalyzer/ui/components/visualizations/ProductGrowthMatrix')),
   }
   // Additional tools can be added here when components are available
 };
@@ -72,6 +78,7 @@ export default function ConversationalCanvas() {
 
   // Function to spawn a component on the canvas
   const spawnComponent = async (componentType, props = {}, position = null) => {
+    console.log(`[Canvas DEBUG] spawnComponent called for type: ${componentType}`);
     setLoading(true);
     const id = `component-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     
@@ -84,62 +91,120 @@ export default function ConversationalCanvas() {
     const [toolName, componentName] = componentType.split('.');
     
     if (!componentRegistry[toolName] || !componentRegistry[toolName][componentName]) {
-      console.error(`Component not found: ${componentType}`);
+      console.error(`[Canvas DEBUG] Component not found in registry: ${componentType}`);
       setLoading(false);
       return null;
     }
     
     try {
-      // Fetch real data for the component based on its type
-      const response = await fetch(`/api/purchase-frequency/data`);
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      
-      const data = await response.json();
-      
-      // Map the component to its data
+      console.log(`[Canvas DEBUG] Attempting to fetch data for ${toolName}...`);
       let componentData = {};
-      
-      switch (componentName) {
-        case 'histogram':
-          componentData = data.frequencyHistogram;
-          break;
-        case 'treemap':
-          componentData = { data: data.valueTreemap };
-          break;
-        case 'heatmap':
-          componentData = data.intervalHeatmap;
-          break;
-        case 'quadrant':
-          componentData = { data: data.segmentQuadrant };
-          break;
-        case 'regularity':
-          componentData = { data: data.regularityChart };
-          break;
-        default:
-          componentData = {};
+      // Fetch real data for the component based on its type
+      if (toolName === 'product-performance') {
+        console.log(`[Canvas DEBUG] Fetching /api/sales/product-performance for ${componentName}`);
+        const response = await fetch('/api/sales/product-performance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            start_date: '2020-01-01',
+            end_date: '2020-12-31',
+            metrics: ['sales', 'units', 'margin', 'price_bands'],
+            category_level: 'product',
+          })
+        });
+        if (!response.ok) {
+          console.error(`[Canvas DEBUG] API fetch error for ${componentName}: ${response.status}`);
+          throw new Error(`Failed to fetch product performance data for ${componentName}`);
+        }
+        const apiData = await response.json();
+        console.log(`[Canvas DEBUG] API data received for ${componentName}:`, apiData);
+        // Map the component to its data
+        switch (componentName) {
+          case 'salesExplorer':
+            // SalesPerformanceExplorer expects data in Product[] format.
+            // Map apiData.results.daily_summary to this structure.
+            const dailySummary = apiData.results?.daily_summary || [];
+            const explorerData = dailySummary.map(summaryEntry => ({
+              date: summaryEntry.date,
+              sales_amount: summaryEntry.sales, // Map 'sales' to 'sales_amount'
+              quantity: summaryEntry.quantity,
+              product_name: `Aggregated - ${summaryEntry.date}`,
+              category: 'All',
+              // Other Product fields can be defaulted if not applicable to aggregated view
+              margin_pct: 0, 
+              avg_price: summaryEntry.quantity ? summaryEntry.sales / summaryEntry.quantity : 0,
+            }));
+            componentData = { data: explorerData };
+            break;
+          case 'marginAnalysis':
+            componentData = { 
+              data: apiData.results?.product_scatter_data || [],
+              kpiAverageMargin: apiData.results?.kpi?.averageMargin?.value || 0
+            };
+            console.log('[Canvas DEBUG] Prepared componentData for marginAnalysis:', componentData);
+            break;
+          case 'priceBandDistribution':
+            // PriceBandDistribution expects 'bands' and 'distribution' separately.
+            componentData = { 
+              bands: apiData.results?.price_bands?.bands || [],
+              distribution: apiData.results?.price_bands?.distribution || {}
+            };
+            break;
+          case 'growthMatrix':
+            // ProductGrowthMatrix expects an array of products. 
+            // product_scatter_data contains detailed product info.
+            componentData = { data: apiData.results?.product_scatter_data || [] };
+            console.log('[Canvas DEBUG] Prepared componentData for growthMatrix:', componentData);
+            break;
+          default:
+            componentData = {};
+        }
+      } else {
+        // Default: purchase-frequency tools (existing logic)
+        const response = await fetch(`/api/purchase-frequency/data`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
+        switch (componentName) {
+          case 'histogram':
+            componentData = data.frequencyHistogram;
+            break;
+          case 'treemap':
+            componentData = { data: data.valueTreemap };
+            break;
+          case 'heatmap':
+            componentData = data.intervalHeatmap;
+            break;
+          case 'quadrant':
+            componentData = { data: data.segmentQuadrant };
+            break;
+          case 'regularity':
+            componentData = { data: data.regularityChart };
+            break;
+          default:
+            componentData = {};
+        }
       }
-      
       // Merge the fetched data with any provided props
       const mergedProps = { ...componentData, ...props };
-      
+      const newComponent = {
+        id,
+        type: componentType,
+        position: componentPosition,
+        size: { width: 400, height: 300 }, // Default size that can be resized
+        props: mergedProps,
+        Component: componentRegistry[toolName][componentName]
+      };
+      console.log('[Canvas DEBUG] Spawning new component object:', newComponent);
       setComponents(prev => [
         ...prev,
-        {
-          id,
-          type: componentType,
-          position: componentPosition,
-          size: { width: 400, height: 300 }, // Default size that can be resized
-          props: mergedProps,
-          Component: componentRegistry[toolName][componentName]
-        }
+        newComponent
       ]);
-      
       setLoading(false);
       return id;
     } catch (error) {
+      console.error(`[Canvas DEBUG] Error in spawnComponent for ${componentType}:`, error);
       handleFetchError(error);
       return null;
     }
@@ -317,11 +382,46 @@ export default function ConversationalCanvas() {
             state: 'speaking',
             message: 'Here\'s a radar chart showing purchase regularity across different timeframes.',
           });
+        } else if (query.toLowerCase().includes('sales performance') || query.toLowerCase().includes('sales explorer')) {
+          const salesExplorerId = await spawnComponent('product-performance.salesExplorer');
+          
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here\'s a detailed view of sales performance across products and categories.',
+          });
+        } else if (query.toLowerCase().includes('margin analysis') || query.toLowerCase().includes('margin visualization')) {
+          console.log('[Canvas DEBUG] Matched query for Margin Analysis. Attempting to spawn...');
+          const marginAnalysisId = await spawnComponent('product-performance.marginAnalysis');
+          
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'I\'ve added a margin analysis visualization showing profitability across products.',
+          });
+        } else if (query.toLowerCase().includes('price distribution') || query.toLowerCase().includes('price bands')) {
+          console.log('[Canvas DEBUG] Matched query for Price Band Distribution. Attempting to spawn...');
+          const priceBandId = await spawnComponent('product-performance.priceBandDistribution');
+          
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here\'s a visualization of price band distribution across products.',
+          });
+        } else if (query.toLowerCase().includes('growth matrix') || query.toLowerCase().includes('product growth')) {
+          console.log('[Canvas DEBUG] Matched query for Growth Matrix. Attempting to spawn...');
+          const growthMatrixId = await spawnComponent('product-performance.growthMatrix');
+          
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'I\'ve created a growth matrix showing product performance across growth and margin dimensions.',
+          });
         } else {
           setRobotState({
             ...robotState,
             state: 'speaking',
-            message: 'I understand you\'re asking about: ' + query + '. You can ask about purchase frequency, customer segments, value segments, regularity, or interval patterns.',
+            message: 'I understand you\'re asking about: ' + query + '. You can ask about purchase frequency, customer segments, value segments, regularity, sales performance, margin analysis, price distribution, or product growth.',
           });
           
           setLoading(false);

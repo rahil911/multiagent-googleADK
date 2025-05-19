@@ -1,0 +1,750 @@
+2025-05-19 00:08:28,212 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:08:28,212 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:08:28,212 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:08:28,212 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:08:28,212 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:08:28,212 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:08:28,213 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:08:28,213 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:08:28,213 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:08:28,213 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:08:28,213 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:08:28,213 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:08:28,241 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:08:28,242 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:08:28,242 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:08:28,242 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:08:28,243 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:08:28,243 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:08:28,243 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:09:33,680 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:09:33,680 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:09:33,680 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+ with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:09:33,680 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:09:33,680 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:09:33,681 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:09:33,681 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:09:33,681 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:09:33,681 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:09:33,681 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:09:33,710 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:09:33,711 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:09:33,711 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:09:33,712 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:09:33,712 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:09:33,712 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:10:10,863 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin'], category_level=product
+2025-05-19 00:10:10,863 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:10:10,863 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:10:10,864 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:10:10,864 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:10:10,864 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:10:10,894 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:10:10,895 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:11:00,677 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:11:00,707 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:11:00,708 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:11:00,708 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:11:00,709 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:11:00,709 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:11:00,709 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:11:00,709 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:11:58,289 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:11:58,289 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:11:58,289 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:11:58,289 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:11:58,289 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:11:58,289 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:11:58,290 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:11:58,290 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:11:58,290 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:11:58,290 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:11:58,290 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:11:58,290 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:11:58,318 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:11:58,319 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:11:58,319 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:11:58,320 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:11:58,320 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:11:58,320 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:11:58,320 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:11:58,320 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:12:28,110 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin'], category_level=product
+2025-05-19 00:12:28,110 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:12:28,110 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:12:28,111 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:12:28,111 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:12:28,111 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:12:28,148 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:12:28,149 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:12:39,556 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:12:39,556 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:12:39,556 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:12:39,556 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:12:39,556 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:12:39,556 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:12:39,556 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:12:39,556 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:12:39,557 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:12:39,557 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:12:39,557 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:12:39,557 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:12:39,584 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:12:39,584 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:12:39,585 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:12:39,585 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:12:39,586 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:12:39,586 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:12:39,586 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:14:40,285 - __main__ - INFO - Starting API runner
+2025-05-19 00:14:40,286 - __main__ - INFO - Starting API runner
+2025-05-19 00:14:40,286 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:14:40,286 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:14:40,287 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:14:40,287 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:14:40,287 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:14:40,287 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:14:40,287 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:14:40,287 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:14:40,287 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:14:40,287 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:14:40,287 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:14:40,287 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:14:40,287 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:14:40,287 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:14:40,287 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:14:40,287 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:14:40,287 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:14:40,287 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:14:40,288 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:14:40,288 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:14:40,288 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:14:40,288 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:14:40,315 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:14:40,316 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:14:40,317 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:14:40,317 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:14:40,317 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:14:40,318 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:14:40,319 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:14:40,319 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:14:40,327 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:14:40,329 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:14:40,339 - __main__ - ERROR - Failed to run analysis: 'charmap' codec can't encode character '\u221e' in position 2718: character maps to <undefined>
+Traceback (most recent call last):
+  File "C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\tools\ProductPerformanceAnalyzer\api_runner.py", line 121, in main
+    print(json_output, flush=True)
+  File "C:\Users\Surya\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u221e' in position 2718: character maps to <undefined>
+
+2025-05-19 00:15:22,708 - __main__ - INFO - Starting API runner
+2025-05-19 00:15:22,708 - __main__ - INFO - Starting API runner
+2025-05-19 00:15:22,709 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:15:22,709 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:15:22,709 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:15:22,709 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:15:22,709 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:15:22,709 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:15:22,709 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:15:22,709 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:15:22,709 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:15:22,709 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:15:22,709 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+ode\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:15:22,709 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:15:22,709 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:15:22,711 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:15:22,711 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:15:22,711 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:15:22,711 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:15:22,711 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:15:22,711 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:15:22,711 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:15:22,741 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:15:22,741 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:15:22,742 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:15:22,742 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:15:22,742 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:15:22,742 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:15:22,744 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:15:22,744 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:15:22,753 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:15:22,755 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:15:46,471 - __main__ - INFO - Starting API runner
+2025-05-19 00:15:46,471 - __main__ - INFO - Starting API runner
+2025-05-19 00:15:46,472 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:15:46,472 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:15:46,472 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+0.0)
+2025-05-19 00:15:46,472 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:15:46,472 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:15:46,472 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:15:46,472 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:15:46,472 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:15:46,472 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:15:46,472 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:15:46,472 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:15:46,472 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:15:46,472 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:15:46,473 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:15:46,473 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:15:46,473 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:15:46,473 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:15:46,473 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:15:46,473 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:15:46,473 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:15:46,473 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:15:46,503 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:15:46,504 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:15:46,505 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:15:46,505 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:15:46,507 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:15:46,507 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:15:46,508 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:15:46,508 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:15:46,516 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:15:46,521 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:16:14,800 - __main__ - INFO - Starting API runner
+2025-05-19 00:16:14,800 - __main__ - INFO - Starting API runner
+2025-05-19 00:16:14,801 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:16:14,801 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:16:14,801 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:16:14,801 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:16:14,801 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:16:14,801 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:16:14,801 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+- INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:16:14,801 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+ct\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:16:14,801 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:16:14,801 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:16:14,801 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:16:14,801 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:16:14,802 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:16:14,802 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:16:14,802 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:16:14,802 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:16:14,802 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:16:14,802 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:16:14,802 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:16:14,802 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:16:14,834 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:16:14,835 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:16:14,835 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:16:14,836 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:16:14,836 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:16:14,836 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:16:14,837 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:16:14,837 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:16:14,847 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:16:14,847 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:17:21,142 - __main__ - INFO - Starting API runner
+2025-05-19 00:17:21,143 - __main__ - INFO - Starting API runner
+2025-05-19 00:17:21,144 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:17:21,144 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:17:21,144 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:17:21,144 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:17:21,144 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:17:21,144 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:17:21,144 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:17:21,144 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:17:21,144 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:17:21,144 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:17:21,144 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:17:21,144 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:17:21,144 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:17:21,144 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:17:21,144 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:17:21,145 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:17:21,145 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:17:21,145 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:17:21,145 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:17:21,145 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:17:21,145 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:17:21,145 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:17:21,176 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:17:21,177 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:17:21,177 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:17:21,177 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:17:21,177 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:17:21,177 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:17:21,178 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:17:21,178 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:17:21,188 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:17:21,188 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:18:12,526 - __main__ - INFO - Starting API runner
+2025-05-19 00:18:12,528 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:18:12,528 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:18:12,528 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:18:12,528 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:18:12,528 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:18:12,528 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:18:12,528 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:18:12,529 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:18:12,529 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:18:12,529 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:18:12,529 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:18:12,558 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:18:12,559 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:18:12,560 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:18:12,560 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:18:12,571 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:18:14,976 - __main__ - INFO - Starting API runner
+2025-05-19 00:18:14,977 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:18:14,977 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:18:14,977 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:18:14,978 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:18:14,978 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:18:14,978 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:18:14,978 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:18:14,978 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:18:14,978 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:18:14,978 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:18:14,978 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:18:15,005 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:18:15,006 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:18:15,006 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:18:15,006 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:18:15,017 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:18:19,008 - __main__ - INFO - Starting API runner
+2025-05-19 00:18:19,010 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:18:19,010 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:18:19,010 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:18:19,010 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:18:19,010 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:18:19,010 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:18:19,010 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:18:19,010 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:18:19,010 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:18:19,010 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:18:19,011 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:18:19,039 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:18:19,040 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:18:19,040 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:18:19,040 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:18:19,052 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:18:21,638 - __main__ - INFO - Starting API runner
+2025-05-19 00:18:21,638 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:18:21,638 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:18:21,638 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:18:21,638 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:18:21,638 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:18:21,638 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:18:21,638 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:18:21,639 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:18:21,639 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:18:21,639 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:18:21,639 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:18:21,671 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:18:21,672 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:18:21,672 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:18:21,672 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:18:21,683 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:19:16,450 - __main__ - INFO - Starting API runner
+2025-05-19 00:19:16,450 - __main__ - INFO - Starting API runner
+2025-05-19 00:19:16,451 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:19:16,451 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:19:16,451 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:19:16,451 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:19:16,451 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:19:16,451 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:19:16,451 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:19:16,451 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:19:16,451 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:19:16,451 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:19:16,451 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:19:16,451 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:19:16,452 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:19:16,452 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:19:16,452 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:19:16,452 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:19:16,452 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:19:16,452 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:19:16,452 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:19:16,452 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:19:16,484 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:19:16,484 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:19:16,485 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:19:16,485 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:19:16,486 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:19:16,486 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:19:16,486 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:19:16,486 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:19:16,500 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:21:28,402 - __main__ - INFO - Starting API runner
+2025-05-19 00:21:28,402 - __main__ - INFO - Starting API runner
+2025-05-19 00:21:28,403 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:21:28,403 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:21:28,403 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:21:28,403 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:21:28,404 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:21:28,404 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:21:28,404 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:21:28,404 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:21:28,404 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:21:28,404 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:21:28,404 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:21:28,434 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:21:28,435 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:21:28,435 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:21:28,437 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:21:28,437 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:21:28,437 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:21:28,438 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:21:28,438 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:21:28,447 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:21:28,448 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:22:55,610 - __main__ - INFO - Starting API runner
+2025-05-19 00:22:55,610 - __main__ - INFO - Starting API runner
+2025-05-19 00:22:55,611 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:22:55,611 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:22:55,611 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:22:55,612 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:22:55,612 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:22:55,612 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:22:55,612 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:22:55,612 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:22:55,612 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:22:55,612 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:22:55,612 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:22:55,612 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:22:55,612 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:22:55,612 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:22:55,612 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:22:55,612 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:22:55,612 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:22:55,612 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:22:55,612 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:22:55,613 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:22:55,613 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:22:55,640 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:22:55,641 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:22:55,641 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:22:55,642 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:22:55,642 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:22:55,642 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:22:55,643 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:22:55,643 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:22:55,652 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:22:55,653 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:23:16,304 - __main__ - INFO - Starting API runner
+2025-05-19 00:23:16,305 - __main__ - INFO - Starting API runner
+2025-05-19 00:23:16,305 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:23:16,306 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:23:16,306 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:23:16,306 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:23:16,306 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:23:16,306 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:23:16,306 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:23:16,306 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:23:16,306 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:23:16,306 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:23:16,306 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:23:16,306 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:23:16,306 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:23:16,307 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:23:16,307 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:23:16,307 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:23:16,307 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:23:16,307 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:23:16,307 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:23:16,307 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:23:16,307 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:23:16,336 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:23:16,337 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:23:16,337 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:23:16,338 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:23:16,338 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:23:16,338 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:23:16,338 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:23:16,338 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:23:16,348 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:23:16,349 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:24:17,672 - __main__ - INFO - Starting API runner
+2025-05-19 00:24:17,672 - __main__ - INFO - Starting API runner
+2025-05-19 00:24:17,673 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:24:17,673 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:24:17,673 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:24:17,673 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:24:17,673 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:24:17,673 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:24:17,673 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:24:17,673 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:24:17,673 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:24:17,673 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:24:17,673 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:24:17,673 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:24:17,673 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:24:17,673 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:24:17,674 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:24:17,674 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:24:17,674 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:24:17,674 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:24:17,674 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:24:17,674 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:24:17,674 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:24:17,704 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:24:17,705 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:24:17,705 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:24:17,705 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:24:17,706 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:24:17,706 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:24:17,706 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:24:17,706 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:24:17,717 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:24:17,718 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:27:13,331 - __main__ - INFO - Starting API runner
+2025-05-19 00:27:13,331 - __main__ - INFO - Starting API runner
+2025-05-19 00:27:13,332 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:27:13,332 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:27:13,332 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:27:13,332 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:27:13,332 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:27:13,332 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:27:13,332 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+- INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:27:13,333 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:27:13,333 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+- INFO - Attempting to connect to database...
+2025-05-19 00:27:13,333 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:27:13,333 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:27:13,333 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:27:13,333 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:27:13,333 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:27:13,333 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:27:13,333 - Sales.database.connection - INFO - Successfully established database connection
+ing query...
+2025-05-19 00:27:13,333 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:27:13,334 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:27:13,334 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:27:13,361 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:27:13,362 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:27:13,362 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:27:13,363 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:27:13,363 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:27:13,363 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:27:13,364 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:27:13,364 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:27:13,374 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:27:13,374 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:33:51,919 - __main__ - INFO - Starting API runner
+2025-05-19 00:33:51,919 - __main__ - INFO - Starting API runner
+2025-05-19 00:33:51,920 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:33:51,920 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:33:51,920 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:33:51,920 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:33:51,920 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:33:51,920 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:33:51,920 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:33:51,920 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:33:51,920 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:33:51,920 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:33:51,920 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:33:51,920 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:33:51,920 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:33:51,920 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:33:51,921 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:33:51,921 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:33:51,921 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:33:51,921 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:33:51,921 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:33:51,921 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:33:51,921 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:33:51,921 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:33:51,948 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:33:51,949 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+ows
+2025-05-19 00:33:51,950 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:33:51,950 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:33:51,950 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:33:51,951 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:33:51,951 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:33:51,960 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:33:51,961 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:41:02,755 - __main__ - INFO - Starting API runner
+2025-05-19 00:41:02,756 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:41:02,756 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:41:02,756 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:41:02,756 - __main__ - INFO - Starting API runner
+2025-05-19 00:41:02,756 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:41:02,756 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:41:02,756 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:41:02,756 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:41:02,757 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:41:02,757 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:41:02,757 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:41:02,757 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:41:02,757 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:41:02,757 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:41:02,757 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:41:02,758 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:41:02,758 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:41:02,758 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:41:02,758 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:41:02,758 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:41:02,758 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:41:02,758 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:41:02,758 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:41:02,798 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:41:02,799 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:41:02,800 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:41:02,800 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:41:02,801 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:41:02,801 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:41:02,802 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:41:02,802 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:41:02,813 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:41:02,815 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:58:38,548 - __main__ - INFO - Starting API runner
+2025-05-19 00:58:38,549 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin', category_level='product', min_sales_threshold=None)
+2025-05-19 00:58:38,549 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:58:38,549 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin'], category_level=product
+2025-05-19 00:58:38,549 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:58:38,549 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:58:38,549 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:58:38,549 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:58:38,551 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:58:38,551 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:58:38,551 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:58:38,551 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:58:38,579 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:58:38,580 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:58:38,588 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:59:42,823 - __main__ - INFO - Starting API runner
+2025-05-19 00:59:42,824 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin', category_level='product', min_sales_threshold=None)
+2025-05-19 00:59:42,824 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:59:42,824 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin'], category_level=product
+2025-05-19 00:59:42,824 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:59:42,824 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:59:42,824 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:59:42,824 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:59:42,825 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:59:42,825 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:59:42,825 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:59:42,826 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:59:42,866 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:59:42,867 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:59:42,877 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:59:49,780 - __main__ - INFO - Starting API runner
+2025-05-19 00:59:49,781 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin', category_level='product', min_sales_threshold=None)
+2025-05-19 00:59:49,781 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:59:49,781 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin'], category_level=product
+2025-05-19 00:59:49,781 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:59:49,781 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:59:49,781 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:59:49,781 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:59:49,782 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:59:49,782 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:59:49,782 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:59:49,782 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:59:49,815 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:59:49,815 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:59:49,825 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:59:56,333 - __main__ - INFO - Starting API runner
+2025-05-19 00:59:56,334 - __main__ - INFO - Starting API runner
+2025-05-19 00:59:56,335 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:59:56,335 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:59:56,335 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 00:59:56,335 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:59:56,335 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 00:59:56,335 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:59:56,335 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:59:56,335 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:59:56,335 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 00:59:56,335 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:59:56,335 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:59:56,335 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 00:59:56,335 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 00:59:56,335 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 00:59:56,336 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:59:56,336 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:59:56,336 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:59:56,336 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 00:59:56,336 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:59:56,336 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 00:59:56,336 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 00:59:56,336 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 00:59:56,364 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:59:56,365 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:59:56,366 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 00:59:56,366 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:59:56,366 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:59:56,367 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 00:59:56,367 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 00:59:56,367 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 00:59:56,377 - __main__ - INFO - Analysis completed successfully
+2025-05-19 00:59:56,379 - __main__ - INFO - Analysis completed successfully
+2025-05-19 01:01:22,378 - __main__ - INFO - Starting API runner
+2025-05-19 01:01:22,380 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 01:01:22,380 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 01:01:22,381 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 01:01:22,381 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 01:01:22,381 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 01:01:22,381 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 01:01:22,381 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 01:01:22,382 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 01:01:22,382 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 01:01:22,382 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 01:01:22,382 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 01:01:22,390 - __main__ - INFO - Starting API runner
+2025-05-19 01:01:22,390 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin,price_bands', category_level='product', min_sales_threshold=1000.0)
+2025-05-19 01:01:22,391 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 01:01:22,391 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin', 'price_bands'], category_level=product
+2025-05-19 01:01:22,391 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 01:01:22,391 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 01:01:22,391 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 01:01:22,391 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 01:01:22,392 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 01:01:22,392 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 01:01:22,392 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 01:01:22,392 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 01:01:22,419 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 01:01:22,420 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 01:01:22,421 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 01:01:22,421 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 01:01:22,425 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 01:01:22,426 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 01:01:22,428 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Filtered out 1 products below sales threshold of 1000.0
+2025-05-19 01:01:22,428 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analysis proceeding with 422 products
+2025-05-19 01:01:22,434 - __main__ - INFO - Analysis completed successfully
+2025-05-19 01:01:22,442 - __main__ - INFO - Analysis completed successfully
+2025-05-19 01:01:29,867 - __main__ - INFO - Starting API runner
+2025-05-19 01:01:29,868 - __main__ - INFO - Starting analysis with args: Namespace(start_date='2020-01-01', end_date='2020-12-31', metrics='sales,units,margin', category_level='product', min_sales_threshold=None)
+2025-05-19 01:01:29,868 - __main__ - INFO - Initializing ProductPerformanceAnalyzer
+2025-05-19 01:01:29,868 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Initialized ProductPerformanceAnalyzer with metrics=['sales', 'units', 'margin'], category_level=product
+2025-05-19 01:01:29,868 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Using database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 01:01:29,868 - __main__ - INFO - Running analysis from 2020-01-01 to 2020-12-31
+2025-05-19 01:01:29,868 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Attempting to connect to database...
+2025-05-19 01:01:29,868 - Sales.database.connection - INFO - Connecting to database at: C:\Code\PythonProject\MultiagentML\multiagent-googleADK\Sales\database\sales_agent.db
+2025-05-19 01:01:29,869 - Sales.database.connection - INFO - Successfully established database connection
+2025-05-19 01:01:29,869 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Successfully connected to database
+2025-05-19 01:01:29,869 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Analyzing data from 2020-01-01 to 2020-12-31
+2025-05-19 01:01:29,869 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Executing query...
+2025-05-19 01:01:29,907 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Query returned 423 results
+2025-05-19 01:01:29,908 - Sales.tools.ProductPerformanceAnalyzer.ProductPerformanceAnalyzer - INFO - Created DataFrame with 423 rows
+2025-05-19 01:01:29,921 - __main__ - INFO - Analysis completed successfully

@@ -6,6 +6,7 @@ export interface Product {
   subcategory?: string;
   margin_pct?: number;
   avg_price?: number;
+  date?: string;
 }
 
 export interface PriceBandInfo {
@@ -25,6 +26,15 @@ export interface ProductPerformanceState {
   loading: boolean;
   error: string | null;
   data: Product[];
+  scatterPlotData: Product[];
+  priceBandChartData: {
+    bands: string[];
+    distribution: Record<string, {
+      count: number;
+      total_sales: number;
+      avg_price: number;
+    }>;
+  } | null;
   dateRange: {
     startDate: string;
     endDate: string;
@@ -34,7 +44,10 @@ export interface ProductPerformanceState {
   minSalesThreshold: number | null;
   selectedMetrics: ("sales" | "units" | "margin" | "price_bands")[];
   categoryLevel: "product" | "category" | "subcategory";
+  timeGranularity: 'daily' | 'weekly' | 'monthly';
   analysisResult: ProductAnalysisResult | null;
+  categories: CategoryOption[];
+  subcategories: Record<string, CategoryOption[]>;
 }
 
 export interface ProductAnalysisResult {
@@ -45,12 +58,19 @@ export interface ProductAnalysisResult {
     end: string;
   };
   results?: {
+    daily_summary?: {
+      date: string;
+      sales: number;
+      quantity: number;
+    }[];
     sales?: {
       total_sales: number;
       average_sales: number;
       top_products: {
         product_name: string;
         sales_amount: number;
+        category?: string;
+        date?: string;
       }[];
       category_distribution: Record<string, number>;
     };
@@ -60,6 +80,8 @@ export interface ProductAnalysisResult {
       top_products: {
         product_name: string;
         quantity: number;
+        category?: string;
+        date?: string;
       }[];
       category_distribution: Record<string, number>;
     };
@@ -69,12 +91,21 @@ export interface ProductAnalysisResult {
       top_margin_products: {
         product_name: string;
         margin_pct: number;
+        category?: string;
+        date?: string;
       }[];
     };
     price_bands?: {
       bands: string[];
-      distribution: Record<string, { count: number; total_sales: number; avg_price: number }>;
+      distribution: Record<string, {
+        count: number;
+        total_sales: number;
+        avg_price: number;
+      }>;
     };
+    subcategories?: Record<string, Record<string, number>>;
+    kpi?: ProductKpiData;
+    product_scatter_data?: Product[];
   };
 }
 
@@ -109,4 +140,29 @@ export interface ProductKpiData {
     dominant: string;
     percentage: number;
   };
+}
+
+export interface CategoryOption {
+  value: string;
+  label: string;
+}
+
+export interface StyleProps {
+  [key: string]: string | number;
+}
+
+export interface GridProps {
+  container?: boolean;
+  item?: boolean;
+  xs?: number;
+  sm?: number;
+  md?: number;
+  lg?: number;
+  spacing?: number;
+  style?: StyleProps;
+}
+
+export interface CardProps {
+  elevation?: 'sm' | 'md' | 'lg';
+  style?: StyleProps;
 } 

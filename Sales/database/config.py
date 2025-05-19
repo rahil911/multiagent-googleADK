@@ -3,22 +3,26 @@ Configuration settings for the Sales Analytics Multi-Agent System.
 """
 
 import os
+import sys
 from pathlib import Path
+
+# Get the project root directory (two levels up from this file)
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 
 # Database configuration
 DATABASE = {
-    'path': os.path.abspath(os.path.join(
-        os.path.dirname(os.path.dirname(__file__)),
-        'database',
-        'sales_agent.db'
-    ))
+    'path': os.path.join(PROJECT_ROOT, 'Sales', 'database', 'sales_agent.db')
 }
+
+# Ensure database directory exists
+db_dir = os.path.dirname(DATABASE['path'])
+os.makedirs(db_dir, exist_ok=True)
 
 # Logging configuration
 LOGGING = {
     'level': 'INFO',
     'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    'file': None  # Set to None for console logging
+    'stream': sys.stderr  # Use stderr for all logging
 }
 
 # Analysis Configuration
@@ -34,8 +38,3 @@ VISUALIZATION = {
     'default_figure_size': (12, 6),
     'style': 'seaborn'
 }
-
-# Ensure log directory exists
-if LOGGING['file']:
-    log_dir = os.path.dirname(LOGGING['file'])
-    os.makedirs(log_dir, exist_ok=True)

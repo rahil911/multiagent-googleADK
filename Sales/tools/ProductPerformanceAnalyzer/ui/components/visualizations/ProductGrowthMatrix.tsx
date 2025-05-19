@@ -11,7 +11,7 @@ import { generateChartLayout, prepareGrowthMatrixData } from '../../utils/chartH
 const Plot = dynamic(() => import('react-plotly.js'), { ssr: false });
 
 interface ProductGrowthMatrixProps {
-  data: Product[];
+  data?: Product[];
   loading?: boolean;
   title?: string;
   onProductSelect?: (product: Product) => void;
@@ -25,7 +25,7 @@ interface ProductGrowthMatrixProps {
  * Shows products positioned in four-quadrant growth/margin matrix
  */
 export const ProductGrowthMatrix: React.FC<ProductGrowthMatrixProps> = ({
-  data,
+  data = [],
   loading = false,
   title = 'Product Growth Matrix',
   onProductSelect,
@@ -39,6 +39,8 @@ export const ProductGrowthMatrix: React.FC<ProductGrowthMatrixProps> = ({
   
   // Generate growth data (in real implementation, this would come from historical data)
   const productsWithGrowth = useMemo(() => {
+    if (!data || !data.length) return [];
+    
     return data.map(product => {
       // For demo purpose - simulate growth between -20% and 30%
       // In real implementation, we would compare current vs previous period
@@ -450,5 +452,7 @@ export const ProductGrowthMatrix: React.FC<ProductGrowthMatrixProps> = ({
     </Card>
   );
 };
+
+ProductGrowthMatrix.displayName = 'ProductGrowthMatrix';
 
 export default ProductGrowthMatrix; 

@@ -5,6 +5,7 @@ Product Performance Analyzer tool for analyzing product-specific metrics and per
 import pandas as pd
 import numpy as np
 import logging
+import traceback
 from typing import Dict, Any, Optional, List, Union
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
@@ -17,12 +18,21 @@ import sys
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../..'))
 sys.path.insert(0, project_root)
 
-from Project.Sales.database.connection import get_connection
-from Project.Sales.database.query_templates import get_latest_date
-from Project.Sales.database import config
+from Sales.database.connection import get_connection
+from Sales.database.query_templates import get_latest_date
+from Sales.database import config
 
-# Configure logging
-logging.basicConfig(level=config.LOGGING['level'])
+# Configure logging to write to a file
+log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
+os.makedirs(log_dir, exist_ok=True)
+log_file = os.path.join(log_dir, 'product_performance.log')
+
+logging.basicConfig(
+    level=config.LOGGING['level'],
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    filename=log_file,
+    filemode='a'
+)
 logger = logging.getLogger(__name__)
 
 class ProductPerformanceAnalyzer:
@@ -50,63 +60,90 @@ class ProductPerformanceAnalyzer:
             include_visualization: Whether to include visualizations in results
             db_path: Optional path to the database file
         """
-        # Validate inputs
-        if not all(metric in self.VALID_METRICS for metric in metrics):
-            raise ValueError(f"Invalid metrics. Must be one of {self.VALID_METRICS}")
-        if category_level not in self.VALID_CATEGORY_LEVELS:
-            raise ValueError(f"Invalid category level. Must be one of {self.VALID_CATEGORY_LEVELS}")
+        try:
+            # Validate inputs
+            if not all(metric in self.VALID_METRICS for metric in metrics):
+                raise ValueError(f"Invalid metrics. Must be one of {self.VALID_METRICS}")
+            if category_level not in self.VALID_CATEGORY_LEVELS:
+                raise ValueError(f"Invalid category level. Must be one of {self.VALID_CATEGORY_LEVELS}")
+                
+            self.metrics = metrics
+            self.category_level = category_level
+            self.min_sales_threshold = min_sales_threshold
+            self.include_visualization = include_visualization
+            self.db_path = db_path or config.DATABASE['path']
             
-        self.metrics = metrics
-        self.category_level = category_level
-        self.min_sales_threshold = min_sales_threshold
-        self.include_visualization = include_visualization
-        self.db_path = db_path or config.DATABASE['path']
-        
-        logger.info(f"Initialized ProductPerformanceAnalyzer with metrics={metrics}, category_level={category_level}")
+            # Verify database exists
+            if not os.path.exists(self.db_path):
+                raise FileNotFoundError(f"Database file not found at: {self.db_path}")
+                
+            logger.info(f"Initialized ProductPerformanceAnalyzer with metrics={metrics}, category_level={category_level}")
+            logger.info(f"Using database at: {self.db_path}")
+            
+        except Exception as e:
+            logger.error(f"Error initializing ProductPerformanceAnalyzer: {str(e)}\n{traceback.format_exc()}")
+            raise
     
     def analyze_performance(self, start_date: Optional[str] = None, end_date: Optional[str] = None) -> Dict[str, Any]:
         """
         Analyze product performance for the specified date range.
         
         Args:
-            start_date: Optional start date in YYYY-MM-DD format. If None, uses earliest available date.
-            end_date: Optional end date in YYYY-MM-DD format. If None, uses latest available date.
+            start_date: Optional start date in YYYY-MM-DD format. If None, uses 2020-01-01.
+            end_date: Optional end date in YYYY-MM-DD format. If None, uses 2020-12-31.
             
         Returns:
             Dictionary containing analysis results
         """
+        conn = None
+        wrapper = None
         try:
             # Get database connection
+            logger.info("Attempting to connect to database...")
             conn, wrapper = get_connection()
+            logger.info("Successfully connected to database")
             
-            # Get latest date if end_date not provided
+            # Set default dates to 2020 if not provided
             if not end_date:
-                end_date = get_latest_date(conn)
+                end_date = "2020-12-31"
+                logger.info(f"Using default end date: {end_date}")
             
-            # If start_date not provided, use last 30 days
             if not start_date:
-                start_date = (datetime.strptime(end_date, "%Y-%m-%d") - timedelta(days=30)).strftime("%Y-%m-%d")
+                start_date = "2020-01-01"
+                logger.info(f"Using default start date: {start_date}")
+            
+            logger.info(f"Analyzing data from {start_date} to {end_date}")
             
             # Build query
             query = self._build_query()
+            logger.debug(f"Generated query: {query}")
             
             # Execute query
+            logger.info("Executing query...")
             results = wrapper.fetchall(query, (start_date, end_date))
+            logger.info(f"Query returned {len(results) if results else 0} results")
             
             if not results:
+                logger.warning(f"No data found for period {start_date} to {end_date}")
                 return {
                     "status": "error",
-                    "message": "No data found for the specified period"
+                    "message": f"No data found for the specified period ({start_date} to {end_date})"
                 }
             
             # Convert to DataFrame
             columns = ['product_id', 'product_name', 'category', 'subcategory', 
                       'sales_amount', 'quantity', 'cost']
             data = pd.DataFrame(results, columns=columns)
+            logger.info(f"Created DataFrame with {len(data)} rows")
             
             # Apply minimum sales threshold if specified
             if self.min_sales_threshold:
+                initial_count = len(data)
                 data = data[data['sales_amount'] >= self.min_sales_threshold]
+                filtered_count = initial_count - len(data)
+                if filtered_count > 0:
+                    logger.info(f"Filtered out {filtered_count} products below sales threshold of {self.min_sales_threshold}")
+                logger.info(f"Analysis proceeding with {len(data)} products")
             
             # Calculate metrics
             analysis_results = {}
@@ -127,10 +164,6 @@ class ProductPerformanceAnalyzer:
             if self.include_visualization:
                 self._create_visualization(data)
             
-            # Close connections
-            conn.close()
-            wrapper.close()
-            
             return {
                 "status": "success",
                 "period": {"start": start_date, "end": end_date},
@@ -138,11 +171,24 @@ class ProductPerformanceAnalyzer:
             }
             
         except Exception as e:
-            logger.error(f"Error analyzing product performance: {str(e)}")
+            error_msg = f"Error analyzing product performance: {str(e)}\n{traceback.format_exc()}"
+            logger.error(error_msg)
             return {
                 "status": "error",
                 "message": str(e)
             }
+        finally:
+            # Close connections
+            if conn:
+                try:
+                    conn.close()
+                except Exception as e:
+                    logger.error(f"Error closing connection: {str(e)}")
+            if wrapper:
+                try:
+                    wrapper.close()
+                except Exception as e:
+                    logger.error(f"Error closing wrapper: {str(e)}")
     
     def _build_query(self) -> str:
         """
@@ -151,40 +197,45 @@ class ProductPerformanceAnalyzer:
         Returns:
             SQL query string
         """
-        query = """
-            SELECT 
-                i."Item Key" as product_id,
-                i."Item Desc" as product_name,
-                i."Item Category Desc" as category,
-                i."Item Subcategory Desc" as subcategory,
-                SUM(t."Net Sales Amount") as sales_amount,
-                SUM(t."Net Sales Quantity") as quantity,
-                SUM(t."Net Sales Amount") as cost  -- Using sales amount as placeholder since cost data is not available
-            FROM "dbo_F_Sales_Transaction" t
-            LEFT JOIN "dbo_D_Item" i ON t."Item Key" = i."Item Key"
-            WHERE t."Txn Date" BETWEEN ? AND ?
-                AND t."Deleted Flag" = 0
-                AND t."Excluded Flag" = 0
-        """
-        
-        # Add grouping based on category level
-        if self.category_level == 'product':
-            query += """
-                GROUP BY i."Item Key", i."Item Desc", i."Item Category Desc", i."Item Subcategory Desc"
-                ORDER BY sales_amount DESC
+        try:
+            query = """
+                SELECT 
+                    i."Item Key" as product_id,
+                    i."Item Desc" as product_name,
+                    i."Item Category Desc" as category,
+                    i."Item Subcategory Desc" as subcategory,
+                    SUM(t."Net Sales Amount") as sales_amount,
+                    SUM(t."Net Sales Quantity") as quantity,
+                    SUM(t."Net Sales Amount") as cost  -- Using sales amount as placeholder since cost data is not available
+                FROM "dbo_F_Sales_Transaction" t
+                LEFT JOIN "dbo_D_Item" i ON t."Item Key" = i."Item Key"
+                WHERE t."Txn Date" BETWEEN ? AND ?
+                    AND t."Deleted Flag" = 0
+                    AND t."Excluded Flag" = 0
             """
-        elif self.category_level == 'category':
-            query += """
-                GROUP BY i."Item Category Desc"
-                ORDER BY sales_amount DESC
-            """
-        else:  # subcategory
-            query += """
-                GROUP BY i."Item Subcategory Desc"
-                ORDER BY sales_amount DESC
-            """
-        
-        return query
+            
+            # Add grouping based on category level
+            if self.category_level == 'product':
+                query += """
+                    GROUP BY i."Item Key", i."Item Desc", i."Item Category Desc", i."Item Subcategory Desc"
+                    ORDER BY sales_amount DESC
+                """
+            elif self.category_level == 'category':
+                query += """
+                    GROUP BY i."Item Category Desc"
+                    ORDER BY sales_amount DESC
+                """
+            else:  # subcategory
+                query += """
+                    GROUP BY i."Item Subcategory Desc"
+                    ORDER BY sales_amount DESC
+                """
+            
+            return query
+            
+        except Exception as e:
+            logger.error(f"Error building query: {str(e)}\n{traceback.format_exc()}")
+            raise
     
     def _analyze_sales(self, data: pd.DataFrame) -> Dict[str, Any]:
         """
@@ -284,6 +335,25 @@ class ProductPerformanceAnalyzer:
             category_margins = data.groupby('category')['margin'].sum()
             category_distribution = (category_margins / total_margin * 100).to_dict()
             
+            # Convert NaN values to None for JSON compatibility
+            if pd.isna(total_margin):
+                total_margin = None
+            if pd.isna(avg_margin_pct):
+                avg_margin_pct = None
+                
+            # Convert NaN values in top_products
+            for product in top_products:
+                if pd.isna(product['margin']):
+                    product['margin'] = None
+                if pd.isna(product['margin_pct']):
+                    product['margin_pct'] = None
+            
+            # Convert NaN values in category_distribution
+            category_distribution = {
+                k: None if pd.isna(v) else v 
+                for k, v in category_distribution.items()
+            }
+            
             return {
                 "total_margin": total_margin,
                 "average_margin_pct": avg_margin_pct,
@@ -322,27 +392,29 @@ class ProductPerformanceAnalyzer:
                 (10, 20),
                 (20, 50),
                 (50, 100),
-                (100, float('inf'))
+                (100, 1000)  # Changed from float('inf') to 1000
             ]
             
             # Calculate distribution
             distribution = {}
             for lower, upper in price_bands:
-                if upper == float('inf'):
+                if upper == 1000:  # Changed from float('inf')
                     mask = data['avg_price'] >= lower
+                    band_name = f"${lower}+"  # Changed from '∞' to '+'
                 else:
                     mask = (data['avg_price'] >= lower) & (data['avg_price'] < upper)
+                    band_name = f"${lower}-{upper}"
                 
                 band_data = data[mask]
                 if not band_data.empty:
-                    distribution[f"${lower}-{upper if upper != float('inf') else '∞'}"] = {
+                    distribution[band_name] = {
                         'count': len(band_data),
                         'total_sales': band_data['sales_amount'].sum(),
                         'avg_price': band_data['avg_price'].mean()
                     }
             
             return {
-                "price_bands": [f"${lower}-{upper if upper != float('inf') else '∞'}" 
+                "price_bands": [f"${lower}-{upper if upper != 1000 else '+'}" 
                               for lower, upper in price_bands],
                 "distribution": distribution
             }
@@ -438,7 +510,7 @@ if __name__ == "__main__":
     analyzer = ProductPerformanceAnalyzer(
         metrics=['sales', 'units', 'margin'],
         category_level='product',
-        min_sales_threshold=1000,
+        min_sales_threshold=None,
         include_visualization=True
     )
     

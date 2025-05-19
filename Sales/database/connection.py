@@ -1,18 +1,18 @@
 """
 Database connection utilities for the Sales Analytics Multi-Agent System.
-Enforces read-only mode for all database operations.
 """
 
 import sqlite3
 import logging
+import sys
 from pathlib import Path
 from . import config
 
-# Configure logging
+# Configure logging to write to stderr
 logging.basicConfig(
     level=config.LOGGING['level'],
     format=config.LOGGING['format'],
-    filename=config.LOGGING['file']
+    stream=sys.stderr  # Write logs to stderr
 )
 logger = logging.getLogger(__name__)
 
@@ -24,9 +24,15 @@ class ReadOnlyConnection:
         if not self.db_path.exists():
             raise FileNotFoundError(f"Database file not found: {db_path}")
         
-        # Open connection in read-only mode
-        self.conn = sqlite3.connect(f'file:{db_path}?mode=ro', uri=True)
-        self.conn.row_factory = sqlite3.Row  # Enable dictionary-like access to rows
+        try:
+            # Open connection with read-only mode
+            self.conn = sqlite3.connect(db_path, uri=False)
+            self.conn.row_factory = sqlite3.Row  # Enable dictionary-like access to rows
+            # Set pragma for read-only mode
+            self.conn.execute("PRAGMA query_only = ON")
+        except sqlite3.Error as e:
+            logger.error(f"Failed to connect to database: {str(e)}")
+            raise
         
     def execute(self, query, params=None):
         """Execute a read-only query."""
@@ -42,6 +48,9 @@ class ReadOnlyConnection:
                 logger.error("Attempted write operation on read-only database")
                 raise PermissionError("Write operations are not allowed on this database")
             raise
+        except sqlite3.Error as e:
+            logger.error(f"Database error: {str(e)}")
+            raise
     
     def fetchall(self, query, params=None):
         """Execute a query and return all results."""
@@ -55,16 +64,26 @@ class ReadOnlyConnection:
     
     def close(self):
         """Close the database connection."""
-        self.conn.close()
+        try:
+            self.conn.close()
+        except sqlite3.Error as e:
+            logger.error(f"Error closing database connection: {str(e)}")
+            raise
 
 def get_connection():
     """Get a read-only database connection."""
     try:
         db_path = config.DATABASE['path']
+        logger.info(f"Connecting to database at: {db_path}")
+        
         # Create a regular connection for pandas
-        conn = sqlite3.connect(f'file:{db_path}?mode=ro', uri=True)
+        conn = sqlite3.connect(db_path, uri=False)
+        conn.execute("PRAGMA query_only = ON")
+        
         # Create the wrapper for our custom operations
         wrapper = ReadOnlyConnection(db_path)
+        
+        logger.info("Successfully established database connection")
         return conn, wrapper
     except Exception as e:
         logger.error(f"Failed to establish database connection: {str(e)}")

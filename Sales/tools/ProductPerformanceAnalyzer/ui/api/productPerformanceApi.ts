@@ -14,9 +14,9 @@ export const productPerformanceApi = {
     metrics: string[];
     category_level: string;
     min_sales_threshold: number | null;
+    time_granularity: string;
   }): Promise<ProductAnalysisResult> {
     try {
-      // In a real implementation, this would be an API call to your backend
       const response = await fetch('/api/sales/product-performance', {
         method: 'POST',
         headers: {
@@ -31,7 +31,20 @@ export const productPerformanceApi = {
       }
 
       const data: ProductAnalysisResult = await response.json();
-      return data;
+      
+      // Only return the actual analysis results, not the logging messages
+      if (data.status === 'success') {
+        return {
+          status: 'success',
+          period: data.period,
+          results: data.results
+        };
+      } else {
+        return {
+          status: 'error',
+          message: data.message
+        };
+      }
     } catch (error) {
       console.error('Error fetching product performance data:', error);
       return {

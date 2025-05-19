@@ -8,16 +8,21 @@ const initialState: ProductPerformanceState = {
   loading: false,
   error: null,
   data: [],
+  scatterPlotData: [],
+  priceBandChartData: null,
   dateRange: {
-    startDate: format(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'), // 30 days ago
-    endDate: format(new Date(), 'yyyy-MM-dd'), // Today
+    startDate: '2020-01-01',
+    endDate: '2020-12-31',
   },
   selectedCategory: null,
   selectedSubcategory: null,
   minSalesThreshold: 1000,
   selectedMetrics: ['sales', 'units', 'margin', 'price_bands'],
   categoryLevel: 'product',
+  timeGranularity: 'daily',
   analysisResult: null,
+  categories: [],
+  subcategories: {},
 };
 
 // API call to fetch product performance data
@@ -25,7 +30,7 @@ export const fetchProductPerformance = createAsyncThunk(
   'productPerformance/fetchData',
   async (_, { getState, rejectWithValue }) => {
     const state = getState() as { productPerformance: ProductPerformanceState };
-    const { dateRange, selectedMetrics, categoryLevel, minSalesThreshold } = state.productPerformance;
+    const { dateRange, selectedMetrics, categoryLevel, minSalesThreshold, timeGranularity } = state.productPerformance;
     
     try {
       // Use the actual API client instead of direct fetch
@@ -35,6 +40,7 @@ export const fetchProductPerformance = createAsyncThunk(
         metrics: selectedMetrics,
         category_level: categoryLevel,
         min_sales_threshold: minSalesThreshold,
+        time_granularity: timeGranularity,
       });
       
       if (data.status === 'error') {
@@ -55,6 +61,9 @@ const productPerformanceSlice = createSlice({
   reducers: {
     setDateRange: (state, action: PayloadAction<{ startDate: string; endDate: string }>) => {
       state.dateRange = action.payload;
+    },
+    setTimeGranularity: (state, action: PayloadAction<'daily' | 'weekly' | 'monthly'>) => {
+      state.timeGranularity = action.payload;
     },
     setSelectedCategory: (state, action: PayloadAction<string | null>) => {
       state.selectedCategory = action.payload;
@@ -96,23 +105,57 @@ const productPerformanceSlice = createSlice({
         if (action.payload.status === 'success' && action.payload.results) {
           const { sales, units, margin } = action.payload.results;
           
-          // This is a simplified example - in a real implementation,
-          // we would need to do more complex data transformation
-          const processedData: Product[] = [];
-          
-          if (sales && sales.top_products) {
-            sales.top_products.forEach(product => {
-              const productData: Product = {
-                product_name: product.product_name,
-                sales_amount: product.sales_amount,
-                quantity: 0, // Default
-              };
-              
-              processedData.push(productData);
-            });
+          // Transform categories and subcategories
+          if (sales && sales.category_distribution) {
+            // Transform categories
+            state.categories = Object.entries(sales.category_distribution)
+              .map(([value, percentage]) => ({
+                value,
+                label: `${value} (${percentage.toFixed(1)}%)`
+              }));
+
+            // Transform subcategories
+            if (action.payload.results.subcategories) {
+              state.subcategories = Object.entries(action.payload.results.subcategories)
+                .reduce((acc, [category, subcats]) => ({
+                  ...acc,
+                  [category]: Object.entries(subcats)
+                    .map(([value, percentage]) => ({
+                      value,
+                      label: `${value} (${percentage.toFixed(1)}%)`
+                    }))
+                }), {});
+            }
           }
           
-          state.data = processedData;
+          // Use daily_summary from API for state.data which feeds the trend chart
+          if (action.payload.results.daily_summary) {
+            state.data = action.payload.results.daily_summary.map(summary => ({
+              date: summary.date,
+              sales_amount: summary.sales,
+              quantity: summary.quantity,
+              // Ensure other Product fields are present if needed by components, or adjust Product type
+              product_name: `Daily Summary ${summary.date}`,
+              margin_pct: 0, // Margin calculation for daily summary might need refinement if displayed directly
+              category: 'Daily',
+            }));
+          } else {
+            state.data = []; // Clear data if daily_summary is not available
+          }
+
+          // Populate scatterPlotData
+          if (action.payload.results.product_scatter_data) {
+            state.scatterPlotData = action.payload.results.product_scatter_data;
+          } else {
+            state.scatterPlotData = [];
+          }
+
+          // Populate priceBandChartData
+          if (action.payload.results.price_bands) {
+            state.priceBandChartData = action.payload.results.price_bands;
+          } else {
+            state.priceBandChartData = null;
+          }
         }
       })
       .addCase(fetchProductPerformance.rejected, (state, action) => {
@@ -125,6 +168,7 @@ const productPerformanceSlice = createSlice({
 // Export actions
 export const {
   setDateRange,
+  setTimeGranularity,
   setSelectedCategory,
   setSelectedSubcategory,
   setMinSalesThreshold,

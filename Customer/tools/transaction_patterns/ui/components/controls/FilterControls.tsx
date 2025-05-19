@@ -91,7 +91,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className }) => 
           <Select 
             options={dayOptions}
             value={selectedDay}
-            onChange={(e) => setSelectedDay(e.target.value)}
+            onChange={(value) => setSelectedDay(value)}
             placeholder="Select day"
           />
         </div>
@@ -110,7 +110,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className }) => 
           <Select 
             options={hourOptions}
             value={selectedHour !== undefined ? selectedHour.toString() : ''}
-            onChange={(e) => setSelectedHour(e.target.value ? parseInt(e.target.value) : undefined)}
+            onChange={(value) => setSelectedHour(value ? parseInt(value) : undefined)}
             placeholder="Select hour"
           />
         </div>
@@ -129,7 +129,7 @@ export const FilterControls: React.FC<FilterControlsProps> = ({ className }) => 
           <Select 
             options={paymentOptions}
             value={selectedPaymentMethod}
-            onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+            onChange={(value) => setSelectedPaymentMethod(value)}
             placeholder="Select payment method"
           />
         </div>
