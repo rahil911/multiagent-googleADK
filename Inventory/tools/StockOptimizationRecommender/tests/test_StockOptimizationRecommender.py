@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 from datetime import datetime, timedelta
-from Project.Inventory.tools.StockOptimizationRecommender.StockOptimizationRecommender import (
+from Inventory.tools.StockOptimizationRecommender.StockOptimizationRecommender import (
     setup_database_path,
     DatabaseConnector,
     fetch_inventory_data,

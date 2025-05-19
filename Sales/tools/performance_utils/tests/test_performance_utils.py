@@ -2,7 +2,7 @@ import unittest
 import os
 from datetime import datetime, timedelta
 import pandas as pd
-from Project.Sales.tools.performance_utils import performance_utils
+from Sales.tools.performance_utils import performance_utils
 
 class TestPerformanceUtils(unittest.TestCase):
     @classmethod

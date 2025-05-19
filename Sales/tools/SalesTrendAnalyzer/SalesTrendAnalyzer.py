@@ -26,9 +26,9 @@ import matplotlib.pyplot as plt
 import io
 import base64
 
-from Project.Sales.database.connection import get_connection
-from Project.Sales.database.query_templates import get_latest_date
-from Project.Sales.database import config
+from Sales.database.connection import get_connection
+from Sales.database.query_templates import get_latest_date
+from Sales.database import config
 
 # Configure logging
 logging.basicConfig(level=config.LOGGING['level'])

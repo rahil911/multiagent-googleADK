@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from Project.Inventory.tools.InventoryOptimizationAnalyzer.InventoryOptimizationAnalyzer import (
+from Inventory.tools.InventoryOptimizationAnalyzer.InventoryOptimizationAnalyzer import (
     setup_database_path,
     DatabaseConnector,
     analyze_inventory_optimization,
@@ -24,10 +24,10 @@ class TestInventoryOptimizationAnalyzer(unittest.TestCase):
         self.assertTrue(len(tables) > 0, "No tables found in database")
 
     # Mock individual analyzers to isolate testing of InventoryOptimizationAnalyzer logic
-    @patch('Project.Inventory.tools.InventoryOptimizationAnalyzer.InventoryOptimizationAnalyzer.analyze_inventory_levels')
-    @patch('Project.Inventory.tools.InventoryOptimizationAnalyzer.InventoryOptimizationAnalyzer.analyze_holding_costs')
-    @patch('Project.Inventory.tools.InventoryOptimizationAnalyzer.InventoryOptimizationAnalyzer.analyze_slow_moving_inventory')
-    @patch('Project.Inventory.tools.InventoryOptimizationAnalyzer.InventoryOptimizationAnalyzer.optimize_stock_levels')
+    @patch('Inventory.tools.InventoryOptimizationAnalyzer.InventoryOptimizationAnalyzer.analyze_inventory_levels')
+    @patch('Inventory.tools.InventoryOptimizationAnalyzer.InventoryOptimizationAnalyzer.analyze_holding_costs')
+    @patch('Inventory.tools.InventoryOptimizationAnalyzer.InventoryOptimizationAnalyzer.analyze_slow_moving_inventory')
+    @patch('Inventory.tools.InventoryOptimizationAnalyzer.InventoryOptimizationAnalyzer.optimize_stock_levels')
     def test_analyze_inventory_optimization(self, mock_optimize_stock, mock_slow_moving, mock_holding_costs, mock_inventory_levels):
         # Setup mock return values for each sub-analyzer
         mock_inventory_levels.return_value = {'raw_data': [{'item': 'A', 'level': 100}], 'visualizations': {}}

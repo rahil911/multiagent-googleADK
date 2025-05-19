@@ -9,7 +9,7 @@ import io
 import base64
 import sqlite3
 
-from Project.Inventory.database.connector import DatabaseConnector
+from Inventory.database.connector import DatabaseConnector
 
 # Setup logger
 logger = logging.getLogger(__name__)

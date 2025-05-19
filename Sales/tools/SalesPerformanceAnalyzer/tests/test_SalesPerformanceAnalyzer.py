@@ -13,8 +13,8 @@ project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../
 sys.path.insert(0, project_dir)
 
 from SalesPerformanceAnalyzer import SalesPerformanceAnalyzer
-from Project.Sales.database.connection import get_connection
-from Project.Sales.database.query_templates import get_latest_date
+from Sales.database.connection import get_connection
+from Sales.database.query_templates import get_latest_date
 
 class TestSalesPerformanceAnalyzer(unittest.TestCase):
     

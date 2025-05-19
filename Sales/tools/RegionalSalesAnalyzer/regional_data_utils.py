@@ -15,7 +15,7 @@ from typing import Dict, Any, Optional, List, Union, Tuple
 
 # Attempt to import database connector
 try:
-    from Project.Sales.database.connector import DatabaseConnector, get_db_connector
+    from Sales.database.connector import DatabaseConnector, get_db_connector
     db_connector = get_db_connector()
     logger = logging.getLogger(__name__)
     logger.info("Successfully imported database connector in regional_data_utils")

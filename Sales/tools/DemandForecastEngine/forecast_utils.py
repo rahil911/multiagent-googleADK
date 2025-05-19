@@ -32,7 +32,7 @@ import matplotlib.pyplot as plt
 
 # Attempt to import database connector
 try:
-    from Project.Sales.database.connector import DatabaseConnector, get_db_connector
+    from Sales.database.connector import DatabaseConnector, get_db_connector
     db_connector = get_db_connector()
     logger = logging.getLogger(__name__)
     logger.info("Successfully imported database connector in forecast_utils")
