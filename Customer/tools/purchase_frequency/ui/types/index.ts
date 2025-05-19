@@ -33,15 +33,16 @@ export interface KPIData {
     avg_purchase_frequency: number;
     avg_interval_days: number;
     active_customers_percentage: number;
+    high_value_customers_percentage?: number;
   };
 }
 
 export interface KPITileProps {
   title: string;
-  value: number;
-  previousValue?: number;
-  format?: 'number' | 'percentage' | 'currency' | 'days';
-  trend?: 'up' | 'down' | 'neutral';
+  value: number | string;
+  previousValue?: number | string;
+  format?: 'number' | 'percentage' | 'currency' | 'days' | 'decimal';
+  trend?: number | 'up' | 'down' | 'neutral';
   isCritical?: boolean;
   showSpark?: boolean;
   width?: number;
@@ -61,6 +62,7 @@ export interface HistogramData {
   frequency: number;
   count: number;
   percentage: number;
+  segmentType?: 'high' | 'medium' | 'low';
 }
 
 export interface FrequencyHistogramProps {
@@ -81,6 +83,7 @@ export interface IntervalData {
   hour: number;
   volume: number;
   avg_value: number;
+  value: number;
 }
 
 export interface IntervalHeatmapProps {

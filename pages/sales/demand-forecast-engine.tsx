@@ -2,9 +2,9 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import dynamic from 'next/dynamic';
-import { ThemeProvider } from '../../ui-common/design-system/theme';
+import { ThemeProvider, enterpriseIQTheme } from '../../ui-common/design-system/theme';
 
-// Import reducer (you need to create this)
+// Import reducer
 import demandForecastReducer from '../../Sales/tools/DemandForecastEngine/ui/state/demandForecastSlice';
 
 // Configure Redux store
@@ -24,11 +24,19 @@ const DemandForecastDashboard = dynamic(
   { ssr: false }
 );
 
+// Define a fallback background color in case theme is undefined
+const defaultBgColor = '#0a1224'; // Midnight Navy color
+const defaultTextColor = '#f7f9fb'; // Cloud White color
+
 export default function DemandForecastPage() {
   return (
     <Provider store={store}>
-      <ThemeProvider>
-        <div className="min-h-screen bg-midnight-navy">
+      <ThemeProvider theme={enterpriseIQTheme}>
+        <div style={{ 
+          minHeight: '100vh', 
+          backgroundColor: (enterpriseIQTheme && enterpriseIQTheme.colors) ? enterpriseIQTheme.colors.midnight : defaultBgColor,
+          color: (enterpriseIQTheme && enterpriseIQTheme.colors) ? enterpriseIQTheme.colors.cloudWhite : defaultTextColor,
+        }}>
           <DemandForecastDashboard />
         </div>
       </ThemeProvider>

@@ -43,8 +43,8 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
       {(title || actions) && (
         <div 
           style={{
-            padding: `${theme.spacing[3]}px ${theme.spacing[4]}px`,
-            borderBottom: `1px solid ${theme.colors.graphiteDark}`,
+            padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
+            borderBottom: `1px solid rgba(58, 68, 89, 0.5)`,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -88,7 +88,7 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
       <div 
         style={{
           flex: 1,
-          padding: `${theme.spacing[4]}px`,
+          padding: theme.spacing[4],
           position: 'relative',
         }}
       >
@@ -100,21 +100,23 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: `${theme.colors.midnight}80`,
+              backgroundColor: 'rgba(10, 18, 36, 0.7)',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               zIndex: 1,
+              backdropFilter: 'blur(2px)',
             }}
           >
             <div 
               style={{
                 width: '40px',
                 height: '40px',
-                border: `3px solid ${theme.colors.graphiteDark}`,
+                border: `3px solid #3a4459`,
                 borderTop: `3px solid ${theme.colors.electricCyan}`,
                 borderRadius: '50%',
                 animation: 'chart-spin 1s linear infinite',
+                boxShadow: `0 0 10px 2px ${theme.colors.electricCyan}30`,
               }}
             />
             <style jsx global>{`

@@ -96,10 +96,13 @@ const KPITilesRow = forwardRef<any, KPITilesRowProps>(({
     data.previous_period_comparison?.active_customers_percentage
   );
 
-  const highValueCustomersTrend = calculateTrend(
-    data.high_value_customers_percentage,
-    data.previous_period_comparison?.high_value_customers_percentage
-  );
+  // Handle optional high_value_customers_percentage property
+  const highValueCustomersTrend = data.high_value_customers_percentage !== undefined
+    ? calculateTrend(
+        data.high_value_customers_percentage,
+        data.previous_period_comparison?.high_value_customers_percentage
+      )
+    : undefined;
 
   // Calculate if any metrics are in critical state
   const isIntervalCritical = avgIntervalDaysTrend !== undefined && avgIntervalDaysTrend > 10;

@@ -280,7 +280,20 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
   // Start editing a scenario
   const startEditing = (scenarioName: string) => {
     setEditingScenario(scenarioName);
-    setScenarioForm(scenarios[scenarioName]);
+    if (scenarioName === 'New') {
+      // Initialize a new scenario form with default values
+      setScenarioForm({
+        name: 'New Scenario',
+        color: '#00e0ff',
+        growthAssumption: 0,
+        seasonalityStrength: 100,
+        priceAdjustment: 0,
+        customEvents: [],
+      });
+    } else {
+      // Edit existing scenario
+      setScenarioForm(scenarios[scenarioName]);
+    }
   };
 
   // Save scenario changes
@@ -302,11 +315,26 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
 
   // Update form field
   const updateFormField = (field: keyof ScenarioParams, value: any) => {
+    if (!scenarioForm) return;
+    
     setScenarioForm({
       ...scenarioForm,
       [field]: value
     });
   };
+
+  // Button styles for consistent appearance
+  const buttonStyle = (primary: boolean = false) => ({
+    backgroundColor: primary ? theme.colors.electricCyan : 'transparent',
+    color: primary ? theme.colors.midnight : theme.colors.cloudWhite,
+    border: primary ? 'none' : `1px solid ${theme.colors.graphiteDark}`,
+    borderRadius: '4px',
+    padding: '8px 16px',
+    fontSize: theme.typography.fontSize.sm,
+    fontWeight: primary ? theme.typography.fontWeight.medium : theme.typography.fontWeight.regular,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease'
+  });
 
   // Safely find the last historical data point (the "today" reference)
   const todayReference = baselineData.filter(d => d.actual > 0).slice(-1)[0];
@@ -318,16 +346,7 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
       height={560}
       actions={
         <button
-          style={{
-            backgroundColor: theme.colors.electricCyan,
-            color: theme.colors.midnight,
-            border: 'none',
-            borderRadius: '4px',
-            padding: '4px 12px',
-            fontSize: theme.typography.fontSize.sm,
-            fontWeight: theme.typography.fontWeight.medium,
-            cursor: 'pointer'
-          }}
+          style={buttonStyle(true)}
           onClick={() => startEditing('New')}
         >
           + New Scenario
@@ -337,22 +356,22 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '16px' }}>
         {/* Scenario chart */}
         <div style={{ flex: 1, minHeight: '300px' }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
               margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-            >
+              >
               <CartesianGrid 
                 strokeDasharray="3 3" 
                 stroke={`${theme.colors.graphiteDark}33`} 
               />
-              <XAxis 
+                <XAxis 
                 dataKey="date" 
                 tickFormatter={formatXAxis}
                 stroke={theme.colors.cloudWhite}
                 tick={{ fill: theme.colors.cloudWhite, fontSize: 12 }}
                 allowDuplicatedCategory={false}
-              />
-              <YAxis 
+                />
+                <YAxis 
                 tickFormatter={(value) => formatTooltipValue(value)}
                 stroke={theme.colors.cloudWhite}
                 tick={{ fill: theme.colors.cloudWhite, fontSize: 12 }}
@@ -376,8 +395,8 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
               )}
               
               {/* Historical data - shown on all scenarios */}
-              <Line
-                type="monotone"
+                  <Line
+                    type="monotone"
                 data={baselineData.filter(d => d.actual > 0)}
                 dataKey="actual"
                 stroke={theme.colors.cloudWhite}
@@ -402,7 +421,7 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                       data={forecastData}
                       dataKey="forecast"
                       stroke={scenario.color}
-                      strokeWidth={2}
+                  strokeWidth={2} 
                       strokeDasharray={scenarioName !== 'Baseline' ? "5 5" : undefined}
                       dot={{ r: 3, fill: scenario.color }}
                       activeDot={{ r: 5, fill: scenario.color }}
@@ -410,10 +429,10 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                     />
                   );
               })}
-            </LineChart>
-          </ResponsiveContainer>
+              </LineChart>
+            </ResponsiveContainer>
         </div>
-        
+
         {/* Scenario controls */}
         <div style={{ 
           backgroundColor: theme.colors.midnight,
@@ -443,7 +462,7 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                   </div>
                   <input
                     type="text"
-                    value={scenarioForm.name}
+                    value={scenarioForm?.name || ''}
                     onChange={(e) => updateFormField('name', e.target.value)}
                     style={{
                       width: '100%',
@@ -467,7 +486,7 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                   </div>
                   <input
                     type="color"
-                    value={scenarioForm.color}
+                    value={scenarioForm?.color || '#00e0ff'}
                     onChange={(e) => updateFormField('color', e.target.value)}
                     style={{
                       width: '60px',
@@ -487,13 +506,13 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                   color: theme.colors.cloudWhite,
                   marginBottom: '4px'
                 }}>
-                  Growth Assumption: {scenarioForm.growthAssumption > 0 ? '+' : ''}{scenarioForm.growthAssumption}%
+                  Growth Assumption: {scenarioForm?.growthAssumption > 0 ? '+' : ''}{scenarioForm?.growthAssumption || 0}%
                 </div>
                 <input
                   type="range"
                   min="-30"
                   max="30"
-                  value={scenarioForm.growthAssumption}
+                  value={scenarioForm?.growthAssumption || 0}
                   onChange={(e) => updateFormField('growthAssumption', Number(e.target.value))}
                   style={{
                     width: '100%',
@@ -508,13 +527,13 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                   color: theme.colors.cloudWhite,
                   marginBottom: '4px'
                 }}>
-                  Seasonality Strength: {scenarioForm.seasonalityStrength}%
+                  Seasonality Strength: {scenarioForm?.seasonalityStrength || 100}%
                 </div>
-                <input
+                  <input 
                   type="range"
                   min="0"
                   max="200"
-                  value={scenarioForm.seasonalityStrength}
+                  value={scenarioForm?.seasonalityStrength || 100}
                   onChange={(e) => updateFormField('seasonalityStrength', Number(e.target.value))}
                   style={{
                     width: '100%',
@@ -530,13 +549,13 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                     color: theme.colors.cloudWhite,
                     marginBottom: '4px'
                   }}>
-                    Price Adjustment: {scenarioForm.priceAdjustment > 0 ? '+' : ''}{scenarioForm.priceAdjustment}%
+                    Price Adjustment: {scenarioForm?.priceAdjustment > 0 ? '+' : ''}{scenarioForm?.priceAdjustment || 0}%
                   </div>
                   <input
                     type="range"
                     min="-20"
                     max="20"
-                    value={scenarioForm.priceAdjustment}
+                    value={scenarioForm?.priceAdjustment || 0}
                     onChange={(e) => updateFormField('priceAdjustment', Number(e.target.value))}
                     style={{
                       width: '100%',
@@ -549,30 +568,13 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
                 <button
                   onClick={cancelEditing}
-                  style={{
-                    backgroundColor: 'transparent',
-                    color: theme.colors.cloudWhite,
-                    border: `1px solid ${theme.colors.graphiteDark}`,
-                    borderRadius: '4px',
-                    padding: '8px 16px',
-                    fontSize: theme.typography.fontSize.sm,
-                    cursor: 'pointer'
-                  }}
+                  style={buttonStyle(false)}
                 >
                   Cancel
                 </button>
                 <button
                   onClick={saveScenario}
-                  style={{
-                    backgroundColor: theme.colors.electricCyan,
-                    color: theme.colors.midnight,
-                    border: 'none',
-                    borderRadius: '4px',
-                    padding: '8px 16px',
-                    fontSize: theme.typography.fontSize.sm,
-                    fontWeight: theme.typography.fontWeight.medium,
-                    cursor: 'pointer'
-                  }}
+                  style={buttonStyle(true)}
                 >
                   Save Scenario
                 </button>
@@ -588,8 +590,8 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                 marginBottom: '8px'
               }}>
                 Scenarios
-              </div>
-              
+            </div>
+            
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {Object.values(scenarios).map(scenario => (
                   <div

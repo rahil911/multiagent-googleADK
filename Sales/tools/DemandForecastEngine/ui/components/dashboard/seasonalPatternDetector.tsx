@@ -7,7 +7,8 @@ import {
 import { ForecastHorizon, ForecastMetric, DimensionFilter, SeasonalPattern } from '../../types';
 import ChartWrapper from '../common/ChartWrapper';
 import { useTheme } from '../../../../../../ui-common/design-system/theme';
-import { formatPercentage } from '../../utils/chartHelpers';
+import { formatCurrency, formatNumber, formatPercentage } from '../../utils/chartHelpers';
+import SeasonalHeatmap from '../visualizations/SeasonalHeatmap';
 
 interface SeasonalPatternDetectorProps {
   horizon: ForecastHorizon;
@@ -27,6 +28,7 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
   const [seasonalPattern, setSeasonalPattern] = useState<SeasonalPattern | null>(null);
   const [seasonalData, setSeasonalData] = useState<any[]>([]);
   const [heatmapData, setHeatmapData] = useState<any[]>([]);
+  const [viewType, setViewType] = useState<'monthly' | 'quarterly' | 'weekly'>('monthly');
 
   useEffect(() => {
     if (externalData) {
@@ -96,26 +98,8 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
     setTimeout(fetchData, 500);
   }, [horizon, metric, filters, externalData]);
 
-  // Get color for heatmap cell based on value
-  const getHeatmapColor = (value: number) => {
-    if (value >= 1.2) return theme.colors.signalMagenta;
-    if (value >= 1.1) return theme.colors.electricCyan;
-    if (value >= 1.0) return "#3e7b97"; // blue-gray
-    return theme.colors.midnight;
-  };
-
   // Custom tooltip for line chart
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div style={{
-          backgroundColor: theme.colors.midnight,
-          padding: theme.spacing[3],
-          border: `1px solid ${theme.colors.electricCyan}`,
-          borderRadius: '8px',
-          boxShadow: theme.shadows.md
-        }}>
+    const CustomTooltip = ({ active, payload, label }: any) => {    if (active && payload && payload.length) {      const data = payload[0].payload;      return (        <div style={{          backgroundColor: theme.colors.midnight,          padding: theme.spacing[3],          border: `1px solid ${theme.colors.electricCyan}`,          borderRadius: '8px',          boxShadow: theme.shadows.md        }}>
           <p style={{ 
             color: theme.colors.cloudWhite, 
             fontWeight: theme.typography.fontWeight.semiBold,
@@ -125,7 +109,8 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
           </p>
           <p style={{ 
             color: theme.colors.electricCyan,
-            margin: '4px 0'
+            margin: '4px 0',
+            fontSize: theme.typography.fontSize.sm
           }}>
             Seasonal Index: {data.index.toFixed(2)}
           </p>
@@ -151,7 +136,7 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
     const filledSegments = Math.round(strength * segments);
     
     return (
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
         <div style={{ flex: 1, display: 'flex' }}>
           {Array.from({ length: segments }).map((_, i) => (
             <div 
@@ -186,7 +171,7 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
   const MetricCard = ({ label, value }: { label: string, value: string | number }) => (
     <div style={{ 
       marginBottom: '12px',
-      backgroundColor: theme.colors.midnight,
+      backgroundColor: theme.colors.graphite,
       padding: '12px',
       borderRadius: '8px'
     }}>
@@ -208,286 +193,222 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
     </div>
   );
 
-  // Action to change granularity
-  const actions = (
-    <div>
-      <select
-        style={{
-          backgroundColor: theme.colors.midnight,
-          color: theme.colors.cloudWhite,
-          padding: '4px 8px',
-          borderRadius: '4px',
-          border: `1px solid ${theme.colors.graphiteDark}`,
-          fontFamily: theme.typography.fontFamily,
-          fontSize: theme.typography.fontSize.sm,
-        }}
-        defaultValue="monthly"
-      >
-        <option value="weekly">Weekly</option>
-        <option value="monthly">Monthly</option>
-        <option value="quarterly">Quarterly</option>
-      </select>
-    </div>
-  );
+  // Button styles for view type selector
+  const buttonStyle = (active: boolean) => ({
+    padding: '8px 16px',
+    borderRadius: '24px',
+    backgroundColor: theme.colors.electricCyan,
+    color: theme.colors.midnight,
+    border: 'none',
+    fontSize: theme.typography.fontSize.sm,
+    fontWeight: theme.typography.fontWeight.medium,
+    cursor: 'pointer',
+    margin: '0 4px',
+    transition: 'all 0.2s ease'
+  });
 
   return (
     <ChartWrapper
       title="Seasonal Pattern Detector"
       isLoading={loading}
       height={480}
-      actions={actions}
     >
-      <div style={{ display: 'flex', height: '100%', gap: '16px' }}>
-        {/* Main visualization area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {/* Seasonal heatmap */}
-          <div style={{ flex: 1, minHeight: '180px' }}>
-            <div style={{ marginBottom: '8px' }}>
-              <h3 style={{ 
-                color: theme.colors.cloudWhite, 
-                fontSize: theme.typography.fontSize.md,
-                fontWeight: theme.typography.fontWeight.semiBold,
-                margin: 0
-              }}>
-                Multi-Year Pattern
-              </h3>
-            </div>
-            
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '16px' }}>
+        {/* Controls */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <div>
             <div style={{ 
-              width: '100%', 
-              height: 'calc(100% - 30px)',
-              display: 'grid',
-              gridTemplateRows: `repeat(${heatmapData.length}, 1fr)`,
-              gridTemplateColumns: `80px repeat(12, 1fr)`,
-              gap: '1px',
-              backgroundColor: theme.colors.graphiteDark,
-              borderRadius: '4px',
-              overflow: 'hidden'
-            }}>
-              {/* Header row with month names */}
-              <div style={{ 
-                backgroundColor: theme.colors.midnight,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: theme.colors.cloudWhite,
-                fontWeight: theme.typography.fontWeight.semiBold,
-                fontSize: theme.typography.fontSize.xs
-              }}>
-                Year
-              </div>
-              {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(month => (
-                <div key={month} style={{ 
-                  backgroundColor: theme.colors.midnight,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: theme.colors.cloudWhite,
-                  fontSize: theme.typography.fontSize.xs
-                }}>
-                  {month}
-                </div>
-              ))}
-              
-              {/* Data rows */}
-              {heatmapData.map((yearData, yearIndex) => (
-                <React.Fragment key={yearData.year}>
-                  {/* Year label */}
-                  <div style={{ 
-                    backgroundColor: theme.colors.midnight,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: theme.colors.cloudWhite,
-                    fontWeight: theme.typography.fontWeight.medium,
-                    fontSize: theme.typography.fontSize.xs
-                  }}>
-                    {yearData.year}
-                  </div>
-                  
-                  {/* Month cells */}
-                  {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(month => (
-                    <div 
-                      key={`${yearData.year}-${month}`}
-                      style={{ 
-                        backgroundColor: getHeatmapColor(yearData[month]),
-                        position: 'relative',
-                        cursor: 'pointer'
-                      }}
-                      title={`${month} ${yearData.year}: ${formatPercentage(yearData[month] - 1)} vs average`}
-                    >
-                      {yearData[month] > 1.15 && (
-                        <div style={{
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                          fontSize: theme.typography.fontSize.xs,
-                          color: theme.colors.cloudWhite,
-                          fontWeight: theme.typography.fontWeight.bold
-                        }}>
-                          {formatPercentage(yearData[month] - 1)}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-          
-          {/* Seasonal index chart */}
-          <div style={{ flex: 1, minHeight: '180px' }}>
-            <div style={{ marginBottom: '8px' }}>
-              <h3 style={{ 
-                color: theme.colors.cloudWhite, 
-                fontSize: theme.typography.fontSize.md,
-                fontWeight: theme.typography.fontWeight.semiBold,
-                margin: 0
-              }}>
-                Seasonal Index
-              </h3>
-            </div>
-            
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={seasonalData}
-                margin={{ top: 5, right: 30, left: 5, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke={`${theme.colors.graphiteDark}33`} />
-                <XAxis 
-                  dataKey="period" 
-                  tick={{ fill: theme.colors.cloudWhite }}
-                  stroke={theme.colors.cloudWhite}
-                />
-                <YAxis 
-                  domain={[0.6, 1.4]}
-                  tickFormatter={(value) => value.toFixed(1)}
-                  tick={{ fill: theme.colors.cloudWhite }}
-                  stroke={theme.colors.cloudWhite}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                
-                {/* Average line */}
-                <ReferenceLine 
-                  y={1} 
-                  label={{ 
-                    value: 'Average', 
-                    position: 'right',
-                    fill: theme.colors.cloudWhite
-                  }} 
-                  stroke={theme.colors.cloudWhite}
-                  strokeDasharray="3 3"
-                />
-                
-                {/* Seasonal pattern line */}
-                <Line
-                  type="monotone"
-                  dataKey="index"
-                  stroke={theme.colors.electricCyan}
-                  strokeWidth={3}
-                  dot={{ fill: theme.colors.electricCyan, r: 4 }}
-                  activeDot={{ fill: theme.colors.electricCyan, r: 6 }}
-                />
-                
-                {/* Area under curve */}
-                <Area
-                  type="monotone"
-                  dataKey="index"
-                  stroke="none"
-                  fill={theme.colors.electricCyan}
-                  fillOpacity={0.1}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        
-        {/* Metrics panel */}
-        <div style={{ width: '220px' }}>
-          <div style={{ marginBottom: '16px' }}>
-            <h3 style={{ 
-              color: theme.colors.cloudWhite, 
+              color: theme.colors.cloudWhite,
               fontSize: theme.typography.fontSize.md,
-              fontWeight: theme.typography.fontWeight.semiBold,
-              marginBottom: '12px'
+              fontWeight: theme.typography.fontWeight.medium
             }}>
-              Seasonal Patterns
-            </h3>
-            
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{ 
-                color: theme.colors.cloudWhite, 
-                fontSize: theme.typography.fontSize.sm,
-                marginBottom: '4px'
-              }}>
-                Pattern Strength
-              </div>
-              {seasonalPattern && <PatternStrengthIndicator strength={seasonalPattern.strength} />}
+              {seasonalPattern && `Pattern Strength: ${formatPercentage(seasonalPattern.strength)}`}
             </div>
             
             {seasonalPattern && (
-              <>
-                <MetricCard label="Peak Season" value={seasonalPattern.peakSeason} />
-                <MetricCard label="Low Season" value={seasonalPattern.lowSeason} />
-                <MetricCard 
-                  label="Amplitude" 
-                  value={`${seasonalPattern.amplitude.toFixed(1)}x`} 
-                />
-              </>
+              <PatternStrengthIndicator strength={seasonalPattern.strength} />
             )}
           </div>
           
-          <div style={{
-            backgroundColor: theme.colors.midnight,
-            padding: '12px',
-            borderRadius: '8px'
-          }}>
-            <div style={{ 
-              fontSize: theme.typography.fontSize.sm,
-              fontWeight: theme.typography.fontWeight.medium,
-              color: theme.colors.cloudWhite,
-              marginBottom: '8px'
-            }}>
-              Apply to Forecast
-            </div>
-            
-            <div style={{ 
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: '12px'
-            }}>
-              <span style={{ 
-                fontSize: theme.typography.fontSize.sm,
-                color: theme.colors.cloudWhite,
-                opacity: 0.8
-              }}>
-                Include Seasonality
-              </span>
-              <input 
-                type="checkbox" 
-                defaultChecked={true}
-                style={{ accentColor: theme.colors.electricCyan, width: '16px', height: '16px' }}
-              />
-            </div>
-            
-            <div>
-              <div style={{ 
-                fontSize: theme.typography.fontSize.sm,
-                color: theme.colors.cloudWhite,
-                opacity: 0.8,
-                marginBottom: '4px'
-              }}>
-                Seasonal Strength: {seasonalPattern ? formatPercentage(seasonalPattern.strength) : '0%'}
+          <div style={{ display: 'flex', gap: '4px' }}>
+            <button 
+              style={buttonStyle(true)}
+              onClick={() => setViewType('monthly')}
+            >
+              Monthly View
+            </button>
+            <button 
+              style={buttonStyle(true)}
+              onClick={() => setViewType('quarterly')}
+            >
+              Quarterly View
+            </button>
+            <button 
+              style={buttonStyle(true)}
+              onClick={() => setViewType('weekly')}
+            >
+              Weekly View
+            </button>
+          </div>
+        </div>
+        
+        <div style={{ display: 'flex', flex: 1, gap: '16px' }}>
+          {/* Main visualization area */}
+          <div style={{ flex: 3, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Seasonal index chart */}
+            <div style={{ flex: 1 }}>
+              <div style={{ height: '100%' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={seasonalData}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 10 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke={`${theme.colors.graphiteDark}33`} />
+                    <XAxis 
+                      dataKey="period" 
+                      tick={{ fill: theme.colors.cloudWhite }}
+                      stroke={theme.colors.cloudWhite}
+                    />
+                    <YAxis 
+                      tickFormatter={(value) => value.toFixed(2)}
+                      tick={{ fill: theme.colors.cloudWhite }}
+                      stroke={theme.colors.cloudWhite}
+                      domain={[0.6, 1.4]}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    
+                    {/* Reference line for baseline (index = 1) */}
+                    <ReferenceLine 
+                      y={1} 
+                      stroke={theme.colors.cloudWhite}
+                      strokeDasharray="5 5"
+                    />
+                    
+                    {/* Seasonal index line */}
+                    <Line
+                      type="monotone"
+                      dataKey="index"
+                      stroke={theme.colors.electricCyan}
+                      strokeWidth={3}
+                      dot={{ r: 5, fill: theme.colors.electricCyan }}
+                      activeDot={{ r: 7, fill: theme.colors.electricCyan }}
+                    />
+                    
+                    {/* Area under the curve for better visualization */}
+                    <Area
+                      type="monotone"
+                      dataKey="index"
+                      fill={`${theme.colors.electricCyan}33`}
+                      stroke="none"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                defaultValue={seasonalPattern ? Math.round(seasonalPattern.strength * 100) : 0}
-                style={{ width: '100%', accentColor: theme.colors.electricCyan }}
-              />
+            </div>
+            
+            {/* Seasonal heatmap */}
+            <div style={{ flex: 1 }}>
+              <div style={{ height: '100%' }}>
+                <SeasonalHeatmap 
+                  data={heatmapData}
+                  title="Multi-Year Pattern Analysis"
+                  subtitle={`${viewType} seasonality patterns`}
+                  height="100%"
+                  showValues={true}
+                  valueThreshold={1.15}
+                />
+              </div>
+            </div>
+          </div>
+          
+          {/* Side metrics panel */}
+          <div style={{ flex: 1 }}>
+            <div style={{
+              backgroundColor: theme.colors.graphite,
+              borderRadius: '8px',
+              padding: '16px',
+              height: '100%'
+            }}>
+              <div style={{ 
+                color: theme.colors.cloudWhite,
+                fontSize: theme.typography.fontSize.md,
+                fontWeight: theme.typography.fontWeight.semiBold,
+                marginBottom: '16px'
+              }}>
+                Seasonal Insights
+              </div>
+              
+              {seasonalPattern && (
+                <>
+                  <MetricCard
+                    label="Peak Season"
+                    value={seasonalPattern.peakSeason}
+                  />
+                  
+                  <MetricCard
+                    label="Low Season"
+                    value={seasonalPattern.lowSeason}
+                  />
+                  
+                  <MetricCard
+                    label="Amplitude"
+                    value={seasonalPattern.amplitude.toFixed(2) + 'x'}
+                  />
+                  
+                  <div style={{ 
+                    backgroundColor: theme.colors.midnight,
+                    borderRadius: '8px',
+                    padding: '12px',
+                    marginTop: '24px'
+                  }}>
+                    <div style={{ 
+                      color: theme.colors.cloudWhite,
+                      fontSize: theme.typography.fontSize.sm,
+                      fontWeight: theme.typography.fontWeight.semiBold,
+                      marginBottom: '8px'
+                    }}>
+                      Strategic Recommendations
+                    </div>
+                    
+                    <div style={{ 
+                      color: theme.colors.cloudWhite,
+                      fontSize: theme.typography.fontSize.sm,
+                      opacity: 0.8,
+                      marginBottom: '8px'
+                    }}>
+                      • Increase inventory {seasonalPattern.peakSeason} - {
+                        (() => {
+                          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                          const peakIndex = months.indexOf(seasonalPattern.peakSeason);
+                          const nextMonth = months[(peakIndex + 1) % 12];
+                          return nextMonth;
+                        })()
+                      }
+                    </div>
+                    
+                    <div style={{ 
+                      color: theme.colors.cloudWhite,
+                      fontSize: theme.typography.fontSize.sm,
+                      opacity: 0.8,
+                      marginBottom: '8px'
+                    }}>
+                      • Plan promotions for {seasonalPattern.lowSeason}
+                    </div>
+                    
+                    <div style={{ 
+                      color: theme.colors.cloudWhite,
+                      fontSize: theme.typography.fontSize.sm,
+                      opacity: 0.8
+                    }}>
+                      • Adjust staffing based on {seasonalPattern.strength > 0.8 ? 'strong' : 'moderate'} seasonal pattern
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

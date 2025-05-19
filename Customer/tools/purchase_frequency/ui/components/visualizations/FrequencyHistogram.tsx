@@ -174,7 +174,7 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
               fill="#8893a7"
               fontSize={12}
             >
-              {d.bin}
+              {d.frequency}
             </text>
           ))}
           
@@ -194,11 +194,11 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
           ))}
           
           {/* Mean Line */}
-          {data.map(d => d.bin).includes(Math.round(meanFrequency)) && (
+          {data.map(d => d.frequency).includes(Math.round(meanFrequency)) && (
             <line 
-              x1={(data.findIndex(d => d.bin === Math.round(meanFrequency)) + 0.5) * barWidth}
+              x1={(data.findIndex(d => d.frequency === Math.round(meanFrequency)) + 0.5) * barWidth}
               y1={0}
-              x2={(data.findIndex(d => d.bin === Math.round(meanFrequency)) + 0.5) * barWidth}
+              x2={(data.findIndex(d => d.frequency === Math.round(meanFrequency)) + 0.5) * barWidth}
               y2={innerHeight}
               stroke="#00e0ff"
               strokeWidth={2}
@@ -207,11 +207,11 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
           )}
           
           {/* High Threshold Line */}
-          {data.map(d => d.bin).includes(Math.round(highThreshold)) && (
+          {data.map(d => d.frequency).includes(Math.round(highThreshold)) && (
             <line 
-              x1={(data.findIndex(d => d.bin === Math.round(highThreshold)) + 0.5) * barWidth}
+              x1={(data.findIndex(d => d.frequency === Math.round(highThreshold)) + 0.5) * barWidth}
               y1={0}
-              x2={(data.findIndex(d => d.bin === Math.round(highThreshold)) + 0.5) * barWidth}
+              x2={(data.findIndex(d => d.frequency === Math.round(highThreshold)) + 0.5) * barWidth}
               y2={innerHeight}
               stroke="#e930ff"
               strokeWidth={2}
@@ -219,11 +219,11 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
           )}
           
           {/* Low Threshold Line */}
-          {data.map(d => d.bin).includes(Math.round(lowThreshold)) && (
+          {data.map(d => d.frequency).includes(Math.round(lowThreshold)) && (
             <line 
-              x1={(data.findIndex(d => d.bin === Math.round(lowThreshold)) + 0.5) * barWidth}
+              x1={(data.findIndex(d => d.frequency === Math.round(lowThreshold)) + 0.5) * barWidth}
               y1={0}
-              x2={(data.findIndex(d => d.bin === Math.round(lowThreshold)) + 0.5) * barWidth}
+              x2={(data.findIndex(d => d.frequency === Math.round(lowThreshold)) + 0.5) * barWidth}
               y2={innerHeight}
               stroke="#8893a7"
               strokeWidth={2}
@@ -233,7 +233,7 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
           {/* Bars */}
           {data.map((d, i) => {
             const barHeight = (d.count / maxCount) * innerHeight;
-            const isHighlighted = hoveredBin === d.bin || selectedBins.includes(d.bin);
+            const isHighlighted = hoveredBin === d.frequency || selectedBins.includes(d.frequency);
             const color = d.segmentType === 'high' 
               ? '#e930ff' 
               : d.segmentType === 'low' 
@@ -241,7 +241,7 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
                 : 'url(#' + gradientId + ')';
                 
             // Determine the opacity for filtering effect
-            const opacity = selectedBins.length > 0 && !selectedBins.includes(d.bin) ? 0.4 : 1;
+            const opacity = selectedBins.length > 0 && !selectedBins.includes(d.frequency) ? 0.4 : 1;
             
             return (
               <g key={`bar-${i}`}>
@@ -257,12 +257,12 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
                   rx={2}
                   ry={2}
                   filter={isHighlighted ? 'drop-shadow(0 0 8px #00e0ff)' : undefined}
-                  onMouseEnter={() => handleBarMouseEnter(d.bin)}
+                  onMouseEnter={() => handleBarMouseEnter(d.frequency)}
                   onMouseLeave={handleBarMouseLeave}
-                  onClick={(e) => handleBarClick(d.bin, e)}
+                  onClick={(e) => handleBarClick(d.frequency, e)}
                   onDoubleClick={handleBarDoubleClick}
-                  onMouseDown={() => handleMouseDown(d.bin)}
-                  onMouseUp={() => handleMouseUp(d.bin)}
+                  onMouseDown={() => handleMouseDown(d.frequency)}
+                  onMouseUp={() => handleMouseUp(d.frequency)}
                   style={{ cursor: 'pointer', transition: 'all 0.2s ease' }}
                 />
               </g>
@@ -283,26 +283,26 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
             fontSize: '14px',
             pointerEvents: 'none',
             top: '40px',
-            left: `${(data.findIndex(d => d.bin === hoveredBin) * barWidth) + margin.left + 16}px`,
+            left: `${(data.findIndex(d => d.frequency === hoveredBin) * barWidth) + margin.left + 16}px`,
             border: '1px solid #3a4459',
             zIndex: 10,
             boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
           }}
         >
           <strong>Frequency: {hoveredBin}</strong>
-          <div>Customers: {data.find(d => d.bin === hoveredBin)?.count}</div>
+          <div>Customers: {data.find(d => d.frequency === hoveredBin)?.count}</div>
           <div style={{ 
             fontSize: '12px', 
             opacity: 0.8,
-            color: data.find(d => d.bin === hoveredBin)?.segmentType === 'high' 
+            color: data.find(d => d.frequency === hoveredBin)?.segmentType === 'high' 
               ? '#e930ff' 
-              : data.find(d => d.bin === hoveredBin)?.segmentType === 'low' 
+              : data.find(d => d.frequency === hoveredBin)?.segmentType === 'low' 
                 ? '#8893a7' 
                 : '#00e0ff' 
           }}>
-            {data.find(d => d.bin === hoveredBin)?.segmentType === 'high' 
+            {data.find(d => d.frequency === hoveredBin)?.segmentType === 'high' 
               ? 'High Frequency' 
-              : data.find(d => d.bin === hoveredBin)?.segmentType === 'low' 
+              : data.find(d => d.frequency === hoveredBin)?.segmentType === 'low' 
                 ? 'Low Frequency' 
                 : 'Medium Frequency'}
           </div>

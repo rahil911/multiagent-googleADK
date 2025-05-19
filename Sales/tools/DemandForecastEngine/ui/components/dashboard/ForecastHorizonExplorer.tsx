@@ -4,6 +4,7 @@ import { ForecastHorizon, ForecastMetric, DimensionFilter, ForecastData } from '
 import { formatCurrency, formatNumber, formatPercentage, formatDate, getConfidenceIntervalColor } from '../../utils/chartHelpers';
 import ChartWrapper from '../common/ChartWrapper';
 import { useTheme } from '../../../../../../ui-common/design-system/theme';
+import Button from '../../../../../../ui-common/design-system/components/Button';
 
 interface ForecastHorizonExplorerProps {
   horizon: ForecastHorizon;
@@ -156,7 +157,7 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
 
       return (
         <div style={{
-          backgroundColor: theme.colors.midnight,
+          backgroundColor: theme.colors.midnightNavy,
           padding: theme.spacing[3],
           border: `1px solid ${theme.colors.electricCyan}`,
           borderRadius: '8px',
@@ -213,50 +214,21 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
     return null;
   };
 
-  // Button styles
-  const buttonStyle = (active: boolean) => ({
-    flex: 1,
-    padding: '8px 16px',
-    borderRadius: '24px',
-    backgroundColor: active ? theme.colors.electricCyan : theme.colors.midnight,
-    color: active ? theme.colors.midnight : theme.colors.cloudWhite,
-    border: 'none',
-    fontWeight: theme.typography.fontWeight.medium,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    fontFamily: theme.typography.fontFamily,
-    fontSize: theme.typography.fontSize.sm,
-  });
-
   // Chart actions
   const actions = (
     <div style={{ display: 'flex', gap: '8px' }}>
-      <button 
-        style={{
-          backgroundColor: 'transparent',
-          color: theme.colors.cloudWhite,
-          border: `1px solid ${theme.colors.graphiteDark}`,
-          borderRadius: '4px',
-          padding: '4px 8px',
-          fontSize: theme.typography.fontSize.sm,
-          cursor: 'pointer'
-        }}
+      <Button 
+        variant="secondary"
+        size="sm"
       >
         Export
-      </button>
-      <button 
-        style={{
-          backgroundColor: 'transparent',
-          color: theme.colors.cloudWhite,
-          border: `1px solid ${theme.colors.graphiteDark}`,
-          borderRadius: '4px',
-          padding: '4px 8px',
-          fontSize: theme.typography.fontSize.sm,
-          cursor: 'pointer'
-        }}
+      </Button>
+      <Button 
+        variant="secondary"
+        size="sm"
       >
         Share
-      </button>
+      </Button>
     </div>
   );
 
@@ -268,12 +240,12 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
       return (
         <select 
           style={{
-            backgroundColor: theme.colors.midnight,
+            backgroundColor: theme.colors.midnightNavy,
             color: theme.colors.cloudWhite,
             padding: '8px 12px',
             borderRadius: '4px',
-            border: `1px solid ${theme.colors.graphiteDark}`,
-            fontFamily: theme.typography.fontFamily,
+            border: `1px solid ${theme.colors.graphiteLight}`,
+            fontFamily: theme.typography.fontFamily.primary,
             fontSize: theme.typography.fontSize.sm,
           }}
           value={filters.product || "All Products"}
@@ -292,12 +264,12 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
       return (
         <select 
           style={{
-            backgroundColor: theme.colors.midnight,
+            backgroundColor: theme.colors.midnightNavy,
             color: theme.colors.cloudWhite,
             padding: '8px 12px',
             borderRadius: '4px',
-            border: `1px solid ${theme.colors.graphiteDark}`,
-            fontFamily: theme.typography.fontFamily,
+            border: `1px solid ${theme.colors.graphiteLight}`,
+            fontFamily: theme.typography.fontFamily.primary,
             fontSize: theme.typography.fontSize.sm,
           }}
           value={filters.region || "All Regions"}
@@ -315,20 +287,13 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
         <ProductFilter />
         <RegionFilter />
         {Object.keys(filters).length > 0 && (
-          <button
-            style={{
-              backgroundColor: 'transparent',
-              color: theme.colors.electricCyan,
-              border: 'none',
-              padding: '4px 8px',
-              cursor: 'pointer',
-              fontFamily: theme.typography.fontFamily,
-              fontSize: theme.typography.fontSize.sm,
-            }}
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={onClearFilters}
           >
             Clear Filters
-          </button>
+          </Button>
         )}
       </div>
     );
@@ -347,36 +312,40 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
           {/* Forecast period selector */}
           <div style={{ 
             display: 'flex', 
-            backgroundColor: theme.colors.midnight, 
+            backgroundColor: theme.colors.midnightNavy, 
             borderRadius: '24px', 
             padding: '4px' 
           }}>
             {(['week', 'month', 'quarter', 'year'] as ForecastHorizon[]).map((period) => (
-              <button
+              <Button
                 key={period}
-                style={buttonStyle(horizon === period)}
+                variant={horizon === period ? "primary" : "secondary"}
+                size="sm"
                 onClick={() => onHorizonChange(period)}
+                style={{ flex: 1 }}
               >
                 {period.charAt(0).toUpperCase() + period.slice(1)}
-              </button>
+              </Button>
             ))}
           </div>
 
           {/* Metric selector */}
           <div style={{ 
             display: 'flex', 
-            backgroundColor: theme.colors.midnight, 
+            backgroundColor: theme.colors.midnightNavy, 
             borderRadius: '24px', 
             padding: '4px' 
           }}>
             {(['quantity', 'revenue'] as ForecastMetric[]).map((metricOption) => (
-              <button
+              <Button
                 key={metricOption}
-                style={buttonStyle(metric === metricOption)}
+                variant={metric === metricOption ? "primary" : "secondary"}
+                size="sm"
                 onClick={() => onMetricChange(metricOption)}
+                style={{ flex: 1 }}
               >
                 {metricOption.charAt(0).toUpperCase() + metricOption.slice(1)}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -416,7 +385,7 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
             >
               <CartesianGrid 
                 strokeDasharray="3 3" 
-                stroke={`${theme.colors.graphiteDark}33`} 
+                stroke={`${theme.colors.graphiteLight}33`} 
               />
               <XAxis 
                 dataKey="date" 
@@ -496,7 +465,7 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
           display: 'flex', 
           justifyContent: 'space-between', 
           padding: '16px',
-          backgroundColor: theme.colors.midnight,
+          backgroundColor: theme.colors.midnightNavy,
           borderRadius: '8px'
         }}>
           <div>

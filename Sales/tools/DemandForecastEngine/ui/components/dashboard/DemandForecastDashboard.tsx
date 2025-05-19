@@ -14,11 +14,12 @@ import {
 } from '../../state/demandForecastSlice';
 import { ForecastHorizon, ForecastMetric, DimensionFilter, ModelType } from '../../types';
 import { useTheme } from '../../../../../../ui-common/design-system/theme';
+import Button from '../../../../../../ui-common/design-system/components/Button';
 
 // Components
 import ForecastHorizonExplorer from './ForecastHorizonExplorer';
 import ModelPerformanceAnalyzer from './ModelPerformanceAnalyzer';
-import SeasonalPatternDetector from './SeasonalPatternDetector';
+import SeasonalPatternDetector from './seasonalPatternDetector';
 import ForecastScenarioBuilder from './ForecastScenarioBuilder';
 import KpiTilesRow from './KpiTilesRow';
 import ForecastInsightAssistant from '../conversational/ForecastInsightAssistant';
@@ -86,8 +87,8 @@ const DemandForecastDashboard: React.FC = () => {
 
   return (
     <div style={{ 
-      backgroundColor: theme.colors.midnight, 
-      padding: `${theme.spacing[5]}px`,
+      backgroundColor: theme.colors.midnightNavy, 
+      padding: theme.spacing[5],
       minHeight: '100vh'
     }}>
       <div style={{ 
@@ -96,14 +97,14 @@ const DemandForecastDashboard: React.FC = () => {
       }}>
         {/* Dashboard Header */}
         <div style={{ 
-          marginBottom: `${theme.spacing[5]}px`, 
+          marginBottom: theme.spacing[5], 
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center'
         }}>
           <h1 style={{ 
             color: theme.colors.cloudWhite, 
-            fontSize: theme.typography.fontSize.xxl,
+            fontSize: theme.typography.fontSize['2xl'],
             fontWeight: theme.typography.fontWeight.bold,
             margin: 0
           }}>
@@ -111,7 +112,7 @@ const DemandForecastDashboard: React.FC = () => {
           </h1>
           <div style={{ 
             color: theme.colors.cloudWhite, 
-            fontSize: theme.typography.fontSize.md,
+            fontSize: theme.typography.fontSize.base,
             opacity: 0.7
           }}>
             Last updated: {new Date().toLocaleDateString()}
@@ -119,7 +120,7 @@ const DemandForecastDashboard: React.FC = () => {
         </div>
         
         {/* KPI Tiles Row */}
-        <div style={{ marginBottom: `${theme.spacing[5]}px` }}>
+        <div style={{ marginBottom: theme.spacing[5] }}>
           <KpiTilesRow 
             forecastHorizon={horizon} 
             metric={metric} 
@@ -131,8 +132,8 @@ const DemandForecastDashboard: React.FC = () => {
         <div style={{ 
           display: 'grid', 
           gridTemplateColumns: '1fr 1fr', 
-          gap: `${theme.spacing[5]}px`,
-          marginBottom: `${theme.spacing[5]}px`
+          gap: theme.spacing[5],
+          marginBottom: theme.spacing[5]
         }}>
           {/* Forecast Horizon Explorer - spans both columns */}
           <div style={{ gridColumn: 'span 2' }}>
@@ -182,8 +183,8 @@ const DemandForecastDashboard: React.FC = () => {
         
         {/* Footer */}
         <div style={{ 
-          borderTop: `1px solid ${theme.colors.graphiteDark}`,
-          padding: `${theme.spacing[4]}px 0`,
+          borderTop: `1px solid rgba(58, 68, 89, 0.5)`,
+          padding: `${theme.spacing[4]} 0`,
           color: theme.colors.cloudWhite,
           opacity: 0.5,
           fontSize: theme.typography.fontSize.sm,
@@ -194,16 +195,42 @@ const DemandForecastDashboard: React.FC = () => {
       </div>
 
       {/* Insight Assistant Toggle */}
-      <button 
-        className="fixed right-0 top-1/2 transform -translate-y-1/2 bg-electric-cyan text-midnight-navy py-3 px-2 rounded-l-lg"
+      <Button 
+        variant="primary"
+        size="sm"
+        style={{
+          position: 'fixed',
+          right: 0,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          borderTopLeftRadius: '8px',
+          borderBottomLeftRadius: '8px',
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 5,
+          padding: `${theme.spacing[2]} ${theme.spacing[3]}`
+        }}
         onClick={() => setShowInsightPanel(!showInsightPanel)}
       >
         {showInsightPanel ? '>' : '<'} Insights
-      </button>
+      </Button>
       
       {/* Insight Assistant Panel */}
       {showInsightPanel && (
-        <div className="fixed right-0 top-0 h-full w-96 bg-graphite shadow-lg z-10 transition-all duration-300 ease-in-out">
+        <div style={{
+          position: 'fixed',
+          right: 0,
+          top: 0,
+          height: '100%',
+          width: '400px',
+          backgroundColor: theme.colors.graphite,
+          boxShadow: theme.shadows.lg,
+          zIndex: 10,
+          transition: 'all 300ms ease-in-out'
+        }}>
           <ForecastInsightAssistant 
             horizon={horizon}
             metric={metric}

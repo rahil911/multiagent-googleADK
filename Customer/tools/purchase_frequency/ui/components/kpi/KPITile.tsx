@@ -40,11 +40,26 @@ const KPITile = forwardRef<any, KPITileProps>(({
   const trendPercentage = calculateTrend(value, previousValue);
   
   // Default to provided trend or calculated value
-  const displayTrend = trend ?? trendPercentage;
+  const displayTrend = trend !== undefined ? trend : trendPercentage;
   
   // Determine color scheme based on trend and critical status
   const baseColor = isCritical ? '#e930ff' : '#00e0ff';
-  const trendColor = displayTrend && displayTrend > 0 ? '#00e0ff' : '#e930ff';
+  
+  // Handle numeric trend display
+  const isNumericTrend = typeof displayTrend === 'number';
+  const trendColor = isNumericTrend && displayTrend > 0 ? '#00e0ff' : '#e930ff';
+
+  // Get trend direction
+  const getTrendDirection = () => {
+    if (!isNumericTrend) return '';
+    return displayTrend > 0 ? '↑' : '↓';
+  };
+
+  // Format trend value for display
+  const getTrendDisplay = () => {
+    if (!isNumericTrend) return '';
+    return `${Math.abs(displayTrend).toFixed(1)}%`;
+  };
 
   return (
     <div 
@@ -104,9 +119,9 @@ const KPITile = forwardRef<any, KPITileProps>(({
             color: trendColor
           }}
         >
-          {displayTrend > 0 ? '↑' : '↓'} 
+          {getTrendDirection()} 
           <span style={{ marginLeft: '2px' }}>
-            {Math.abs(displayTrend).toFixed(1)}%
+            {getTrendDisplay()}
           </span>
         </div>
       )}
