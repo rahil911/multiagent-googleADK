@@ -1,83 +1,195 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { 
+  setForecastHorizon, 
+  setForecastMetric,
+  setConfidenceLevel,
+  setModelType,
+  setDimensionFilters,
+  clearFilters,
+  fetchForecastData,
+  fetchModelPerformance,
+  fetchSeasonalPatterns,
+  selectForecastParams
+} from '../../state/demandForecastSlice';
+import { ForecastHorizon, ForecastMetric, DimensionFilter, ModelType } from '../../types';
+import { useTheme } from '../../../../../../ui-common/design-system/theme';
+
+// Components
 import ForecastHorizonExplorer from './ForecastHorizonExplorer';
 import ModelPerformanceAnalyzer from './ModelPerformanceAnalyzer';
 import SeasonalPatternDetector from './SeasonalPatternDetector';
 import ForecastScenarioBuilder from './ForecastScenarioBuilder';
 import KpiTilesRow from './KpiTilesRow';
 import ForecastInsightAssistant from '../conversational/ForecastInsightAssistant';
-import { DimensionFilter, ForecastHorizon, ForecastMetric, ModelType } from '../../types';
 
 const DemandForecastDashboard: React.FC = () => {
-  // State for dashboard settings
-  const [forecastHorizon, setForecastHorizon] = useState<ForecastHorizon>('month');
-  const [forecastMetric, setForecastMetric] = useState<ForecastMetric>('quantity');
-  const [modelType, setModelType] = useState<ModelType>('movingAverage');
-  const [confidenceLevel, setConfidenceLevel] = useState<number>(95);
-  const [showInsightPanel, setShowInsightPanel] = useState<boolean>(false);
-  const [dimensionFilters, setDimensionFilters] = useState<DimensionFilter>({});
-
-  // Handler for dimension filter changes
+  const dispatch = useDispatch();
+  const theme = useTheme();
+  
+  // Get forecast parameters from Redux
+  const { horizon, metric, confidenceLevel, modelType, filters } = useSelector(selectForecastParams);
+  
+  // Local state for shared filters
+  const [localFilters, setLocalFilters] = useState<DimensionFilter>(filters);
+  
+  // Fetch initial data
+  useEffect(() => {
+    dispatch(fetchForecastData());
+    dispatch(fetchModelPerformance());
+    dispatch(fetchSeasonalPatterns());
+  }, [dispatch]);
+  
+  // Handle parameter changes
+  const handleHorizonChange = (newHorizon: ForecastHorizon) => {
+    dispatch(setForecastHorizon(newHorizon));
+    dispatch(fetchForecastData());
+    dispatch(fetchModelPerformance());
+    dispatch(fetchSeasonalPatterns());
+  };
+  
+  const handleMetricChange = (newMetric: ForecastMetric) => {
+    dispatch(setForecastMetric(newMetric));
+    dispatch(fetchForecastData());
+    dispatch(fetchModelPerformance());
+    dispatch(fetchSeasonalPatterns());
+  };
+  
+  const handleConfidenceLevelChange = (newLevel: number) => {
+    dispatch(setConfidenceLevel(newLevel));
+    dispatch(fetchForecastData());
+  };
+  
+  const handleModelTypeChange = (newModel: ModelType) => {
+    dispatch(setModelType(newModel));
+    dispatch(fetchModelPerformance());
+  };
+  
   const handleFilterChange = (newFilters: DimensionFilter) => {
-    setDimensionFilters({...dimensionFilters, ...newFilters});
+    setLocalFilters({...localFilters, ...newFilters});
+    dispatch(setDimensionFilters({...localFilters, ...newFilters}));
+    dispatch(fetchForecastData());
+    dispatch(fetchModelPerformance());
+    dispatch(fetchSeasonalPatterns());
   };
-
-  // Handler for clearing all filters
+  
   const handleClearFilters = () => {
-    setDimensionFilters({});
+    setLocalFilters({});
+    dispatch(clearFilters());
+    dispatch(fetchForecastData());
+    dispatch(fetchModelPerformance());
+    dispatch(fetchSeasonalPatterns());
   };
+  
+  // State for dashboard settings
+  const [showInsightPanel, setShowInsightPanel] = useState<boolean>(false);
 
   return (
-    <div className="flex flex-col space-y-6 p-6 bg-midnight-navy min-h-screen">
-      <h1 className="text-3xl font-semibold text-cloud-white">Demand Forecast Engine</h1>
-      
-      {/* KPI Tiles Row */}
-      <KpiTilesRow forecastHorizon={forecastHorizon} metric={forecastMetric} filters={dimensionFilters} />
-      
-      {/* Main content section */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {/* Forecast Horizon Explorer */}
-        <div className="bg-graphite rounded-2xl p-6 shadow-lg">
-          <ForecastHorizonExplorer 
-            horizon={forecastHorizon}
-            onHorizonChange={setForecastHorizon}
-            metric={forecastMetric}
-            onMetricChange={setForecastMetric}
-            confidenceLevel={confidenceLevel}
-            onConfidenceLevelChange={setConfidenceLevel}
-            filters={dimensionFilters}
-            onFilterChange={handleFilterChange}
-            onClearFilters={handleClearFilters}
+    <div style={{ 
+      backgroundColor: theme.colors.midnight, 
+      padding: `${theme.spacing[5]}px`,
+      minHeight: '100vh'
+    }}>
+      <div style={{ 
+        maxWidth: '1600px', 
+        margin: '0 auto'
+      }}>
+        {/* Dashboard Header */}
+        <div style={{ 
+          marginBottom: `${theme.spacing[5]}px`, 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center'
+        }}>
+          <h1 style={{ 
+            color: theme.colors.cloudWhite, 
+            fontSize: theme.typography.fontSize.xxl,
+            fontWeight: theme.typography.fontWeight.bold,
+            margin: 0
+          }}>
+            Demand Forecast Engine
+          </h1>
+          <div style={{ 
+            color: theme.colors.cloudWhite, 
+            fontSize: theme.typography.fontSize.md,
+            opacity: 0.7
+          }}>
+            Last updated: {new Date().toLocaleDateString()}
+          </div>
+        </div>
+        
+        {/* KPI Tiles Row */}
+        <div style={{ marginBottom: `${theme.spacing[5]}px` }}>
+          <KpiTilesRow 
+            forecastHorizon={horizon} 
+            metric={metric} 
+            filters={filters} 
           />
         </div>
-
-        {/* Model Performance Analyzer */}
-        <div className="bg-graphite rounded-2xl p-6 shadow-lg">
-          <ModelPerformanceAnalyzer 
-            modelType={modelType}
-            onModelTypeChange={setModelType}
-            horizon={forecastHorizon}
-            metric={forecastMetric}
-            filters={dimensionFilters}
-          />
+        
+        {/* Main content grid */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: '1fr 1fr', 
+          gap: `${theme.spacing[5]}px`,
+          marginBottom: `${theme.spacing[5]}px`
+        }}>
+          {/* Forecast Horizon Explorer - spans both columns */}
+          <div style={{ gridColumn: 'span 2' }}>
+            <ForecastHorizonExplorer 
+              horizon={horizon}
+              onHorizonChange={handleHorizonChange}
+              metric={metric}
+              onMetricChange={handleMetricChange}
+              confidenceLevel={confidenceLevel}
+              onConfidenceLevelChange={handleConfidenceLevelChange}
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onClearFilters={handleClearFilters}
+            />
+          </div>
+          
+          {/* Model Performance Analyzer */}
+          <div>
+            <ModelPerformanceAnalyzer 
+              modelType={modelType}
+              onModelTypeChange={handleModelTypeChange}
+              horizon={horizon}
+              metric={metric}
+              filters={filters}
+            />
+          </div>
+          
+          {/* Seasonal Pattern Detector */}
+          <div>
+            <SeasonalPatternDetector 
+              horizon={horizon}
+              metric={metric}
+              filters={filters}
+            />
+          </div>
+          
+          {/* Forecast Scenario Builder - spans both columns */}
+          <div style={{ gridColumn: 'span 2' }}>
+            <ForecastScenarioBuilder 
+              horizon={horizon}
+              metric={metric}
+              confidenceLevel={confidenceLevel}
+              filters={filters}
+            />
+          </div>
         </div>
-
-        {/* Seasonal Pattern Detector */}
-        <div className="bg-graphite rounded-2xl p-6 shadow-lg">
-          <SeasonalPatternDetector 
-            horizon={forecastHorizon}
-            metric={forecastMetric}
-            filters={dimensionFilters}
-          />
-        </div>
-
-        {/* Forecast Scenario Builder */}
-        <div className="bg-graphite rounded-2xl p-6 shadow-lg">
-          <ForecastScenarioBuilder 
-            horizon={forecastHorizon}
-            metric={forecastMetric}
-            confidenceLevel={confidenceLevel}
-            filters={dimensionFilters}
-          />
+        
+        {/* Footer */}
+        <div style={{ 
+          borderTop: `1px solid ${theme.colors.graphiteDark}`,
+          padding: `${theme.spacing[4]}px 0`,
+          color: theme.colors.cloudWhite,
+          opacity: 0.5,
+          fontSize: theme.typography.fontSize.sm,
+          textAlign: 'center'
+        }}>
+          Demand Forecast Engine Dashboard v1.0 | Enterprise IQ Analytics Suite
         </div>
       </div>
 
@@ -93,9 +205,9 @@ const DemandForecastDashboard: React.FC = () => {
       {showInsightPanel && (
         <div className="fixed right-0 top-0 h-full w-96 bg-graphite shadow-lg z-10 transition-all duration-300 ease-in-out">
           <ForecastInsightAssistant 
-            horizon={forecastHorizon}
-            metric={forecastMetric}
-            filters={dimensionFilters}
+            horizon={horizon}
+            metric={metric}
+            filters={filters}
             onClose={() => setShowInsightPanel(false)}
           />
         </div>

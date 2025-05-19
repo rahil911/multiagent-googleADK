@@ -1,49 +1,131 @@
 import React, { ReactNode } from 'react';
+import { useTheme } from '../../../../../../ui-common/design-system/theme';
 
 interface ChartWrapperProps {
-  title: string;
   children: ReactNode;
-  height?: string | number;
-  loading?: boolean;
-  loadingMessage?: string;
-  actions?: ReactNode;
+  title?: string;
+  subtitle?: string;
+  height?: number | string;
+  width?: number | string;
+  isLoading?: boolean;
   className?: string;
+  actions?: ReactNode;
 }
 
 const ChartWrapper: React.FC<ChartWrapperProps> = ({
-  title,
   children,
-  height = 300,
-  loading = false,
-  loadingMessage = 'Loading data...',
-  actions,
+  title,
+  subtitle,
+  height = 400,
+  width = '100%',
+  isLoading = false,
   className = '',
+  actions,
 }) => {
+  const theme = useTheme();
+
   return (
-    <div className={`bg-graphite rounded-xl p-4 ${className}`}>
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-cloud-white">{title}</h3>
-        {actions && <div className="flex space-x-2">{actions}</div>}
-      </div>
-      
-      <div 
-        className="relative" 
-        style={{ height: typeof height === 'number' ? `${height}px` : height }}
-      >
-        {loading ? (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex flex-col items-center">
-              <div className="flex space-x-2">
-                <div className="w-3 h-3 bg-electric-cyan rounded-full animate-bounce"></div>
-                <div className="w-3 h-3 bg-electric-cyan rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-3 h-3 bg-electric-cyan rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-              </div>
-              <p className="text-electric-cyan mt-2">{loadingMessage}</p>
-            </div>
+    <div 
+      className={`chart-wrapper ${className}`}
+      style={{
+        backgroundColor: theme.colors.graphite,
+        borderRadius: '16px',
+        boxShadow: theme.shadows.md,
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        width,
+        height: height || 'auto',
+        position: 'relative',
+      }}
+    >
+      {/* Header with title */}
+      {(title || actions) && (
+        <div 
+          style={{
+            padding: `${theme.spacing[3]}px ${theme.spacing[4]}px`,
+            borderBottom: `1px solid ${theme.colors.graphiteDark}`,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <div>
+            {title && (
+              <h3 
+                style={{
+                  margin: 0,
+                  color: theme.colors.cloudWhite,
+                  fontSize: theme.typography.fontSize.lg,
+                  fontWeight: theme.typography.fontWeight.semiBold,
+                  fontFamily: theme.typography.fontFamily,
+                }}
+              >
+                {title}
+              </h3>
+            )}
+            {subtitle && (
+              <p 
+                style={{
+                  margin: '4px 0 0 0',
+                  color: theme.colors.cloudWhite,
+                  opacity: 0.7,
+                  fontSize: theme.typography.fontSize.sm,
+                  fontFamily: theme.typography.fontFamily,
+                }}
+              >
+                {subtitle}
+              </p>
+            )}
           </div>
-        ) : (
-          children
-        )}
+          {actions && (
+            <div className="chart-actions">{actions}</div>
+          )}
+        </div>
+      )}
+
+      {/* Chart content */}
+      <div 
+        style={{
+          flex: 1,
+          padding: `${theme.spacing[4]}px`,
+          position: 'relative',
+        }}
+      >
+        {isLoading ? (
+          <div 
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: `${theme.colors.midnight}80`,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 1,
+            }}
+          >
+            <div 
+              style={{
+                width: '40px',
+                height: '40px',
+                border: `3px solid ${theme.colors.graphiteDark}`,
+                borderTop: `3px solid ${theme.colors.electricCyan}`,
+                borderRadius: '50%',
+                animation: 'chart-spin 1s linear infinite',
+              }}
+            />
+            <style jsx global>{`
+              @keyframes chart-spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}</style>
+          </div>
+        ) : null}
+        {children}
       </div>
     </div>
   );

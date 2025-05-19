@@ -1,124 +1,143 @@
 import React, { useState, useEffect } from 'react';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, 
-  Legend, ResponsiveContainer, ReferenceLine 
+  Legend, ResponsiveContainer, ReferenceLine, Area,
+  BarChart, Bar, Cell
 } from 'recharts';
 import { ForecastHorizon, ForecastMetric, DimensionFilter, SeasonalPattern } from '../../types';
+import ChartWrapper from '../common/ChartWrapper';
+import { useTheme } from '../../../../../../ui-common/design-system/theme';
+import { formatPercentage } from '../../utils/chartHelpers';
 
 interface SeasonalPatternDetectorProps {
   horizon: ForecastHorizon;
   metric: ForecastMetric;
   filters: DimensionFilter;
-}
-
-interface SeasonalIndex {
-  period: string;
-  index: number;
-  year: string;
+  data?: SeasonalPattern;
 }
 
 const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
   horizon,
   metric,
   filters,
+  data: externalData,
 }) => {
-  // Mock state for seasonality data
-  const [seasonalHeatmap, setSeasonalHeatmap] = useState<any[]>([]);
-  const [seasonalIndex, setSeasonalIndex] = useState<SeasonalIndex[]>([]);
-  const [patternStrength, setPatternStrength] = useState<SeasonalPattern>({
-    strength: 0,
-    peakSeason: '',
-    lowSeason: '',
-    amplitude: 0,
-  });
+  const theme = useTheme();
   const [loading, setLoading] = useState<boolean>(true);
-  const [timeGranularity, setTimeGranularity] = useState<'weekly' | 'monthly' | 'quarterly'>('monthly');
-  const [yearRange, setYearRange] = useState<string>('Last 3 years');
-  const [includeInForecast, setIncludeInForecast] = useState<boolean>(true);
-  const [seasonalAdjustmentStrength, setSeasonalAdjustmentStrength] = useState<number>(100);
+  const [seasonalPattern, setSeasonalPattern] = useState<SeasonalPattern | null>(null);
+  const [seasonalData, setSeasonalData] = useState<any[]>([]);
+  const [heatmapData, setHeatmapData] = useState<any[]>([]);
 
-  // Generate mock data when parameters change
   useEffect(() => {
+    if (externalData) {
+      setSeasonalPattern(externalData);
+      setLoading(false);
+      return;
+    }
+    
     setLoading(true);
     
     // This would be an API call in real implementation
     const fetchData = () => {
-      // Generate seasonal index data
-      const seasonalIndexData: SeasonalIndex[] = [];
+      // Generate mock data for the seasonal pattern
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       
-      // Create 3 years of monthly seasonal indices
-      const years = ['2022', '2023', '2024'];
-      
-      // Define base seasonal pattern - higher in summer and winter (e.g. retail)
-      const basePattern = [
-        0.85, 0.80, 0.90, 0.95, 1.05, 1.10, 
-        1.20, 1.15, 1.00, 0.95, 1.10, 1.30
-      ];
-      
-      let maxIndex = 0;
-      let minIndex = 2;
-      let maxPeriod = '';
-      let minPeriod = '';
-      
-      // Generate data for each year with slight variations
-      years.forEach(year => {
-        months.forEach((month, idx) => {
-          // Base seasonal index with some random variation
-          const variation = (Math.random() * 0.2) - 0.1; // -10% to +10%
-          const index = basePattern[idx] + variation;
-          
-          // Track max/min
-          if (index > maxIndex) {
-            maxIndex = index;
-            maxPeriod = `${month}`;
-          }
-          if (index < minIndex) {
-            minIndex = index;
-            minPeriod = `${month}`;
-          }
-          
-          seasonalIndexData.push({
-            period: month,
-            index,
-            year,
-          });
-        });
+      // Create seasonal indices for each month/period
+      const seasonalIndices = months.map((month, index) => {
+        // Create a sine wave pattern with some randomness
+        const baseValue = Math.sin((index / 12) * Math.PI * 2);
+        const seasonalIndex = 1 + baseValue * 0.35 + (Math.random() * 0.15 - 0.075);
+        
+        return {
+          period: month,
+          index: seasonalIndex,
+          actual: seasonalIndex > 1.1,
+        };
       });
       
-      // Calculate seasonal pattern metrics
-      const patternStats: SeasonalPattern = {
-        strength: 0.75 + (Math.random() * 0.2), // 75-95%
-        peakSeason: maxPeriod,
-        lowSeason: minPeriod,
+      // Create heatmap data showing multiple years
+      const heatmapRows = [];
+      for (let year = 2019; year <= 2023; year++) {
+        const yearData: {[key: string]: any} = { year };
+        
+        // For each month, add a normalized value
+        months.forEach((month, index) => {
+          // Apply the seasonal pattern with some year-to-year variation
+          const basePattern = seasonalIndices[index].index;
+          const yearVariation = 1 + ((year - 2019) * 0.03);
+          const randomVariation = Math.random() * 0.2 - 0.1;
+          const intensity = basePattern * yearVariation + randomVariation;
+          
+          yearData[month] = intensity;
+        });
+        
+        heatmapRows.push(yearData);
+      }
+      
+      // Calculate strength of seasonality pattern
+      const maxIndex = Math.max(...seasonalIndices.map(d => d.index));
+      const minIndex = Math.min(...seasonalIndices.map(d => d.index));
+      const maxMonth = months[seasonalIndices.findIndex(d => d.index === maxIndex)];
+      const minMonth = months[seasonalIndices.findIndex(d => d.index === minIndex)];
+      
+      setSeasonalPattern({
+        strength: 0.75 + Math.random() * 0.2, // 75-95%
+        peakSeason: maxMonth,
+        lowSeason: minMonth,
         amplitude: maxIndex / minIndex,
-      };
+      });
       
-      // Generate heatmap data (would be more complex in real implementation)
-      // For now, we'll just use the seasonal index data
-      
-      setSeasonalIndex(seasonalIndexData);
-      setPatternStrength(patternStats);
+      setSeasonalData(seasonalIndices);
+      setHeatmapData(heatmapRows);
       setLoading(false);
     };
     
     // Simulate API delay
     setTimeout(fetchData, 500);
-  }, [horizon, metric, filters, timeGranularity, yearRange]);
+  }, [horizon, metric, filters, externalData]);
 
-  // Custom tooltip for seasonal index chart
-  const IndexTooltip = ({ active, payload, label }: any) => {
+  // Get color for heatmap cell based on value
+  const getHeatmapColor = (value: number) => {
+    if (value >= 1.2) return theme.colors.signalMagenta;
+    if (value >= 1.1) return theme.colors.electricCyan;
+    if (value >= 1.0) return "#3e7b97"; // blue-gray
+    return theme.colors.midnight;
+  };
+
+  // Custom tooltip for line chart
+  const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
+      const data = payload[0].payload;
       return (
-        <div className="bg-midnight-navy p-4 rounded-md shadow-lg border border-electric-cyan">
-          <p className="text-cloud-white font-semibold">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }}>
-              {entry.dataKey}: {entry.payload.year} - {(entry.value).toFixed(2)}
-            </p>
-          ))}
-          <p className="text-xs text-cloud-white opacity-70 mt-2">
-            (1.0 = average demand)
+        <div style={{
+          backgroundColor: theme.colors.midnight,
+          padding: theme.spacing[3],
+          border: `1px solid ${theme.colors.electricCyan}`,
+          borderRadius: '8px',
+          boxShadow: theme.shadows.md
+        }}>
+          <p style={{ 
+            color: theme.colors.cloudWhite, 
+            fontWeight: theme.typography.fontWeight.semiBold,
+            margin: '0 0 8px 0'
+          }}>
+            {data.period}
+          </p>
+          <p style={{ 
+            color: theme.colors.electricCyan,
+            margin: '4px 0'
+          }}>
+            Seasonal Index: {data.index.toFixed(2)}
+          </p>
+          <p style={{ 
+            color: theme.colors.cloudWhite,
+            opacity: 0.7,
+            margin: '4px 0',
+            fontSize: theme.typography.fontSize.sm
+          }}>
+            {data.index > 1 
+              ? `${((data.index - 1) * 100).toFixed(0)}% above average`
+              : `${((1 - data.index) * 100).toFixed(0)}% below average`}
           </p>
         </div>
       );
@@ -126,267 +145,354 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
     return null;
   };
 
+  // Pattern strength indicator
+  const PatternStrengthIndicator = ({ strength }: { strength: number }) => {
+    const segments = 10;
+    const filledSegments = Math.round(strength * segments);
+    
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+        <div style={{ flex: 1, display: 'flex' }}>
+          {Array.from({ length: segments }).map((_, i) => (
+            <div 
+              key={i}
+              style={{
+                height: '8px',
+                flex: 1,
+                backgroundColor: i < filledSegments 
+                  ? i < segments * 0.7 
+                    ? theme.colors.electricCyan
+                    : theme.colors.signalMagenta
+                  : theme.colors.graphiteDark,
+                marginRight: '2px',
+                borderRadius: i === 0 ? '4px 0 0 4px' : i === segments - 1 ? '0 4px 4px 0' : '0'
+              }}
+            />
+          ))}
+        </div>
+        <span style={{ 
+          marginLeft: '12px',
+          color: theme.colors.cloudWhite,
+          fontSize: theme.typography.fontSize.sm,
+          fontWeight: theme.typography.fontWeight.medium
+        }}>
+          {formatPercentage(strength)}
+        </span>
+      </div>
+    );
+  };
+
+  // Pattern metric card
+  const MetricCard = ({ label, value }: { label: string, value: string | number }) => (
+    <div style={{ 
+      marginBottom: '12px',
+      backgroundColor: theme.colors.midnight,
+      padding: '12px',
+      borderRadius: '8px'
+    }}>
+      <div style={{
+        fontSize: theme.typography.fontSize.xs,
+        color: theme.colors.cloudWhite,
+        opacity: 0.7,
+        marginBottom: '4px'
+      }}>
+        {label}
+      </div>
+      <div style={{
+        fontSize: theme.typography.fontSize.lg,
+        fontWeight: theme.typography.fontWeight.semiBold,
+        color: theme.colors.electricCyan
+      }}>
+        {value}
+      </div>
+    </div>
+  );
+
+  // Action to change granularity
+  const actions = (
+    <div>
+      <select
+        style={{
+          backgroundColor: theme.colors.midnight,
+          color: theme.colors.cloudWhite,
+          padding: '4px 8px',
+          borderRadius: '4px',
+          border: `1px solid ${theme.colors.graphiteDark}`,
+          fontFamily: theme.typography.fontFamily,
+          fontSize: theme.typography.fontSize.sm,
+        }}
+        defaultValue="monthly"
+      >
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+        <option value="quarterly">Quarterly</option>
+      </select>
+    </div>
+  );
+
   return (
-    <div className="flex flex-col space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-cloud-white">Seasonal Pattern Detector</h2>
-        <div className="flex space-x-2">
-          {/* Time granularity toggle */}
-          <div className="flex rounded-full bg-midnight-navy p-1">
-            {(['weekly', 'monthly', 'quarterly'] as const).map((gran) => (
-              <button
-                key={gran}
-                className={`px-3 py-1 rounded-full transition-colors ${
-                  timeGranularity === gran
-                    ? 'bg-electric-cyan text-midnight-navy'
-                    : 'text-cloud-white hover:bg-graphite'
-                }`}
-                onClick={() => setTimeGranularity(gran)}
-              >
-                {gran.charAt(0).toUpperCase() + gran.slice(1)}
-              </button>
-            ))}
+    <ChartWrapper
+      title="Seasonal Pattern Detector"
+      isLoading={loading}
+      height={480}
+      actions={actions}
+    >
+      <div style={{ display: 'flex', height: '100%', gap: '16px' }}>
+        {/* Main visualization area */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Seasonal heatmap */}
+          <div style={{ flex: 1, minHeight: '180px' }}>
+            <div style={{ marginBottom: '8px' }}>
+              <h3 style={{ 
+                color: theme.colors.cloudWhite, 
+                fontSize: theme.typography.fontSize.md,
+                fontWeight: theme.typography.fontWeight.semiBold,
+                margin: 0
+              }}>
+                Multi-Year Pattern
+              </h3>
+            </div>
+            
+            <div style={{ 
+              width: '100%', 
+              height: 'calc(100% - 30px)',
+              display: 'grid',
+              gridTemplateRows: `repeat(${heatmapData.length}, 1fr)`,
+              gridTemplateColumns: `80px repeat(12, 1fr)`,
+              gap: '1px',
+              backgroundColor: theme.colors.graphiteDark,
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}>
+              {/* Header row with month names */}
+              <div style={{ 
+                backgroundColor: theme.colors.midnight,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: theme.colors.cloudWhite,
+                fontWeight: theme.typography.fontWeight.semiBold,
+                fontSize: theme.typography.fontSize.xs
+              }}>
+                Year
+              </div>
+              {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(month => (
+                <div key={month} style={{ 
+                  backgroundColor: theme.colors.midnight,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: theme.colors.cloudWhite,
+                  fontSize: theme.typography.fontSize.xs
+                }}>
+                  {month}
+                </div>
+              ))}
+              
+              {/* Data rows */}
+              {heatmapData.map((yearData, yearIndex) => (
+                <React.Fragment key={yearData.year}>
+                  {/* Year label */}
+                  <div style={{ 
+                    backgroundColor: theme.colors.midnight,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: theme.colors.cloudWhite,
+                    fontWeight: theme.typography.fontWeight.medium,
+                    fontSize: theme.typography.fontSize.xs
+                  }}>
+                    {yearData.year}
+                  </div>
+                  
+                  {/* Month cells */}
+                  {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(month => (
+                    <div 
+                      key={`${yearData.year}-${month}`}
+                      style={{ 
+                        backgroundColor: getHeatmapColor(yearData[month]),
+                        position: 'relative',
+                        cursor: 'pointer'
+                      }}
+                      title={`${month} ${yearData.year}: ${formatPercentage(yearData[month] - 1)} vs average`}
+                    >
+                      {yearData[month] > 1.15 && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          fontSize: theme.typography.fontSize.xs,
+                          color: theme.colors.cloudWhite,
+                          fontWeight: theme.typography.fontWeight.bold
+                        }}>
+                          {formatPercentage(yearData[month] - 1)}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </React.Fragment>
+              ))}
+            </div>
           </div>
           
-          {/* Year range selector */}
-          <select
-            className="bg-midnight-navy text-cloud-white p-2 rounded-md"
-            value={yearRange}
-            onChange={(e) => setYearRange(e.target.value)}
-          >
-            <option value="Last 3 years">Last 3 years</option>
-            <option value="Last 5 years">Last 5 years</option>
-            <option value="All history">All history</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Seasonal index chart - takes 3 columns */}
-        <div className="lg:col-span-3 bg-midnight-navy rounded-xl p-4 h-96">
-          {loading ? (
-            <div className="flex h-full items-center justify-center">
-              <div className="text-electric-cyan">Loading seasonal patterns...</div>
+          {/* Seasonal index chart */}
+          <div style={{ flex: 1, minHeight: '180px' }}>
+            <div style={{ marginBottom: '8px' }}>
+              <h3 style={{ 
+                color: theme.colors.cloudWhite, 
+                fontSize: theme.typography.fontSize.md,
+                fontWeight: theme.typography.fontWeight.semiBold,
+                margin: 0
+              }}>
+                Seasonal Index
+              </h3>
             </div>
-          ) : (
+            
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
-                data={seasonalIndex}
-                margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                data={seasonalData}
+                margin={{ top: 5, right: 30, left: 5, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#3a4459" opacity={0.2} />
+                <CartesianGrid strokeDasharray="3 3" stroke={`${theme.colors.graphiteDark}33`} />
                 <XAxis 
                   dataKey="period" 
-                  stroke="#f7f9fb"
-                  tick={{ fill: '#f7f9fb' }} 
+                  tick={{ fill: theme.colors.cloudWhite }}
+                  stroke={theme.colors.cloudWhite}
                 />
                 <YAxis 
-                  domain={[0.5, 1.5]} 
-                  stroke="#f7f9fb" 
-                  tick={{ fill: '#f7f9fb' }}
-                  label={{ 
-                    value: 'Seasonal Index', 
-                    angle: -90, 
-                    position: 'insideLeft',
-                    fill: '#f7f9fb'
-                  }}
+                  domain={[0.6, 1.4]}
+                  tickFormatter={(value) => value.toFixed(1)}
+                  tick={{ fill: theme.colors.cloudWhite }}
+                  stroke={theme.colors.cloudWhite}
                 />
-                <Tooltip content={<IndexTooltip />} />
-                <Legend />
+                <Tooltip content={<CustomTooltip />} />
                 
-                {/* Average line at 1.0 */}
+                {/* Average line */}
                 <ReferenceLine 
                   y={1} 
-                  stroke="#f7f9fb" 
-                  strokeDasharray="3 3" 
                   label={{ 
                     value: 'Average', 
                     position: 'right',
-                    fill: '#f7f9fb',
+                    fill: theme.colors.cloudWhite
                   }} 
-                />
-                
-                {/* Lines for each year */}
-                {(['2022', '2023', '2024'] as string[]).map((year, index) => (
-                  <Line
-                    key={year}
-                    type="monotone"
-                    dataKey="index"
-                    data={seasonalIndex.filter(d => d.year === year)}
-                    name={year}
-                    stroke={
-                      index === 0 ? '#447799' : 
-                      index === 1 ? '#5fd4d6' : 
-                      '#00e0ff'
-                    }
-                    strokeWidth={year === '2024' ? 3 : 2}
-                    dot={{ r: 5 }}
-                    activeDot={{ r: 7 }}
-                  />
-                ))}
-                
-                {/* Highlight peak and valley */}
-                <ReferenceLine 
-                  x={patternStrength.peakSeason} 
-                  stroke="#e930ff" 
-                  strokeWidth={2} 
-                  strokeDasharray="3 3" 
-                  label={{ 
-                    value: 'Peak', 
-                    position: 'top', 
-                    fill: '#e930ff' 
-                  }} 
-                />
-                <ReferenceLine 
-                  x={patternStrength.lowSeason} 
-                  stroke="#e930ff" 
-                  strokeWidth={2} 
+                  stroke={theme.colors.cloudWhite}
                   strokeDasharray="3 3"
-                  label={{ 
-                    value: 'Low', 
-                    position: 'bottom', 
-                    fill: '#e930ff' 
-                  }}  
+                />
+                
+                {/* Seasonal pattern line */}
+                <Line
+                  type="monotone"
+                  dataKey="index"
+                  stroke={theme.colors.electricCyan}
+                  strokeWidth={3}
+                  dot={{ fill: theme.colors.electricCyan, r: 4 }}
+                  activeDot={{ fill: theme.colors.electricCyan, r: 6 }}
+                />
+                
+                {/* Area under curve */}
+                <Area
+                  type="monotone"
+                  dataKey="index"
+                  stroke="none"
+                  fill={theme.colors.electricCyan}
+                  fillOpacity={0.1}
                 />
               </LineChart>
             </ResponsiveContainer>
-          )}
+          </div>
         </div>
-
-        {/* Pattern strength panel - takes 1 column */}
-        <div className="bg-midnight-navy rounded-xl p-4 flex flex-col space-y-4">
-          <h3 className="text-lg font-semibold text-cloud-white text-center">Seasonal Patterns</h3>
-          
-          {loading ? (
-            <div className="flex h-full items-center justify-center">
-              <div className="text-electric-cyan">Loading...</div>
-            </div>
-          ) : (
-            <>
-              {/* Pattern strength gauge */}
-              <div className="mt-4">
-                <p className="text-cloud-white text-sm mb-1">Pattern Strength</p>
-                <div className="relative h-4 bg-midnight-navy border border-graphite rounded-full overflow-hidden">
-                  <div 
-                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-electric-cyan"
-                    style={{ width: `${patternStrength.strength * 100}%` }}
-                  ></div>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-xs text-cloud-white">Weak</span>
-                  <span className="text-lg font-semibold text-electric-cyan">
-                    {(patternStrength.strength * 100).toFixed(0)}%
-                  </span>
-                  <span className="text-xs text-cloud-white">Strong</span>
-                </div>
-              </div>
-              
-              {/* Peak & Low seasons */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <p className="text-cloud-white text-sm">Peak Season</p>
-                  <p className="text-xl font-semibold text-electric-cyan">
-                    {patternStrength.peakSeason}
-                  </p>
-                </div>
-                <div className="text-center">
-                  <p className="text-cloud-white text-sm">Low Season</p>
-                  <p className="text-xl font-semibold text-electric-cyan">
-                    {patternStrength.lowSeason}
-                  </p>
-                </div>
-              </div>
-              
-              {/* Amplitude */}
-              <div className="text-center">
-                <p className="text-cloud-white text-sm">Amplitude (Peak/Low Ratio)</p>
-                <p className="text-xl font-semibold text-electric-cyan">
-                  {patternStrength.amplitude.toFixed(2)}x
-                </p>
-              </div>
-              
-              {/* Include in forecast toggle */}
-              <div className="flex items-center justify-between mt-4">
-                <span className="text-cloud-white">Include in forecast</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer"
-                    checked={includeInForecast}
-                    onChange={() => setIncludeInForecast(!includeInForecast)}
-                  />
-                  <div className="w-11 h-6 bg-midnight-navy peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-electric-cyan"></div>
-                </label>
-              </div>
-              
-              {/* Seasonal adjustment strength */}
-              {includeInForecast && (
-                <div className="mt-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-cloud-white text-sm">Adjustment Strength</span>
-                    <span className="text-electric-cyan">{seasonalAdjustmentStrength}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="200"
-                    step="10"
-                    value={seasonalAdjustmentStrength}
-                    onChange={(e) => setSeasonalAdjustmentStrength(parseInt(e.target.value))}
-                    className="w-full mt-2"
-                  />
-                  <div className="flex justify-between text-xs text-cloud-white">
-                    <span>None</span>
-                    <span>Normal</span>
-                    <span>Strong</span>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Detected patterns list */}
-      <div className="bg-midnight-navy rounded-xl p-4">
-        <h3 className="text-lg font-semibold text-cloud-white mb-4">Detected Patterns</h3>
         
-        {loading ? (
-          <div className="flex h-20 items-center justify-center">
-            <div className="text-electric-cyan">Loading detected patterns...</div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-graphite rounded-lg p-3 border-l-4 border-electric-cyan">
-              <h4 className="text-md font-semibold text-cloud-white">Winter Holiday Peak</h4>
-              <div className="text-sm text-cloud-white opacity-80 mt-1">Strong end-of-year peak in December, 30-40% above average demand.</div>
-              <div className="flex justify-between items-center mt-2">
-                <span className="text-xs text-electric-cyan">93% confidence</span>
-                <button className="text-xs text-cloud-white hover:text-electric-cyan">Highlight</button>
+        {/* Metrics panel */}
+        <div style={{ width: '220px' }}>
+          <div style={{ marginBottom: '16px' }}>
+            <h3 style={{ 
+              color: theme.colors.cloudWhite, 
+              fontSize: theme.typography.fontSize.md,
+              fontWeight: theme.typography.fontWeight.semiBold,
+              marginBottom: '12px'
+            }}>
+              Seasonal Patterns
+            </h3>
+            
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{ 
+                color: theme.colors.cloudWhite, 
+                fontSize: theme.typography.fontSize.sm,
+                marginBottom: '4px'
+              }}>
+                Pattern Strength
               </div>
+              {seasonalPattern && <PatternStrengthIndicator strength={seasonalPattern.strength} />}
             </div>
             
-            <div className="bg-graphite rounded-lg p-3 border-l-4 border-electric-cyan">
-              <h4 className="text-md font-semibold text-cloud-white">Summer Sales Bump</h4>
-              <div className="text-sm text-cloud-white opacity-80 mt-1">Increased activity in July-August, 15-20% above average demand.</div>
-              <div className="flex justify-between items-center mt-2">
-                <span className="text-xs text-electric-cyan">87% confidence</span>
-                <button className="text-xs text-cloud-white hover:text-electric-cyan">Highlight</button>
-              </div>
+            {seasonalPattern && (
+              <>
+                <MetricCard label="Peak Season" value={seasonalPattern.peakSeason} />
+                <MetricCard label="Low Season" value={seasonalPattern.lowSeason} />
+                <MetricCard 
+                  label="Amplitude" 
+                  value={`${seasonalPattern.amplitude.toFixed(1)}x`} 
+                />
+              </>
+            )}
+          </div>
+          
+          <div style={{
+            backgroundColor: theme.colors.midnight,
+            padding: '12px',
+            borderRadius: '8px'
+          }}>
+            <div style={{ 
+              fontSize: theme.typography.fontSize.sm,
+              fontWeight: theme.typography.fontWeight.medium,
+              color: theme.colors.cloudWhite,
+              marginBottom: '8px'
+            }}>
+              Apply to Forecast
             </div>
             
-            <div className="bg-graphite rounded-lg p-3 border-l-4 border-signal-magenta">
-              <h4 className="text-md font-semibold text-cloud-white">Spring Lull</h4>
-              <div className="text-sm text-cloud-white opacity-80 mt-1">Consistent demand decrease in February-March, 15-20% below average.</div>
-              <div className="flex justify-between items-center mt-2">
-                <span className="text-xs text-signal-magenta">78% confidence</span>
-                <button className="text-xs text-cloud-white hover:text-electric-cyan">Highlight</button>
+            <div style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '12px'
+            }}>
+              <span style={{ 
+                fontSize: theme.typography.fontSize.sm,
+                color: theme.colors.cloudWhite,
+                opacity: 0.8
+              }}>
+                Include Seasonality
+              </span>
+              <input 
+                type="checkbox" 
+                defaultChecked={true}
+                style={{ accentColor: theme.colors.electricCyan, width: '16px', height: '16px' }}
+              />
+            </div>
+            
+            <div>
+              <div style={{ 
+                fontSize: theme.typography.fontSize.sm,
+                color: theme.colors.cloudWhite,
+                opacity: 0.8,
+                marginBottom: '4px'
+              }}>
+                Seasonal Strength: {seasonalPattern ? formatPercentage(seasonalPattern.strength) : '0%'}
               </div>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                defaultValue={seasonalPattern ? Math.round(seasonalPattern.strength * 100) : 0}
+                style={{ width: '100%', accentColor: theme.colors.electricCyan }}
+              />
             </div>
           </div>
-        )}
+        </div>
       </div>
-    </div>
+    </ChartWrapper>
   );
 };
 

@@ -5,6 +5,9 @@ import {
   BarChart, Bar, Cell, LineChart, Line
 } from 'recharts';
 import { ForecastHorizon, ForecastMetric, DimensionFilter, ModelType, ModelPerformance } from '../../types';
+import { formatCurrency, formatNumber, formatPercentage, getErrorColor } from '../../utils/chartHelpers';
+import ChartWrapper from '../common/ChartWrapper';
+import { useTheme } from '../../../../../../ui-common/design-system/theme';
 
 interface ModelPerformanceAnalyzerProps {
   modelType: ModelType;
@@ -12,6 +15,7 @@ interface ModelPerformanceAnalyzerProps {
   horizon: ForecastHorizon;
   metric: ForecastMetric;
   filters: DimensionFilter;
+  data?: ModelPerformance;
 }
 
 interface ScatterPoint {
@@ -39,7 +43,10 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
   horizon,
   metric,
   filters,
+  data: externalData,
 }) => {
+  const theme = useTheme();
+  
   // Mock state for model data
   const [scatterData, setScatterData] = useState<ScatterPoint[]>([]);
   const [errorDistribution, setErrorDistribution] = useState<ErrorDistribution[]>([]);
@@ -55,6 +62,12 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
 
   // Generate mock data when parameters change
   useEffect(() => {
+    if (externalData) {
+      setModelMetrics(externalData);
+      setLoading(false);
+      return;
+    }
+    
     setLoading(true);
     
     // This would be an API call in real implementation
@@ -180,23 +193,47 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
     
     // Simulate API delay
     setTimeout(fetchData, 500);
-  }, [modelType, horizon, metric, filters, validationPeriod]);
+  }, [modelType, horizon, metric, filters, validationPeriod, externalData]);
 
   // Custom tooltip for scatter plot
   const ScatterTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-midnight-navy p-4 rounded-md shadow-lg border border-electric-cyan">
-          <p className="text-cloud-white font-semibold">{data.period}</p>
-          <p className="text-electric-cyan">
-            Actual: {metric === 'revenue' ? '$' : ''}{Math.round(data.actual)}
+        <div style={{
+          backgroundColor: theme.colors.midnight,
+          padding: theme.spacing[3],
+          border: `1px solid ${theme.colors.electricCyan}`,
+          borderRadius: '8px',
+          boxShadow: theme.shadows.md
+        }}>
+          <p style={{ 
+            color: theme.colors.cloudWhite, 
+            fontWeight: theme.typography.fontWeight.semiBold,
+            margin: '0 0 8px 0'
+          }}>
+            {data.period}
           </p>
-          <p className="text-signal-magenta">
-            Predicted: {metric === 'revenue' ? '$' : ''}{Math.round(data.predicted)}
+          <p style={{ 
+            color: theme.colors.electricCyan,
+            margin: '4px 0',
+            fontSize: theme.typography.fontSize.sm
+          }}>
+            Actual: {metric === 'revenue' ? formatCurrency(data.actual) : formatNumber(data.actual)}
           </p>
-          <p className={`text-${data.errorMagnitude === 'low' ? 'electric-cyan' : data.errorMagnitude === 'medium' ? 'blue-400' : 'signal-magenta'}`}>
-            Error: {(data.error * 100).toFixed(1)}%
+          <p style={{ 
+            color: theme.colors.signalMagenta,
+            margin: '4px 0',
+            fontSize: theme.typography.fontSize.sm
+          }}>
+            Predicted: {metric === 'revenue' ? formatCurrency(data.predicted) : formatNumber(data.predicted)}
+          </p>
+          <p style={{ 
+            color: getErrorColor(data.errorMagnitude),
+            margin: '4px 0',
+            fontSize: theme.typography.fontSize.sm
+          }}>
+            Error: {formatPercentage(data.error)}
           </p>
         </div>
       );
@@ -204,309 +241,355 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
     return null;
   };
 
-  // Get color based on error magnitude
-  const getErrorColor = (errorMagnitude: 'low' | 'medium' | 'high') => {
-    switch (errorMagnitude) {
-      case 'low':
-        return '#00e0ff'; // Electric Cyan
-      case 'medium':
-        return '#5fd4d6'; // Lighter cyan
-      case 'high':
-        return '#e930ff'; // Signal Magenta
-      default:
-        return '#00e0ff';
-    }
-  };
+  // Button styles for model selector
+  const buttonStyle = (active: boolean) => ({
+    flex: 1,
+    padding: '8px 16px',
+    borderRadius: '24px',
+    backgroundColor: active ? theme.colors.electricCyan : theme.colors.midnight,
+    color: active ? theme.colors.midnight : theme.colors.cloudWhite,
+    border: 'none',
+    fontWeight: theme.typography.fontWeight.medium,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    fontFamily: theme.typography.fontFamily,
+    fontSize: theme.typography.fontSize.sm,
+  });
+
+  // Chart actions
+  const actions = (
+    <div style={{ display: 'flex' }}>
+      <select
+        style={{
+          backgroundColor: theme.colors.midnight,
+          color: theme.colors.cloudWhite,
+          padding: '4px 8px',
+          borderRadius: '4px',
+          border: `1px solid ${theme.colors.graphiteDark}`,
+          fontFamily: theme.typography.fontFamily,
+          fontSize: theme.typography.fontSize.sm,
+        }}
+        value={validationPeriod}
+        onChange={(e) => setValidationPeriod(e.target.value)}
+      >
+        <option value="Last 12 periods">Last 12 periods</option>
+        <option value="Last 30 periods">Last 30 periods</option>
+        <option value="Last 90 periods">Last 90 periods</option>
+        <option value="Last year">Last year</option>
+        <option value="Custom">Custom...</option>
+      </select>
+    </div>
+  );
+
+  // Metric Card component for displaying model metrics
+  const MetricCard = ({ title, value, subtitle }: { title: string, value: string | number, subtitle?: string }) => (
+    <div style={{
+      backgroundColor: theme.colors.midnight,
+      borderRadius: '8px',
+      padding: theme.spacing[3],
+      marginBottom: theme.spacing[2]
+    }}>
+      <div style={{ 
+        color: theme.colors.cloudWhite, 
+        fontSize: theme.typography.fontSize.xs,
+        opacity: 0.7,
+        marginBottom: '4px'
+      }}>
+        {title}
+      </div>
+      <div style={{ 
+        color: theme.colors.electricCyan, 
+        fontSize: theme.typography.fontSize.xl,
+        fontWeight: theme.typography.fontWeight.semiBold
+      }}>
+        {value}
+      </div>
+      {subtitle && (
+        <div style={{ 
+          color: theme.colors.cloudWhite, 
+          fontSize: theme.typography.fontSize.xs,
+          opacity: 0.7,
+          marginTop: '4px'
+        }}>
+          {subtitle}
+        </div>
+      )}
+    </div>
+  );
 
   return (
-    <div className="flex flex-col space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-cloud-white">Model Performance Analyzer</h2>
-        <div className="flex space-x-2">
-          <select
-            className="bg-midnight-navy text-cloud-white p-2 rounded-md"
-            value={validationPeriod}
-            onChange={(e) => setValidationPeriod(e.target.value)}
-          >
-            <option value="Last 12 periods">Last 12 periods</option>
-            <option value="Last 30 periods">Last 30 periods</option>
-            <option value="Last 90 periods">Last 90 periods</option>
-            <option value="Last year">Last year</option>
-            <option value="Custom">Custom...</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Model selector */}
-      <div className="flex rounded-full bg-midnight-navy p-1">
-        {([
-          { id: 'movingAverage', label: 'Moving Average' },
-          { id: 'exponentialSmoothing', label: 'Exp. Smoothing' },
-          { id: 'arima', label: 'ARIMA' },
-          { id: 'machineLearning', label: 'Machine Learning' },
-        ] as { id: ModelType, label: string }[]).map(({ id, label }) => (
-          <button
-            key={id}
-            className={`flex-1 px-3 py-1 rounded-full transition-colors ${
-              modelType === id
-                ? 'bg-electric-cyan text-midnight-navy'
-                : 'text-cloud-white hover:bg-graphite'
-            }`}
-            onClick={() => onModelTypeChange(id)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Scatter plot - takes 3 columns */}
-        <div className="lg:col-span-3 bg-midnight-navy rounded-xl p-4 h-96">
-          {loading ? (
-            <div className="flex h-full items-center justify-center">
-              <div className="text-electric-cyan">Loading performance data...</div>
-            </div>
-          ) : (
-            <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart
-                margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#3a4459" opacity={0.2} />
-                <XAxis 
-                  type="number" 
-                  dataKey="actual" 
-                  name="Actual" 
-                  stroke="#f7f9fb"
-                  tick={{ fill: '#f7f9fb' }} 
-                  label={{ 
-                    value: 'Actual', 
-                    position: 'insideBottom', 
-                    offset: -10,
-                    fill: '#f7f9fb'
-                  }}
-                />
-                <YAxis 
-                  type="number" 
-                  dataKey="predicted" 
-                  name="Predicted" 
-                  stroke="#f7f9fb" 
-                  tick={{ fill: '#f7f9fb' }}
-                  label={{ 
-                    value: 'Predicted', 
-                    angle: -90, 
-                    position: 'insideLeft',
-                    fill: '#f7f9fb'
-                  }}
-                />
-                <ZAxis range={[100, 100]} />
-                <Tooltip content={<ScatterTooltip />} />
-                
-                {/* Perfect prediction line */}
-                <ReferenceLine 
-                  y="actual" 
-                  stroke="#f7f9fb" 
-                  strokeDasharray="3 3" 
-                />
-                
-                {/* Error bands */}
-                <ReferenceLine 
-                  y={d => d.actual * 1.05} 
-                  stroke="#f7f9fb" 
-                  strokeOpacity={0.3} 
-                  strokeDasharray="3 3" 
-                />
-                <ReferenceLine 
-                  y={d => d.actual * 0.95} 
-                  stroke="#f7f9fb" 
-                  strokeOpacity={0.3} 
-                  strokeDasharray="3 3" 
-                />
-                <ReferenceLine 
-                  y={d => d.actual * 1.1} 
-                  stroke="#f7f9fb" 
-                  strokeOpacity={0.2} 
-                  strokeDasharray="3 3" 
-                />
-                <ReferenceLine 
-                  y={d => d.actual * 0.9} 
-                  stroke="#f7f9fb" 
-                  strokeOpacity={0.2} 
-                  strokeDasharray="3 3" 
-                />
-                <ReferenceLine 
-                  y={d => d.actual * 1.2} 
-                  stroke="#f7f9fb" 
-                  strokeOpacity={0.1} 
-                  strokeDasharray="3 3" 
-                />
-                <ReferenceLine 
-                  y={d => d.actual * 0.8} 
-                  stroke="#f7f9fb" 
-                  strokeOpacity={0.1} 
-                  strokeDasharray="3 3" 
-                />
-                
-                <Scatter 
-                  name="Prediction Accuracy" 
-                  data={scatterData} 
-                  fill="#00e0ff"
-                  shape={(props) => {
-                    const { cx, cy } = props;
-                    const point = props.payload as ScatterPoint;
-                    return (
-                      <circle 
-                        cx={cx} 
-                        cy={cy} 
-                        r={8} 
-                        fill={getErrorColor(point.errorMagnitude)} 
-                      />
-                    );
-                  }}
-                />
-              </ScatterChart>
-            </ResponsiveContainer>
-          )}
+    <ChartWrapper
+      title="Model Performance Analyzer"
+      isLoading={loading}
+      height={560}
+      actions={actions}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '16px' }}>
+        {/* Model selector */}
+        <div style={{ 
+          display: 'flex', 
+          backgroundColor: theme.colors.midnight, 
+          borderRadius: '24px', 
+          padding: '4px'
+        }}>
+          {([
+            { id: 'movingAverage', label: 'Moving Average' },
+            { id: 'exponentialSmoothing', label: 'Exp. Smoothing' },
+            { id: 'arima', label: 'ARIMA' },
+            { id: 'machineLearning', label: 'Machine Learning' },
+          ] as { id: ModelType, label: string }[]).map(({ id, label }) => (
+            <button
+              key={id}
+              style={buttonStyle(modelType === id)}
+              onClick={() => onModelTypeChange(id)}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
-        {/* Metrics panel - takes 1 column */}
-        <div className="bg-midnight-navy rounded-xl p-4 flex flex-col space-y-4">
-          <h3 className="text-lg font-semibold text-cloud-white text-center">Model Performance</h3>
-          
-          <div className="flex flex-col space-y-4 mt-4">
-            <div className="text-center">
-              <p className="text-cloud-white text-sm">MAE</p>
-              <p className="text-2xl font-semibold text-electric-cyan">
-                {loading ? '-' : Math.round(modelMetrics.mae)}
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <p className="text-cloud-white text-sm">RMSE</p>
-              <p className="text-2xl font-semibold text-electric-cyan">
-                {loading ? '-' : Math.round(modelMetrics.rmse)}
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <p className="text-cloud-white text-sm">MAPE</p>
-              <p className="text-2xl font-semibold text-electric-cyan">
-                {loading ? '-' : modelMetrics.mape.toFixed(1)}%
-              </p>
-            </div>
-          </div>
-          
-          {/* Performance history mini chart */}
-          <div className="h-24 mt-4">
-            {loading ? (
-              <div className="flex h-full items-center justify-center">
-                <div className="text-electric-cyan text-xs">Loading...</div>
-              </div>
-            ) : (
+        <div style={{ display: 'flex', height: 'calc(100% - 50px)', gap: '16px' }}>
+          {/* Main charts section */}
+          <div style={{ flex: 1 }}>
+            {/* Scatter plot: Actual vs Predicted */}
+            <div style={{ height: '65%', marginBottom: '16px' }}>
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={historyData}>
+                <ScatterChart
+                  margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke={`${theme.colors.graphiteDark}33`} />
                   <XAxis 
-                    dataKey="date" 
-                    tick={{ fill: '#f7f9fb', fontSize: 9 }} 
-                    stroke="#f7f9fb"
-                    height={15}
-                    tickMargin={2}
+                    type="number" 
+                    dataKey="actual" 
+                    name="Actual" 
+                    tick={{ fill: theme.colors.cloudWhite }}
+                    stroke={theme.colors.cloudWhite}
+                    label={{
+                      value: 'Actual',
+                      position: 'insideBottomRight',
+                      offset: -10,
+                      fill: theme.colors.cloudWhite,
+                    }}
+                    tickFormatter={(value) => metric === 'revenue' ? `$${(value/1000).toFixed(0)}K` : `${(value/1000).toFixed(0)}K`}
                   />
                   <YAxis 
-                    hide
-                    domain={[
-                      Math.min(...historyData.map(d => d.error)) * 0.9,
-                      Math.max(...historyData.map(d => d.error)) * 1.1
-                    ]}
+                    type="number" 
+                    dataKey="predicted" 
+                    name="Predicted" 
+                    tick={{ fill: theme.colors.cloudWhite }}
+                    stroke={theme.colors.cloudWhite}
+                    label={{
+                      value: 'Predicted',
+                      angle: -90,
+                      position: 'insideLeft',
+                      fill: theme.colors.cloudWhite,
+                    }}
+                    tickFormatter={(value) => metric === 'revenue' ? `$${(value/1000).toFixed(0)}K` : `${(value/1000).toFixed(0)}K`}
                   />
-                  <Tooltip 
-                    formatter={(value: any) => [`${(value * 100).toFixed(1)}%`, 'Error']}
-                    labelFormatter={(label) => `Date: ${label}`}
+                  <ZAxis range={[60, 60]} />
+                  <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<ScatterTooltip />} />
+                  
+                  {/* Perfect prediction reference line */}
+                  <ReferenceLine 
+                    segment={[
+                      { x: 0, y: 0 },
+                      { x: 3000, y: 3000 }
+                    ]} 
+                    stroke={theme.colors.cloudWhite}
+                    strokeDasharray="5 5"
                   />
-                  <Line
-                    type="monotone"
-                    dataKey="error"
-                    stroke="#00e0ff"
-                    strokeWidth={2}
-                    dot={{ r: 3 }}
-                    isAnimationActive={false}
-                  />
-                  {/* Trend line */}
-                  <Line
-                    type="linear"
-                    dataKey="error"
-                    stroke="#f7f9fb"
-                    strokeWidth={1}
+                  
+                  {/* 5% error bands */}
+                  <ReferenceLine 
+                    segment={[
+                      { x: 0, y: 0 },
+                      { x: 3000, y: 3150 }
+                    ]} 
+                    stroke={theme.colors.cloudWhite}
                     strokeDasharray="3 3"
-                    dot={false}
-                    isAnimationActive={false}
+                    strokeOpacity={0.3}
                   />
-                </LineChart>
+                  <ReferenceLine 
+                    segment={[
+                      { x: 0, y: 0 },
+                      { x: 3000, y: 2850 }
+                    ]} 
+                    stroke={theme.colors.cloudWhite}
+                    strokeDasharray="3 3"
+                    strokeOpacity={0.3}
+                  />
+                  
+                  <Scatter 
+                    name="Forecast Error" 
+                    data={scatterData} 
+                    shape="circle"
+                  >
+                    {scatterData.map((entry, index) => (
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={getErrorColor(entry.errorMagnitude)} 
+                      />
+                    ))}
+                  </Scatter>
+                </ScatterChart>
               </ResponsiveContainer>
-            )}
+            </div>
+            
+            {/* Error Distribution Histogram */}
+            <div style={{ height: '35%' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={errorDistribution}
+                  margin={{ top: 10, right: 20, bottom: 20, left: 20 }}
+                >
+                  <CartesianGrid 
+                    strokeDasharray="3 3" 
+                    stroke={`${theme.colors.graphiteDark}33`} 
+                    vertical={false}
+                  />
+                  <XAxis 
+                    dataKey="bin" 
+                    tick={{ fill: theme.colors.cloudWhite }}
+                    stroke={theme.colors.cloudWhite}
+                    label={{
+                      value: 'Error Percentage',
+                      position: 'insideBottom',
+                      offset: -10,
+                      fill: theme.colors.cloudWhite,
+                    }}
+                  />
+                  <YAxis 
+                    tick={{ fill: theme.colors.cloudWhite }}
+                    stroke={theme.colors.cloudWhite}
+                    label={{
+                      value: 'Frequency',
+                      angle: -90,
+                      position: 'insideLeft',
+                      fill: theme.colors.cloudWhite,
+                    }}
+                  />
+                  <Tooltip
+                    formatter={(value) => [`${value} occurrences`, 'Frequency']}
+                    labelFormatter={(label) => `Error: ${label}`}
+                    contentStyle={{
+                      backgroundColor: theme.colors.midnight,
+                      border: `1px solid ${theme.colors.electricCyan}`,
+                      borderRadius: '4px',
+                      color: theme.colors.cloudWhite,
+                    }}
+                  />
+                  <Bar dataKey="count" name="Error Frequency">
+                    {errorDistribution.map((entry, index) => (
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={getErrorColor(entry.errorMagnitude)} 
+                      />
+                    ))}
+                  </Bar>
+                  
+                  {/* Average error reference line */}
+                  <ReferenceLine
+                    x="8%"
+                    stroke={theme.colors.signalMagenta}
+                    label={{
+                      value: 'Avg Error',
+                      fill: theme.colors.signalMagenta,
+                      position: 'top',
+                    }}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          
+          {/* Metrics Panel */}
+          <div style={{ width: '220px' }}>
+            <div style={{ marginBottom: '16px' }}>
+              <h3 style={{ 
+                color: theme.colors.cloudWhite, 
+                fontSize: theme.typography.fontSize.md,
+                fontWeight: theme.typography.fontWeight.semiBold,
+                marginBottom: '12px'
+              }}>
+                Model Metrics
+              </h3>
+              
+              <MetricCard 
+                title="Mean Absolute Error" 
+                value={formatNumber(modelMetrics.mae)} 
+              />
+              
+              <MetricCard 
+                title="Root Mean Square Error" 
+                value={formatNumber(modelMetrics.rmse)} 
+              />
+              
+              <MetricCard 
+                title="Mean Absolute % Error" 
+                value={formatPercentage(modelMetrics.mape / 100)} 
+              />
+            </div>
+            
+            {/* Performance History */}
+            <div>
+              <h3 style={{ 
+                color: theme.colors.cloudWhite, 
+                fontSize: theme.typography.fontSize.md,
+                fontWeight: theme.typography.fontWeight.semiBold,
+                marginBottom: '12px'
+              }}>
+                Error Trend
+              </h3>
+              
+              <div style={{ height: '100px' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={historyData}
+                    margin={{ top: 5, right: 5, bottom: 5, left: 5 }}
+                  >
+                    <XAxis 
+                      dataKey="date" 
+                      tick={{ fill: theme.colors.cloudWhite, fontSize: 10 }}
+                      stroke={theme.colors.cloudWhite}
+                    />
+                    <YAxis 
+                      tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
+                      tick={{ fill: theme.colors.cloudWhite, fontSize: 10 }}
+                      stroke={theme.colors.cloudWhite}
+                    />
+                    <Tooltip 
+                      formatter={(value) => [`${(Number(value) * 100).toFixed(1)}%`, 'Error']}
+                      contentStyle={{
+                        backgroundColor: theme.colors.midnight,
+                        border: `1px solid ${theme.colors.electricCyan}`,
+                        borderRadius: '4px',
+                        color: theme.colors.cloudWhite,
+                      }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="error" 
+                      stroke={theme.colors.electricCyan} 
+                      strokeWidth={2}
+                      dot={{ r: 3, fill: theme.colors.electricCyan }}
+                      activeDot={{ r: 5, fill: theme.colors.electricCyan }}
+                    />
+                    
+                    {/* Trend line */}
+                    <ReferenceLine 
+                      y={historyData[0]?.error} 
+                      stroke={theme.colors.electricCyan}
+                      strokeDasharray="3 3"
+                      strokeOpacity={0.5}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Error distribution histogram */}
-      <div className="h-32 bg-midnight-navy rounded-xl p-4">
-        {loading ? (
-          <div className="flex h-full items-center justify-center">
-            <div className="text-electric-cyan">Loading error distribution...</div>
-          </div>
-        ) : (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={errorDistribution}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#3a4459" opacity={0.2} vertical={false} />
-              <XAxis 
-                dataKey="bin" 
-                tick={{ fill: '#f7f9fb' }} 
-                stroke="#f7f9fb"
-                label={{ 
-                  value: 'Error Percentage', 
-                  position: 'insideBottom', 
-                  offset: -5,
-                  fill: '#f7f9fb',
-                  fontSize: 10
-                }}
-              />
-              <YAxis 
-                tick={{ fill: '#f7f9fb' }} 
-                stroke="#f7f9fb"
-                label={{ 
-                  value: 'Count', 
-                  angle: -90, 
-                  position: 'insideLeft',
-                  fill: '#f7f9fb',
-                  fontSize: 10
-                }}
-              />
-              <Tooltip 
-                formatter={(value: any) => [value, 'Count']}
-                labelFormatter={(label) => `Error: ${label}`}
-              />
-              <Bar dataKey="count" name="Count">
-                {errorDistribution.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={getErrorColor(entry.errorMagnitude)} />
-                ))}
-              </Bar>
-              
-              {/* Average error line */}
-              <ReferenceLine 
-                x={Math.floor(modelMetrics.mape / 2) * 2 + '%'} 
-                stroke="#f7f9fb" 
-                strokeWidth={2} 
-                label={{ 
-                  value: 'Avg', 
-                  position: 'top', 
-                  fill: '#f7f9fb',
-                  fontSize: 10
-                }} 
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        )}
-      </div>
-    </div>
+    </ChartWrapper>
   );
 };
 

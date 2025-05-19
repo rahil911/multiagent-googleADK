@@ -1,24 +1,18 @@
-// Primary dashboard components
+// Export dashboard components
 export { default as DemandForecastDashboard } from './dashboard/DemandForecastDashboard';
 export { default as ForecastHorizonExplorer } from './dashboard/ForecastHorizonExplorer';
 export { default as ModelPerformanceAnalyzer } from './dashboard/ModelPerformanceAnalyzer';
-
+export { default as SeasonalPatternDetector } from './dashboard/seasonalPatternDetector';
 export { default as ForecastScenarioBuilder } from './dashboard/ForecastScenarioBuilder';
 export { default as KpiTilesRow } from './dashboard/KpiTilesRow';
-export { default as SeasonalPatternDetector } from './dashboard/SeasonalPatternDetector';
 
-// Secondary visualizations
-export { default as ForecastErrorDecomposition } from './secondaryVisualizations/ForecastErrorDecomposition';
-export { default as DemandDriverAnalyzer } from './secondaryVisualizations/DemandDriverAnalyzer';
+// Export visualization components
+export { default as ForecastLineChart } from './visualizations/ForecastLineChart';
+export { default as ModelPerformanceScatter } from './visualizations/ModelPerformanceScatter';
+export { default as SeasonalHeatmap } from './visualizations/SeasonalHeatmap';
 
-// Conversational components
+// Export conversational components
 export { default as ForecastInsightAssistant } from './conversational/ForecastInsightAssistant';
-export { default as PlanningRecommendationEngine } from './conversational/PlanningRecommendationEngine';
 
-// Control components
-export { default as ForecastFilterControls } from './controls/ForecastFilterControls';
-export { default as ModelSelector } from './controls/ModelSelector';
-export { default as ConfidenceSlider } from './controls/ConfidenceSlider';
-
-
+// Export common components
 export { default as ChartWrapper } from './common/ChartWrapper';

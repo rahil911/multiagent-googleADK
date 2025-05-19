@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine, Area } from 'recharts';
 import { ForecastHorizon, ForecastMetric, DimensionFilter, ForecastData } from '../../types';
-import { formatCurrency, formatNumber, formatPercentage } from '../../utils/chartHelpers';
+import { formatCurrency, formatNumber, formatPercentage, formatDate, getConfidenceIntervalColor } from '../../utils/chartHelpers';
+import ChartWrapper from '../common/ChartWrapper';
+import { useTheme } from '../../../../../../ui-common/design-system/theme';
 
 interface ForecastHorizonExplorerProps {
   horizon: ForecastHorizon;
@@ -13,6 +15,7 @@ interface ForecastHorizonExplorerProps {
   filters: DimensionFilter;
   onFilterChange: (filters: DimensionFilter) => void;
   onClearFilters: () => void;
+  data?: ForecastData[]; // Optional prop for when data is passed from parent
 }
 
 const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
@@ -25,8 +28,9 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
   filters,
   onFilterChange,
   onClearFilters,
+  data: externalData,
 }) => {
-  // Mock data - would be fetched from API in real implementation
+  const theme = useTheme();
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [totalForecast, setTotalForecast] = useState<number>(0);
@@ -35,6 +39,12 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
 
   // Simulating data fetch on parameter changes
   useEffect(() => {
+    if (externalData) {
+      setForecastData(externalData);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     
     // This would be an API call in real implementation
@@ -124,7 +134,7 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
     
     // Simulate API delay
     setTimeout(fetchData, 500);
-  }, [horizon, metric, confidenceLevel, filters]);
+  }, [horizon, metric, confidenceLevel, filters, externalData]);
 
   // Format value for tooltip
   const formatTooltipValue = (value: number) => {
@@ -132,25 +142,68 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
     return metric === 'revenue' ? formatCurrency(value) : formatNumber(value);
   };
 
+  // Format date for X-axis
+  const formatXAxis = (dateStr: string) => {
+    return formatDate(dateStr, horizon);
+  };
+
   // Custom tooltip component
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
+      const date = new Date(label);
+      const formattedDate = formatDate(label, horizon);
+
       return (
-        <div className="bg-midnight-navy p-4 rounded-md shadow-lg border border-electric-cyan">
-          <p className="text-cloud-white font-semibold">{label}</p>
+        <div style={{
+          backgroundColor: theme.colors.midnight,
+          padding: theme.spacing[3],
+          border: `1px solid ${theme.colors.electricCyan}`,
+          borderRadius: '8px',
+          boxShadow: theme.shadows.md
+        }}>
+          <p style={{ 
+            color: theme.colors.cloudWhite, 
+            fontWeight: theme.typography.fontWeight.semiBold,
+            margin: '0 0 8px 0'
+          }}>
+            {formattedDate}
+          </p>
+          
           {data.actual > 0 && (
-            <p className="text-electric-cyan">
+            <p style={{ 
+              color: theme.colors.electricCyan,
+              margin: '4px 0',
+              fontSize: theme.typography.fontSize.sm
+            }}>
               Actual: {formatTooltipValue(data.actual)}
             </p>
           )}
+          
           {data.forecast > 0 && (
             <>
-              <p className="text-signal-magenta">
+              <p style={{ 
+                color: theme.colors.signalMagenta,
+                margin: '4px 0',
+                fontSize: theme.typography.fontSize.sm
+              }}>
                 Forecast: {formatTooltipValue(data.forecast)}
               </p>
-              <p className="text-signal-magenta opacity-70 text-sm">
+              <p style={{ 
+                color: theme.colors.signalMagenta,
+                opacity: 0.7,
+                margin: '4px 0',
+                fontSize: theme.typography.fontSize.sm
+              }}>
                 Range: {formatTooltipValue(data.lowerBound)} - {formatTooltipValue(data.upperBound)}
+              </p>
+              <p style={{ 
+                color: theme.colors.cloudWhite,
+                opacity: 0.8,
+                margin: '4px 0',
+                fontSize: theme.typography.fontSize.xs
+              }}>
+                Confidence: {confidenceLevel}%
               </p>
             </>
           )}
@@ -160,233 +213,320 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
     return null;
   };
 
-  // Filter components
-  const ProductFilter = () => {
-    const products = ["All Products", "Product A", "Product B", "Product C"];
-    return (
-      <select 
-        className="bg-midnight-navy text-cloud-white p-2 rounded-md"
-        value={filters.product || "All Products"}
-        onChange={(e) => onFilterChange({ product: e.target.value !== "All Products" ? e.target.value : undefined })}
-      >
-        {products.map(product => (
-          <option key={product} value={product}>{product}</option>
-        ))}
-      </select>
-    );
-  };
+  // Button styles
+  const buttonStyle = (active: boolean) => ({
+    flex: 1,
+    padding: '8px 16px',
+    borderRadius: '24px',
+    backgroundColor: active ? theme.colors.electricCyan : theme.colors.midnight,
+    color: active ? theme.colors.midnight : theme.colors.cloudWhite,
+    border: 'none',
+    fontWeight: theme.typography.fontWeight.medium,
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    fontFamily: theme.typography.fontFamily,
+    fontSize: theme.typography.fontSize.sm,
+  });
 
-  const RegionFilter = () => {
-    const regions = ["All Regions", "North", "South", "East", "West"];
-    return (
-      <select 
-        className="bg-midnight-navy text-cloud-white p-2 rounded-md"
-        value={filters.region || "All Regions"}
-        onChange={(e) => onFilterChange({ region: e.target.value !== "All Regions" ? e.target.value : undefined })}
+  // Chart actions
+  const actions = (
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <button 
+        style={{
+          backgroundColor: 'transparent',
+          color: theme.colors.cloudWhite,
+          border: `1px solid ${theme.colors.graphiteDark}`,
+          borderRadius: '4px',
+          padding: '4px 8px',
+          fontSize: theme.typography.fontSize.sm,
+          cursor: 'pointer'
+        }}
       >
-        {regions.map(region => (
-          <option key={region} value={region}>{region}</option>
-        ))}
-      </select>
+        Export
+      </button>
+      <button 
+        style={{
+          backgroundColor: 'transparent',
+          color: theme.colors.cloudWhite,
+          border: `1px solid ${theme.colors.graphiteDark}`,
+          borderRadius: '4px',
+          padding: '4px 8px',
+          fontSize: theme.typography.fontSize.sm,
+          cursor: 'pointer'
+        }}
+      >
+        Share
+      </button>
+    </div>
+  );
+
+  // Filter components
+  const FilterControls = () => {
+    // Product filter
+    const ProductFilter = () => {
+      const products = ["All Products", "Product A", "Product B", "Product C"];
+      return (
+        <select 
+          style={{
+            backgroundColor: theme.colors.midnight,
+            color: theme.colors.cloudWhite,
+            padding: '8px 12px',
+            borderRadius: '4px',
+            border: `1px solid ${theme.colors.graphiteDark}`,
+            fontFamily: theme.typography.fontFamily,
+            fontSize: theme.typography.fontSize.sm,
+          }}
+          value={filters.product || "All Products"}
+          onChange={(e) => onFilterChange({ ...filters, product: e.target.value !== "All Products" ? e.target.value : undefined })}
+        >
+          {products.map(product => (
+            <option key={product} value={product}>{product}</option>
+          ))}
+        </select>
+      );
+    };
+
+    // Region filter
+    const RegionFilter = () => {
+      const regions = ["All Regions", "North", "South", "East", "West"];
+      return (
+        <select 
+          style={{
+            backgroundColor: theme.colors.midnight,
+            color: theme.colors.cloudWhite,
+            padding: '8px 12px',
+            borderRadius: '4px',
+            border: `1px solid ${theme.colors.graphiteDark}`,
+            fontFamily: theme.typography.fontFamily,
+            fontSize: theme.typography.fontSize.sm,
+          }}
+          value={filters.region || "All Regions"}
+          onChange={(e) => onFilterChange({ ...filters, region: e.target.value !== "All Regions" ? e.target.value : undefined })}
+        >
+          {regions.map(region => (
+            <option key={region} value={region}>{region}</option>
+          ))}
+        </select>
+      );
+    };
+
+    return (
+      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <ProductFilter />
+        <RegionFilter />
+        {Object.keys(filters).length > 0 && (
+          <button
+            style={{
+              backgroundColor: 'transparent',
+              color: theme.colors.electricCyan,
+              border: 'none',
+              padding: '4px 8px',
+              cursor: 'pointer',
+              fontFamily: theme.typography.fontFamily,
+              fontSize: theme.typography.fontSize.sm,
+            }}
+            onClick={onClearFilters}
+          >
+            Clear Filters
+          </button>
+        )}
+      </div>
     );
   };
 
   return (
-    <div className="flex flex-col space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-cloud-white">Forecast Horizon Explorer</h2>
-        <div className="flex space-x-2">
-          {/* Export & Share buttons would go here */}
-          <button className="bg-midnight-navy text-cloud-white px-3 py-1 rounded-md hover:bg-electric-cyan hover:text-midnight-navy transition-colors">
-            Export
-          </button>
-          <button className="bg-midnight-navy text-cloud-white px-3 py-1 rounded-md hover:bg-electric-cyan hover:text-midnight-navy transition-colors">
-            Share
-          </button>
-        </div>
-      </div>
-
-      {/* Controls row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {/* Forecast period selector */}
-        <div className="flex rounded-full bg-midnight-navy p-1">
-          {(['week', 'month', 'quarter', 'year'] as ForecastHorizon[]).map((period) => (
-            <button
-              key={period}
-              className={`flex-1 px-3 py-1 rounded-full transition-colors ${
-                horizon === period
-                  ? 'bg-electric-cyan text-midnight-navy'
-                  : 'text-cloud-white hover:bg-graphite'
-              }`}
-              onClick={() => onHorizonChange(period)}
-            >
-              {period.charAt(0).toUpperCase() + period.slice(1)}
-            </button>
-          ))}
-        </div>
-
-        {/* Metric selector */}
-        <div className="flex rounded-full bg-midnight-navy p-1">
-          {(['quantity', 'revenue'] as ForecastMetric[]).map((metricOption) => (
-            <button
-              key={metricOption}
-              className={`flex-1 px-3 py-1 rounded-full transition-colors ${
-                metric === metricOption
-                  ? 'bg-electric-cyan text-midnight-navy'
-                  : 'text-cloud-white hover:bg-graphite'
-              }`}
-              onClick={() => onMetricChange(metricOption)}
-            >
-              {metricOption.charAt(0).toUpperCase() + metricOption.slice(1)}
-            </button>
-          ))}
-        </div>
-
-        {/* Dimension filters */}
-        <div className="flex space-x-2">
-          <ProductFilter />
-          <RegionFilter />
-        </div>
-
-        {/* Reset filters button */}
-        <button
-          className="bg-midnight-navy text-cloud-white px-3 py-1 rounded-md hover:bg-electric-cyan hover:text-midnight-navy transition-colors"
-          onClick={onClearFilters}
-        >
-          Reset Filters
-        </button>
-      </div>
-
-      {/* Confidence level slider */}
-      <div className="flex items-center space-x-4">
-        <span className="text-cloud-white">Confidence Level:</span>
-        <input
-          type="range"
-          min="50"
-          max="95"
-          step="5"
-          value={confidenceLevel}
-          onChange={(e) => onConfidenceLevelChange(parseInt(e.target.value))}
-          className="flex-1"
-        />
-        <span className="text-electric-cyan font-semibold">{confidenceLevel}%</span>
-      </div>
-
-      {/* Main chart */}
-      <div className="h-96">
-        {loading ? (
-          <div className="flex h-full items-center justify-center">
-            <div className="text-electric-cyan">Loading forecast data...</div>
+    <ChartWrapper
+      title="Forecast Horizon Explorer"
+      isLoading={loading}
+      height={560}
+      actions={actions}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '16px' }}>
+        {/* Controls row */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+          {/* Forecast period selector */}
+          <div style={{ 
+            display: 'flex', 
+            backgroundColor: theme.colors.midnight, 
+            borderRadius: '24px', 
+            padding: '4px' 
+          }}>
+            {(['week', 'month', 'quarter', 'year'] as ForecastHorizon[]).map((period) => (
+              <button
+                key={period}
+                style={buttonStyle(horizon === period)}
+                onClick={() => onHorizonChange(period)}
+              >
+                {period.charAt(0).toUpperCase() + period.slice(1)}
+              </button>
+            ))}
           </div>
-        ) : (
+
+          {/* Metric selector */}
+          <div style={{ 
+            display: 'flex', 
+            backgroundColor: theme.colors.midnight, 
+            borderRadius: '24px', 
+            padding: '4px' 
+          }}>
+            {(['quantity', 'revenue'] as ForecastMetric[]).map((metricOption) => (
+              <button
+                key={metricOption}
+                style={buttonStyle(metric === metricOption)}
+                onClick={() => onMetricChange(metricOption)}
+              >
+                {metricOption.charAt(0).toUpperCase() + metricOption.slice(1)}
+              </button>
+            ))}
+          </div>
+
+          {/* Filters */}
+          <FilterControls />
+        </div>
+
+        {/* Confidence level slider */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <span style={{ 
+            color: theme.colors.cloudWhite, 
+            fontSize: theme.typography.fontSize.sm,
+            minWidth: '105px'
+          }}>
+            Confidence: {confidenceLevel}%
+          </span>
+          <input
+            type="range"
+            min="50"
+            max="95"
+            step="5"
+            value={confidenceLevel}
+            onChange={(e) => onConfidenceLevelChange(Number(e.target.value))}
+            style={{ 
+              flex: 1,
+              accentColor: theme.colors.electricCyan
+            }}
+          />
+        </div>
+
+        {/* Main chart */}
+        <div style={{ flex: 1, minHeight: '300px' }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={forecastData}
               margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#3a4459" opacity={0.2} />
+              <CartesianGrid 
+                strokeDasharray="3 3" 
+                stroke={`${theme.colors.graphiteDark}33`} 
+              />
               <XAxis 
                 dataKey="date" 
-                stroke="#f7f9fb"
-                tick={{ fill: '#f7f9fb' }} 
+                tickFormatter={formatXAxis}
+                stroke={theme.colors.cloudWhite}
+                tick={{ fill: theme.colors.cloudWhite, fontSize: 12 }}
               />
               <YAxis 
-                stroke="#f7f9fb" 
-                tick={{ fill: '#f7f9fb' }}
-                tickFormatter={(value) => 
-                  metric === 'revenue' 
-                    ? formatCurrency(value).replace(/\d+/g, 'K') 
-                    : (value > 1000 ? `${(value/1000).toFixed(0)}K` : value.toString())
-                }
+                tickFormatter={(value) => formatTooltipValue(value)}
+                stroke={theme.colors.cloudWhite}
+                tick={{ fill: theme.colors.cloudWhite, fontSize: 12 }}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Legend />
+              <Legend formatter={(value) => value.charAt(0).toUpperCase() + value.slice(1)} />
               
-              {/* Reference line for current date */}
+              {/* Today reference line */}
               <ReferenceLine 
-                x={forecastData[11].date} 
-                stroke="#f7f9fb" 
-                strokeDasharray="3 3" 
+                x={forecastData[11]?.date} 
                 label={{ 
                   value: 'Today', 
                   position: 'insideTopRight',
-                  fill: '#f7f9fb',
-                  fontSize: 12 
+                  fill: theme.colors.cloudWhite,
+                  fontSize: 12
                 }} 
+                stroke={theme.colors.cloudWhite}
+                strokeDasharray="3 3"
               />
               
-              {/* Historical data line */}
+              {/* Historical data */}
               <Line
                 type="monotone"
                 dataKey="actual"
-                stroke="#00e0ff"
+                stroke={theme.colors.electricCyan}
                 strokeWidth={3}
-                dot={{ r: 6 }}
-                activeDot={{ r: 8 }}
+                dot={{ r: 4, fill: theme.colors.electricCyan }}
+                activeDot={{ r: 6, fill: theme.colors.electricCyan }}
                 name="Historical"
               />
               
-              {/* Forecast line */}
+              {/* Forecast data */}
               <Line
                 type="monotone"
                 dataKey="forecast"
-                stroke="#e930ff"
+                stroke={theme.colors.signalMagenta}
                 strokeWidth={3}
                 strokeDasharray="5 5"
-                dot={{ r: 6 }}
-                activeDot={{ r: 8 }}
+                dot={{ r: 4, fill: theme.colors.signalMagenta }}
+                activeDot={{ r: 6, fill: theme.colors.signalMagenta }}
                 name="Forecast"
               />
               
-              {/* Confidence interval area - would be Area component in real implementation */}
-              <Line
+              {/* Confidence interval */}
+              <Area
                 type="monotone"
                 dataKey="upperBound"
-                stroke="#e930ff"
-                strokeWidth={1}
-                strokeOpacity={0.3}
-                dot={false}
-                activeDot={false}
+                stroke="transparent"
+                fill={getConfidenceIntervalColor(confidenceLevel)}
+                fillOpacity={0.3}
                 name="Upper Bound"
+                legendType="none"
               />
-              <Line
+              <Area
                 type="monotone"
                 dataKey="lowerBound"
-                stroke="#e930ff"
-                strokeWidth={1}
-                strokeOpacity={0.3}
-                dot={false}
-                activeDot={false}
+                stroke="transparent"
+                fill={theme.colors.signalMagenta}
+                fillOpacity={0.0}
                 name="Lower Bound"
+                legendType="none"
               />
             </LineChart>
           </ResponsiveContainer>
-        )}
-      </div>
+        </div>
 
-      {/* Forecast summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-midnight-navy rounded-xl p-4">
-        <div className="text-center">
-          <h3 className="text-cloud-white text-sm">Total Forecast</h3>
-          <p className="text-2xl font-semibold text-electric-cyan">
-            {metric === 'revenue' ? formatCurrency(totalForecast) : formatNumber(totalForecast)}
-          </p>
-        </div>
-        <div className="text-center">
-          <h3 className="text-cloud-white text-sm">Growth Projection</h3>
-          <p className={`text-2xl font-semibold ${growthProjection >= 0 ? 'text-electric-cyan' : 'text-signal-magenta'}`}>
-            {formatPercentage(growthProjection)}
-            {growthProjection >= 0 ? ' ↑' : ' ↓'}
-          </p>
-        </div>
-        <div className="text-center">
-          <h3 className="text-cloud-white text-sm">Average {horizon.charAt(0).toUpperCase() + horizon.slice(1)}ly Value</h3>
-          <p className="text-2xl font-semibold text-electric-cyan">
-            {metric === 'revenue' ? formatCurrency(averageDaily) : formatNumber(averageDaily)}
-          </p>
+        {/* Summary section */}
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          padding: '16px',
+          backgroundColor: theme.colors.midnight,
+          borderRadius: '8px'
+        }}>
+          <div>
+            <div style={{ 
+              fontSize: theme.typography.fontSize.lg, 
+              color: theme.colors.cloudWhite,
+              fontWeight: theme.typography.fontWeight.semiBold
+            }}>
+              Total {horizon} forecast: {formatTooltipValue(totalForecast)}
+            </div>
+            <div style={{ 
+              fontSize: theme.typography.fontSize.sm, 
+              color: theme.colors.cloudWhite,
+              opacity: 0.7,
+              marginTop: '4px'
+            }}>
+              Growth: {formatPercentage(growthProjection)} vs previous {horizon}
+            </div>
+          </div>
+          <div style={{ 
+            fontSize: theme.typography.fontSize.md, 
+            color: theme.colors.cloudWhite,
+            opacity: 0.9,
+            alignSelf: 'center'
+          }}>
+            Avg per {horizon}: {formatTooltipValue(averageDaily)}
+          </div>
         </div>
       </div>
-    </div>
+    </ChartWrapper>
   );
 };
 

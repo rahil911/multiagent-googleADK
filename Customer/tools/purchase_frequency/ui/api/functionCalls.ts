@@ -1,5 +1,5 @@
 // Function declarations for LLM control of Purchase Frequency Analyzer
-import { FunctionDeclaration } from '../../../../../../../Project/ui-common/utils/api/types';
+import { FunctionDeclaration } from '../../../../../ui-common/utils/api/types';
 
 export const purchaseFrequencyFunctions: FunctionDeclaration[] = [
   // Highlighting Functions
