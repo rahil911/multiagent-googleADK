@@ -34,10 +34,49 @@ export default async function handler(req, res) {
         : 'Low';
     });
 
+    // After fetching customers, add the following:
+    const probabilities = customers.map(c => c.churn_probability);
+    // Dummy feature importance for now (replace with real model output if available)
+    const feature_importance = [
+      { feature: 'Recency', importance: 0.32 },
+      { feature: 'Frequency', importance: 0.24 },
+      { feature: 'Avg Order Value', importance: 0.18 },
+      { feature: 'RFM', importance: 0.14 },
+      { feature: 'Diversity', importance: 0.12 }
+    ];
+    // Dummy time series (replace with real SQL aggregation if available)
+    const risk_time_series = [
+      { date: '2024-06-01', low: 120, medium: 60, high: 30, very_high: 10 },
+      { date: '2024-07-01', low: 110, medium: 70, high: 35, very_high: 15 },
+      { date: '2024-08-01', low: 100, medium: 80, high: 40, very_high: 20 }
+    ];
+    // Dummy segment matrix (replace with real SQL aggregation if available)
+    const segment_matrix = [
+      { segment: 'Enterprise', low: 40, medium: 20, high: 10, very_high: 5 },
+      { segment: 'SMB', low: 60, medium: 30, high: 15, very_high: 8 },
+      { segment: 'Consumer', low: 80, medium: 40, high: 20, very_high: 10 }
+    ];
+    // Dummy retention strategies
+    const retention_strategies = [
+      { title: 'Re-engagement Email Campaign', description: 'Target customers with 30+ days since last purchase with personalized offers.', impact: '+12% retention', effort: 'Medium' },
+      { title: 'Proactive Support Outreach', description: 'Contact high-risk customers with recent support issues.', impact: '+8% retention', effort: 'High' }
+    ];
+    // Dummy insights
+    const insights = [
+      { title: 'Recent Risk Increase', content: '15% increase in high-risk customers over the past 30 days, driven by decreased purchase frequency in Enterprise.', type: 'alert' },
+      { title: 'Key Factor: Support Interactions', content: 'Support ticket volume is the top churn driver for high-risk customers.', type: 'factor' }
+    ];
+
     await db.close();
     res.status(200).json({
       status: 'success',
-      customers
+      customers,
+      probabilities,
+      feature_importance,
+      risk_time_series,
+      segment_matrix,
+      retention_strategies,
+      insights
     });
   } catch (error) {
     console.error('Error fetching churn prediction data:', error);
