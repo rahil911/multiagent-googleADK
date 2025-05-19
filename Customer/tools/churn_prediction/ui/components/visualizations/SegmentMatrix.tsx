@@ -26,7 +26,7 @@ export default function SegmentMatrix({ segmentMatrix }: SegmentMatrixProps) {
     segmentMatrix.map(s => s.very_high)
   ];
   return (
-    <Card style={{ height: 420, background: '#232a36', padding: 16 }}>
+    <Card style={{ background: '#232a36', padding: 16 }}>
       <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8 }}>Segment Comparison Matrix</div>
       <Plot
         data={[{
@@ -39,7 +39,6 @@ export default function SegmentMatrix({ segmentMatrix }: SegmentMatrixProps) {
           hoverongaps: false,
         }]}
         layout={{
-          height: 320,
           margin: { l: 80, r: 10, t: 10, b: 40 },
           xaxis: { title: 'Segment', showgrid: false, zeroline: false },
           yaxis: { title: 'Risk Level', showgrid: false, zeroline: false },

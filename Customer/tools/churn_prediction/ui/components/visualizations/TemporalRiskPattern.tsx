@@ -21,7 +21,7 @@ const riskLabels = ['Low', 'Medium', 'High', 'Very High'];
 export default function TemporalRiskPattern({ riskTimeSeries }: TemporalRiskPatternProps) {
   const dates = riskTimeSeries.map(d => d.date);
   return (
-    <Card style={{ height: 320, background: '#232a36', padding: 16, marginTop: 32 }}>
+    <Card style={{ background: '#232a36', padding: 16 }}>
       <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8 }}>Temporal Risk Pattern</div>
       <Plot
         data={[
@@ -67,7 +67,6 @@ export default function TemporalRiskPattern({ riskTimeSeries }: TemporalRiskPatt
           },
         ]}
         layout={{
-          height: 220,
           margin: { l: 40, r: 10, t: 10, b: 40 },
           xaxis: { title: 'Date', showgrid: false, zeroline: false },
           yaxis: { title: 'Customer Count', showgrid: false, zeroline: false },

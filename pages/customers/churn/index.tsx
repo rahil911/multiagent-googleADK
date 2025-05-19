@@ -75,11 +75,11 @@ export default function ChurnDashboardPage() {
             <SegmentMatrix segmentMatrix={data.segment_matrix || []} />
           </Grid>
           <TemporalRiskPattern riskTimeSeries={data.risk_time_series || []} />
-          <RetentionStrategies strategies={data.retention_strategies || []} />
           <CustomerTable customers={data.customers || []} page={page} onPageChange={setPage} />
         </div>
-        <div style={{ flex: 1, minWidth: 340, maxWidth: 400 }}>
+        <div style={{ flex: 1, minWidth: 340, maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 32 }}>
           <InsightsDrawer insights={data.insights || []} />
+          <RetentionStrategies strategies={data.retention_strategies || []} />
         </div>
       </div>
     </div>

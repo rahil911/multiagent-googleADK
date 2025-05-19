@@ -20,35 +20,31 @@ const levelGap = 4;
 
 const ChurnRiskPyramid: React.FC<ChurnRiskPyramidProps> = (props) => {
   // Always use passed width/height or fallback
-  const width = props.width ?? 520;
-  const height = props.height ?? 400;
   const customers = props.customers || props.data || [];
-  console.log('ChurnRiskPyramid customers:', customers, 'width:', width, 'height:', height);
+  // console.log('ChurnRiskPyramid customers:', customers);
 
   // Count customers per risk level
   const counts = riskLevels.map(l => customers.filter(c => c.risk_level === l.key).length);
   const total = customers.length || 1;
   const percentages = counts.map(c => (c / total) * 100);
 
-  // Calculate max width for base
-  const baseWidth = width * 0.9;
-  const minWidth = width * 0.25;
-
-  // Calculate widths for each level (proportional to count, but min width enforced)
-  const widths = counts.map((c, i) => {
-    if (total === 0) return minWidth;
-    const w = minWidth + (baseWidth - minWidth) * (c / Math.max(...counts, 1));
-    return Math.max(minWidth, w);
-  });
-
   return (
-    <div style={{ width, height, minWidth: 320, minHeight: 240, background: '#232a36', borderRadius: 16, padding: 24, position: 'relative', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}>
-      <h3 style={{ margin: 0, marginBottom: 16, color: '#f7f9fb', fontWeight: 700, fontSize: 20 }}>Churn Risk Pyramid</h3>
-      <svg width={width} height={height - 40}>
+    <div style={{ width: '100%', height: '100%', minWidth: 320, minHeight: 380, background: '#232a36', borderRadius: 16, padding: 24, position: 'relative', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column' }}>
+      <h3 style={{ margin: 0, marginBottom: 16, color: '#f7f9fb', fontWeight: 700, fontSize: 20, flexShrink: 0 }}>Churn Risk Pyramid</h3>
+      <svg viewBox={`0 0 ${props.width || 520} ${props.height || 360}`} style={{ flexGrow: 1, width: '100%', height: '100%' }}>
         {riskLevels.map((level, i) => {
           const y = i * (levelHeight + levelGap);
-          const w = widths[i];
-          const x = (width - w) / 2;
+          // Use a reference width for proportional calculations, parent width for positioning
+          const refWidth = props.width || 520;
+          const baseWidth = refWidth * 0.9;
+          const minRectWidth = refWidth * 0.25;
+          const rectWidths = counts.map((c) => {
+            if (total === 0) return minRectWidth;
+            const w = minRectWidth + (baseWidth - minRectWidth) * (c / Math.max(...counts, 1));
+            return Math.max(minRectWidth, w);
+          });
+          const w = rectWidths[i];
+          const x = (refWidth - w) / 2; // Center based on refWidth
           return (
             <g key={level.key}>
               <rect
@@ -61,7 +57,7 @@ const ChurnRiskPyramid: React.FC<ChurnRiskPyramidProps> = (props) => {
                 style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.15))' }}
               />
               <text
-                x={width / 2}
+                x={refWidth / 2} // Center text based on refWidth
                 y={y + levelHeight / 2 - 8}
                 textAnchor="middle"
                 fill="#f7f9fb"
@@ -71,7 +67,7 @@ const ChurnRiskPyramid: React.FC<ChurnRiskPyramidProps> = (props) => {
                 {level.key}
               </text>
               <text
-                x={width / 2}
+                x={refWidth / 2} // Center text based on refWidth
                 y={y + levelHeight / 2 + 18}
                 textAnchor="middle"
                 fill="#f7f9fb"

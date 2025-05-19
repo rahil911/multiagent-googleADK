@@ -13,7 +13,7 @@ export interface RetentionStrategiesProps {
 
 export default function RetentionStrategies({ strategies }: RetentionStrategiesProps) {
   return (
-    <Card style={{ minHeight: 180, background: 'linear-gradient(90deg, #232a36 60%, #2c3341 100%)', padding: 16, marginTop: 32 }}>
+    <Card style={{ minHeight: 180, background: 'linear-gradient(90deg, #232a36 60%, #2c3341 100%)', padding: 16 }}>
       <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8 }}>Recommended Retention Strategies</div>
       {strategies.map((s, i) => (
         <div key={i} style={{ background: '#0a1224', borderLeft: '4px solid #00e0ff', borderRadius: 8, padding: 12, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

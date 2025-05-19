@@ -23,7 +23,7 @@ export default function FeatureImportance({ features, sortBy = 'importance', onS
   }, [features, sortBy]);
 
   return (
-    <Card style={{ height: 480, background: '#232a36', padding: 16 }}>
+    <Card style={{ background: '#232a36', padding: 16 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 700, fontSize: 18, marginBottom: 8 }}>
         <span>Feature Importance</span>
         <select value={sortBy} onChange={e => onSortChange?.(e.target.value as any)} style={{ background: '#181e2a', color: '#f7f9fb', border: '1px solid #2c3341', borderRadius: 4 }}>
@@ -44,7 +44,6 @@ export default function FeatureImportance({ features, sortBy = 'importance', onS
           hoverinfo: 'x+y',
         }]}
         layout={{
-          height: 400,
           margin: { l: 120, r: 10, t: 10, b: 40 },
           xaxis: {
             title: 'Importance',

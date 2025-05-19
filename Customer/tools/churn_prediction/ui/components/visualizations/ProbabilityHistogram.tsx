@@ -37,7 +37,7 @@ export default function ProbabilityHistogram({
   const binEdges = Array.from({ length: binCount + 1 }, (_, i) => i / binCount);
 
   return (
-    <Card style={{ height: 320, background: '#232a36', padding: 16 }}>
+    <Card style={{ background: '#232a36', padding: 16 }}>
       <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8 }}>Churn Probability Distribution</div>
       <Plot
         data={[{
@@ -54,7 +54,6 @@ export default function ProbabilityHistogram({
           hoverinfo: 'x+y',
         }]}
         layout={{
-          height: 260,
           margin: { l: 40, r: 10, t: 10, b: 40 },
           xaxis: {
             title: 'Churn Probability',
