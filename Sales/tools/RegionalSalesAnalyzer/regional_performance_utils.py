@@ -10,7 +10,7 @@ import base64
 import sys
 import os
 from pathlib import Path
-from Project.Sales.database.column_mapping import get_db_column
+from Sales.database.column_mapping import get_db_column
 import sqlite3
 
 # Configure logging

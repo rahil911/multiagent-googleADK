@@ -13,7 +13,7 @@ project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../
 sys.path.insert(0, project_dir)
 
 from SalesTrendAnalyzer import SalesTrendAnalyzer
-from Project.Sales.database.connection import get_connection
+from Sales.database.connection import get_connection
 
 class TestSalesTrendAnalyzer(unittest.TestCase):
     

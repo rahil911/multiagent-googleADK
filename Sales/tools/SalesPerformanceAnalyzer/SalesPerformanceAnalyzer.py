@@ -19,15 +19,15 @@ import base64
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../..'))
 sys.path.insert(0, project_root)
 
-from Project.Sales.database.connection import get_connection
-from Project.Sales.database.query_templates import get_date_range, get_latest_date
+from Sales.database.connection import get_connection
+from Sales.database.query_templates import get_date_range, get_latest_date
 from visualization_utils import (
     save_matplotlib_plot,
     save_plotly_plot,
     create_performance_plot,
     generate_filename
 )
-from Project.Sales.database import config
+from Sales.database import config
 
 logger = logging.getLogger(__name__)
 

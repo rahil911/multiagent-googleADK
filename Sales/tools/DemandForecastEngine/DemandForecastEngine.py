@@ -20,7 +20,7 @@ import sys
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../..'))
 sys.path.insert(0, project_root)
 from datetime import datetime, timedelta
-from Project.Sales.database.forecast_utils import (
+from Sales.database.forecast_utils import (
     fetch_sales_data,
     prepare_time_series_data,
     detect_time_series_properties,

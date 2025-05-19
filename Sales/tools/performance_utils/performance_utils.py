@@ -12,7 +12,7 @@ from typing import Dict, Any, List, Optional
 import logging
 
 # Add database connector import
-from Project.Sales.database.connector import get_db_connector
+from Sales.database.connector import get_db_connector
 
 logger = logging.getLogger(__name__)
 

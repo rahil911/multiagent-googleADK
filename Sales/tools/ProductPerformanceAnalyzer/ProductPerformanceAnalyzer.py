@@ -17,9 +17,9 @@ import sys
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../..'))
 sys.path.insert(0, project_root)
 
-from Project.Sales.database.connection import get_connection
-from Project.Sales.database.query_templates import get_latest_date
-from Project.Sales.database import config
+from Sales.database.connection import get_connection
+from Sales.database.query_templates import get_latest_date
+from Sales.database import config
 
 # Configure logging
 logging.basicConfig(level=config.LOGGING['level'])

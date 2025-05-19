@@ -9,11 +9,11 @@ import io
 import base64
 import sqlite3
 
-from Project.Inventory.database.connector import DatabaseConnector
-from Project.Inventory.tools.InventoryOptimizationAnalyzer.InventoryLevelAnalyzer import analyze_inventory_levels
-from Project.Inventory.tools.InventoryOptimizationAnalyzer.InventoryHoldingCostAnalyzer import analyze_holding_costs
-from Project.Inventory.tools.InventoryOptimizationAnalyzer.SlowMovingInventoryAnalyzer import analyze_slow_moving_inventory
-from Project.Inventory.tools.InventoryOptimizationAnalyzer.StockOptimizationRecommender import optimize_stock_levels
+from Inventory.database.connector import DatabaseConnector
+from Inventory.tools.InventoryOptimizationAnalyzer.InventoryLevelAnalyzer import analyze_inventory_levels
+from Inventory.tools.InventoryOptimizationAnalyzer.InventoryHoldingCostAnalyzer import analyze_holding_costs
+from Inventory.tools.InventoryOptimizationAnalyzer.SlowMovingInventoryAnalyzer import analyze_slow_moving_inventory
+from Inventory.tools.InventoryOptimizationAnalyzer.StockOptimizationRecommender import optimize_stock_levels
 
 # Setup logger
 logger = logging.getLogger(__name__)
