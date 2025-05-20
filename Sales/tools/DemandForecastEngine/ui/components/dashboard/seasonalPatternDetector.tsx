@@ -304,14 +304,16 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
     <ChartWrapper
       title="Seasonal Pattern Detector"
       isLoading={loading}
-      height={480}
+      height={780}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '16px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '12px' }}>
         {/* Controls */}
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: 'center',
+          flexShrink: 0,
+          marginBottom: '4px'
         }}>
           <div>
             <div style={{ 
@@ -349,11 +351,11 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
           </div>
         </div>
         
-        <div style={{ display: 'flex', flex: 1, gap: '16px' }}>
+        <div style={{ display: 'flex', flex: 1, gap: '16px', minHeight: 620 }}>
           {/* Main visualization area */}
           <div style={{ flex: 3, display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {/* Seasonal index chart */}
-            <div style={{ flex: 1 }}>
+            {/* Seasonal index chart - with fixed height */}
+            <div style={{ height: '250px', flexShrink: 0 }}>
               <div style={{ height: '100%' }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
@@ -403,10 +405,9 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
               </div>
             </div>
             
-            {/* Seasonal heatmap - adjusted heights and margins */}
-            <div style={{ flex: 1, minHeight: 120 }}>
+            {/* Seasonal heatmap - with increased fixed height */}
+            <div style={{ flex: 1, minHeight: '320px' }}>
               <div style={{ height: '100%' }}>
-                {/* Reduced the height slightly to ensure it fits within the container */}
                 <SeasonalHeatmap 
                   data={heatmapData}
                   title="Multi-Year Pattern Analysis"
@@ -419,13 +420,15 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
             </div>
           </div>
           
-          {/* Side metrics panel */}
+          {/* Side metrics panel - with improved spacing */}
           <div style={{ flex: 1 }}>
             <div style={{
               backgroundColor: theme.colors.graphite,
               borderRadius: '8px',
               padding: '16px',
-              height: '100%'
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column'
             }}>
               <div style={{ 
                 color: theme.colors.cloudWhite,
@@ -438,32 +441,38 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
               
               {seasonalPattern && (
                 <>
-                  <MetricCard
-                    label="Peak Season"
-                    value={seasonalPattern.peakSeason}
-                  />
-                  
-                  <MetricCard
-                    label="Low Season"
-                    value={seasonalPattern.lowSeason}
-                  />
-                  
-                  <MetricCard
-                    label="Amplitude"
-                    value={seasonalPattern.amplitude.toFixed(2) + 'x'}
-                  />
+                  <div style={{ marginBottom: '16px' }}>
+                    <MetricCard
+                      label="Peak Season"
+                      value={seasonalPattern.peakSeason}
+                    />
+                    
+                    <MetricCard
+                      label="Low Season"
+                      value={seasonalPattern.lowSeason}
+                    />
+                    
+                    <MetricCard
+                      label="Amplitude"
+                      value={seasonalPattern.amplitude.toFixed(2) + 'x'}
+                    />
+                  </div>
                   
                   <div style={{ 
                     backgroundColor: theme.colors.midnight,
                     borderRadius: '8px',
-                    padding: '12px',
-                    marginTop: '24px'
+                    padding: '16px',
+                    marginTop: 'auto',
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-start'
                   }}>
                     <div style={{ 
                       color: theme.colors.cloudWhite,
                       fontSize: theme.typography.fontSize.sm,
                       fontWeight: theme.typography.fontWeight.semiBold,
-                      marginBottom: '8px'
+                      marginBottom: '16px'
                     }}>
                       Strategic Recommendations
                     </div>
@@ -472,7 +481,7 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
                       color: theme.colors.cloudWhite,
                       fontSize: theme.typography.fontSize.sm,
                       opacity: 0.8,
-                      marginBottom: '8px'
+                      marginBottom: '16px'
                     }}>
                       • Increase inventory {seasonalPattern.peakSeason} - {
                         (() => {
@@ -488,7 +497,7 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
                       color: theme.colors.cloudWhite,
                       fontSize: theme.typography.fontSize.sm,
                       opacity: 0.8,
-                      marginBottom: '8px'
+                      marginBottom: '16px'
                     }}>
                       • Plan promotions for {seasonalPattern.lowSeason}
                     </div>

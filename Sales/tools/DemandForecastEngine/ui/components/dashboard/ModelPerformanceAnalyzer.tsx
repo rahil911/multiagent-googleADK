@@ -380,21 +380,22 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
   return (
     <ChartWrapper
       title="Model Performance Analyzer"
-      height={600}
+      height={780}
       isLoading={loading}
     >
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        gap: '16px'
+        gap: '12px'
       }}>
         {/* Model type selector */}
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginBottom: '16px'
+          marginBottom: '8px',
+          flexShrink: 0
         }}>
           <div style={{
             color: theme.colors.cloudWhite,
@@ -440,7 +441,8 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
           gap: '12px',
-          marginBottom: '16px'
+          marginBottom: '8px',
+          flexShrink: 0
         }}>
           <MetricCard 
             title="MAPE" 
@@ -469,8 +471,8 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '16px',
-          flex: 1,
-          minHeight: 250 // Ensure minimum height for the chart containers
+          flex: 0.8,
+          minHeight: 280
         }}>
           {/* Actual vs Predicted Scatter Plot */}
           <div style={{ height: '100%' }}>
@@ -483,14 +485,15 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
                 color: theme.colors.cloudWhite,
                 fontSize: theme.typography.fontSize.sm,
                 fontWeight: theme.typography.fontWeight.medium,
-                marginBottom: '8px'
+                marginBottom: '8px',
+                flexShrink: 0
               }}>
                 Actual vs. Predicted
               </div>
               <div style={{ 
                 flex: 1, 
-                minHeight: 200, // Ensure the chart has enough vertical space
-                position: 'relative' // Establish positioning context
+                minHeight: 250,
+                position: 'relative'
               }}>
                 <ModelPerformanceScatter 
                   data={scatterData} 
@@ -515,7 +518,8 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
                 marginBottom: '8px',
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
+                flexShrink: 0
               }}>
                 <span>Error Distribution</span>
                 <div style={{ display: 'flex', gap: '4px' }}>
@@ -540,7 +544,7 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
                 </div>
               </div>
               
-              <div style={{ flex: 1, minHeight: 0 }}>
+              <div style={{ flex: 1, minHeight: 250 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={errorDistribution}
@@ -573,34 +577,39 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
           </div>
         </div>
         
-        {/* Model performance history */}
+        {/* Model performance history - increased space */}
         <div style={{
-          marginTop: '16px'
+          marginTop: '12px',
+          flexShrink: 0,
+          flex: 0.2,
+          minHeight: 180
         }}>
           <div style={{
             color: theme.colors.cloudWhite,
             fontSize: theme.typography.fontSize.sm,
             fontWeight: theme.typography.fontWeight.medium,
-            marginBottom: '8px'
+            marginBottom: '6px'
           }}>
             Model Performance History (MAPE)
           </div>
-          <div style={{ height: '120px' }}>
+          <div style={{ height: '160px' }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={historyData}
-                margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                margin={{ top: 5, right: 30, left: 0, bottom: 10 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke={`${theme.colors.graphiteDark}33`} />
                 <XAxis 
                   dataKey="date" 
                   tick={{ fill: theme.colors.cloudWhite, fontSize: 10 }}
                   stroke={theme.colors.cloudWhite}
+                  height={20}
                 />
                 <YAxis 
                   tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
                   tick={{ fill: theme.colors.cloudWhite, fontSize: 10 }}
                   stroke={theme.colors.cloudWhite}
+                  width={35}
                 />
                 <Tooltip content={<HistoryTooltip />} />
                 <Line 

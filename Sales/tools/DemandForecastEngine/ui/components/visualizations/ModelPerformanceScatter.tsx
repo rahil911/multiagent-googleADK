@@ -105,23 +105,23 @@ const ModelPerformanceScatter: React.FC<ModelPerformanceScatterProps> = ({
       height={height}
       isLoading={isLoading}
     >
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minHeight={180}>
         <ScatterChart
-          margin={{ top: 10, right: 10, bottom: 20, left: 10 }}
+          margin={{ top: 5, right: 5, bottom: 15, left: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke={`${theme.colors.graphiteDark}33`} />
           <XAxis 
             type="number" 
             dataKey="actual" 
             name="Actual" 
-            tick={{ fill: theme.colors.cloudWhite, fontSize: 10 }}
+            tick={{ fill: theme.colors.cloudWhite, fontSize: 9 }}
             stroke={theme.colors.cloudWhite}
             label={{
               value: 'Actual',
               position: 'insideBottomRight',
-              offset: -5,
+              offset: -2,
               fill: theme.colors.cloudWhite,
-              fontSize: 10
+              fontSize: 9
             }}
             tickFormatter={formatTick}
           />
@@ -129,18 +129,18 @@ const ModelPerformanceScatter: React.FC<ModelPerformanceScatterProps> = ({
             type="number" 
             dataKey="predicted" 
             name="Predicted" 
-            tick={{ fill: theme.colors.cloudWhite, fontSize: 10 }}
+            tick={{ fill: theme.colors.cloudWhite, fontSize: 9 }}
             stroke={theme.colors.cloudWhite}
             label={{
               value: 'Predicted',
               angle: -90,
               position: 'insideLeft',
               fill: theme.colors.cloudWhite,
-              fontSize: 10
+              fontSize: 9
             }}
             tickFormatter={formatTick}
           />
-          <ZAxis range={[40, 40]} />
+          <ZAxis range={[30, 30]} />
           <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<CustomTooltip />} />
           
           {/* Perfect prediction reference line */}
@@ -152,6 +152,7 @@ const ModelPerformanceScatter: React.FC<ModelPerformanceScatterProps> = ({
             ]} 
             stroke={theme.colors.cloudWhite}
             strokeDasharray="5 5"
+            strokeWidth={1}
           />
           
           {/* 5% error bands */}
@@ -164,6 +165,7 @@ const ModelPerformanceScatter: React.FC<ModelPerformanceScatterProps> = ({
             stroke={theme.colors.cloudWhite}
             strokeDasharray="3 3"
             strokeOpacity={0.3}
+            strokeWidth={1}
           />
           <ReferenceLine 
             segment={[
@@ -174,6 +176,7 @@ const ModelPerformanceScatter: React.FC<ModelPerformanceScatterProps> = ({
             stroke={theme.colors.cloudWhite}
             strokeDasharray="3 3"
             strokeOpacity={0.3}
+            strokeWidth={1}
           />
           
           <Scatter 

@@ -52,14 +52,15 @@ const SeasonalHeatmap: React.FC<SeasonalHeatmapProps> = ({
     >
       <div style={{ 
         width: '100%', 
-        height: 'calc(100% - 10px)',
+        height: '100%',
         display: 'grid',
-        gridTemplateRows: `repeat(${data.length + 1}, 1fr)`,
+        gridTemplateRows: `minmax(24px, auto) repeat(${data.length}, minmax(24px, 1fr))`,
         gridTemplateColumns: `80px repeat(12, 1fr)`,
-        gap: '1px',
+        gap: '2px',
         backgroundColor: theme.colors.graphiteDark,
         borderRadius: '4px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        minHeight: data.length * 28 + 28
       }}>
         {/* Header row with month names */}
         <div style={{ 
@@ -69,7 +70,9 @@ const SeasonalHeatmap: React.FC<SeasonalHeatmapProps> = ({
           justifyContent: 'center',
           color: theme.colors.cloudWhite,
           fontWeight: theme.typography.fontWeight.semiBold,
-          fontSize: theme.typography.fontSize.xs
+          fontSize: theme.typography.fontSize.xs,
+          minHeight: '28px',
+          padding: '4px 0'
         }}>
           Year
         </div>
@@ -80,7 +83,9 @@ const SeasonalHeatmap: React.FC<SeasonalHeatmapProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             color: theme.colors.cloudWhite,
-            fontSize: theme.typography.fontSize.xs
+            fontSize: theme.typography.fontSize.xs,
+            minHeight: '28px',
+            padding: '4px 0'
           }}>
             {month}
           </div>
@@ -97,7 +102,9 @@ const SeasonalHeatmap: React.FC<SeasonalHeatmapProps> = ({
               justifyContent: 'center',
               color: theme.colors.cloudWhite,
               fontWeight: theme.typography.fontWeight.medium,
-              fontSize: theme.typography.fontSize.xs
+              fontSize: theme.typography.fontSize.xs,
+              minHeight: '24px',
+              padding: '4px 0'
             }}>
               {yearData.year}
             </div>
@@ -111,19 +118,22 @@ const SeasonalHeatmap: React.FC<SeasonalHeatmapProps> = ({
                   style={{ 
                     backgroundColor: getColor(value),
                     position: 'relative',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    minHeight: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
                   title={`${month} ${yearData.year}: ${formatPercentage(value - 1)} vs average`}
                 >
                   {showValues && value > valueThreshold && (
                     <div style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
                       fontSize: theme.typography.fontSize.xs,
                       color: theme.colors.cloudWhite,
-                      fontWeight: theme.typography.fontWeight.bold
+                      fontWeight: theme.typography.fontWeight.bold,
+                      whiteSpace: 'nowrap',
+                      textShadow: '0 0 3px rgba(0,0,0,0.9)',
+                      pointerEvents: 'none'
                     }}>
                       {formatPercentage(value - 1)}
                     </div>

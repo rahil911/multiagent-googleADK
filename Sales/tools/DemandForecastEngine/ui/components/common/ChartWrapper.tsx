@@ -25,7 +25,7 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
   const theme = useTheme();
   
   // Calculate a slightly smaller height when a number is provided
-  const adjustedHeight = typeof height === 'number' ? height - 40 : height;
+  const adjustedHeight = typeof height === 'number' ? height - 30 : height;
 
   return (
     <div 
@@ -34,26 +34,28 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
         backgroundColor: theme.colors.graphite,
         borderRadius: '16px',
         boxShadow: theme.shadows.md,
-        overflow: 'hidden', // Keep hidden to enforce boundaries
+        overflow: 'hidden', // Changed back to 'hidden' to maintain chart boundaries
         display: 'flex',
         flexDirection: 'column',
         width,
         height: typeof adjustedHeight === 'number' ? `${adjustedHeight}px` : adjustedHeight,
         position: 'relative',
         boxSizing: 'border-box',
+        maxHeight: typeof adjustedHeight === 'number' ? `${adjustedHeight * 1.2}px` : 'none', // Reduced from 1.5 to 1.2
       }}
     >
       {/* Header with title */}
       {(title || actions) && (
         <div 
           style={{
-            padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
+            padding: `${theme.spacing[2]} ${theme.spacing[4]}`, // Reduced vertical padding
             borderBottom: `1px solid rgba(58, 68, 89, 0.5)`,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            flexShrink: 0, // Prevent header from shrinking
+            flexShrink: 0,
             boxSizing: 'border-box',
+            minHeight: '50px', // Reduced from 60px
           }}
         >
           <div>
@@ -73,7 +75,7 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
             {subtitle && (
               <p 
                 style={{
-                  margin: '4px 0 0 0',
+                  margin: '2px 0 0 0', // Reduced from 4px
                   color: theme.colors.cloudWhite,
                   opacity: 0.7,
                   fontSize: theme.typography.fontSize.sm,
@@ -94,13 +96,13 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
       <div 
         style={{
           flex: 1,
-          padding: theme.spacing[4],
+          padding: `${theme.spacing[3]}px ${theme.spacing[4]}px`, // Reduced vertical padding
           position: 'relative',
           boxSizing: 'border-box',
-          minHeight: 0, // Critical for flexbox children with percentage heights
+          minHeight: 0,
           display: 'flex',
           flexDirection: 'column',
-          overflow: 'hidden', // Keep to enforce boundaries
+          overflow: 'hidden', // Changed back to 'hidden' to maintain clean boundaries
         }}
       >
         {isLoading ? (
@@ -141,10 +143,11 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
         <div style={{ 
           width: '100%', 
           height: '100%',
-          overflow: 'hidden', 
+          overflow: 'hidden', // Changed back to 'hidden' to maintain clean boundaries
           display: 'flex',
           flexDirection: 'column',
-          minHeight: 0 // Critical for flex percentage-based content
+          minHeight: 0,
+          flex: 1,
         }}>
           {children}
         </div>
