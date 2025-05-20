@@ -157,7 +157,7 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
 
       return (
         <div style={{
-          backgroundColor: theme.colors.midnightNavy,
+          backgroundColor: theme.colors.midnight,
           padding: theme.spacing[3],
           border: `1px solid ${theme.colors.electricCyan}`,
           borderRadius: '8px',
@@ -182,7 +182,7 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
           )}
           
           {data.forecast > 0 && (
-            <>
+            <div>
               <p style={{ 
                 color: theme.colors.signalMagenta,
                 margin: '4px 0',
@@ -206,7 +206,7 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
               }}>
                 Confidence: {confidenceLevel}%
               </p>
-            </>
+            </div>
           )}
         </div>
       );
@@ -240,12 +240,12 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
       return (
         <select 
           style={{
-            backgroundColor: theme.colors.midnightNavy,
+            backgroundColor: theme.colors.midnight,
             color: theme.colors.cloudWhite,
             padding: '8px 12px',
             borderRadius: '4px',
-            border: `1px solid ${theme.colors.graphiteLight}`,
-            fontFamily: theme.typography.fontFamily.primary,
+            border: `1px solid ${theme.colors.graphiteDark}`,
+            fontFamily: 'inherit', // Use inherited font family
             fontSize: theme.typography.fontSize.sm,
           }}
           value={filters.product || "All Products"}
@@ -264,12 +264,12 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
       return (
         <select 
           style={{
-            backgroundColor: theme.colors.midnightNavy,
+            backgroundColor: theme.colors.midnight,
             color: theme.colors.cloudWhite,
             padding: '8px 12px',
             borderRadius: '4px',
-            border: `1px solid ${theme.colors.graphiteLight}`,
-            fontFamily: theme.typography.fontFamily.primary,
+            border: `1px solid ${theme.colors.graphiteDark}`,
+            fontFamily: 'inherit', // Use inherited font family
             fontSize: theme.typography.fontSize.sm,
           }}
           value={filters.region || "All Regions"}
@@ -306,13 +306,25 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
       height={560}
       actions={actions}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '16px' }}>
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: '100%', 
+        gap: '12px',
+        width: '100%'
+      }}>
         {/* Controls row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          gap: '12px',
+          flexWrap: 'wrap',
+          flexShrink: 0 // Prevent controls from shrinking
+        }}>
           {/* Forecast period selector */}
           <div style={{ 
             display: 'flex', 
-            backgroundColor: theme.colors.midnightNavy, 
+            backgroundColor: theme.colors.midnight, 
             borderRadius: '24px', 
             padding: '4px' 
           }}>
@@ -332,7 +344,7 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
           {/* Metric selector */}
           <div style={{ 
             display: 'flex', 
-            backgroundColor: theme.colors.midnightNavy, 
+            backgroundColor: theme.colors.midnight, 
             borderRadius: '24px', 
             padding: '4px' 
           }}>
@@ -354,7 +366,12 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
         </div>
 
         {/* Confidence level slider */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '12px',
+          flexShrink: 0 // Prevent slider from shrinking
+        }}>
           <span style={{ 
             color: theme.colors.cloudWhite, 
             fontSize: theme.typography.fontSize.sm,
@@ -377,29 +394,43 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
         </div>
 
         {/* Main chart */}
-        <div style={{ flex: 1, minHeight: '300px' }}>
+        <div style={{ 
+          flex: 1, 
+          minHeight: 0, // Critical for flexbox children with percentage heights
+          position: 'relative',
+          width: '100%'
+        }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={forecastData}
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              margin={{ top: 5, right: 20, left: 20, bottom: 25 }}
             >
               <CartesianGrid 
                 strokeDasharray="3 3" 
-                stroke={`${theme.colors.graphiteLight}33`} 
+                stroke={`${theme.colors.graphiteDark}33`} 
               />
               <XAxis 
                 dataKey="date" 
                 tickFormatter={formatXAxis}
                 stroke={theme.colors.cloudWhite}
                 tick={{ fill: theme.colors.cloudWhite, fontSize: 12 }}
+                height={35}
+                tickMargin={10}
               />
               <YAxis 
                 tickFormatter={(value) => formatTooltipValue(value)}
                 stroke={theme.colors.cloudWhite}
                 tick={{ fill: theme.colors.cloudWhite, fontSize: 12 }}
+                width={60}
+                tickMargin={5}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Legend formatter={(value) => value.charAt(0).toUpperCase() + value.slice(1)} />
+              <Legend 
+                formatter={(value) => value.charAt(0).toUpperCase() + value.slice(1)} 
+                wrapperStyle={{ paddingTop: 10 }}
+                verticalAlign="bottom" 
+                height={30}
+              />
               
               {/* Today reference line */}
               <ReferenceLine 
@@ -464,9 +495,10 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
         <div style={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
-          padding: '16px',
-          backgroundColor: theme.colors.midnightNavy,
-          borderRadius: '8px'
+          padding: '12px',
+          backgroundColor: theme.colors.midnight,
+          borderRadius: '8px',
+          flexShrink: 0 // Prevent summary from shrinking
         }}>
           <div>
             <div style={{ 

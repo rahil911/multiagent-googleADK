@@ -226,13 +226,34 @@ export default function ConversationalCanvas() {
       // Merge the fetched data with any provided props
       const mergedProps = { ...componentData, ...props };
       
+      // Determine appropriate size based on component type
+      let componentSize = { width: 500, height: 400 }; // Default size
+      
+      // Responsive sizes for forecast components
+      if (toolName === 'demand-forecast') {
+        switch (componentName) {
+          case 'linechart':
+          case 'performance':
+            componentSize = { width: 680, height: 500 }; // Reduced from previous size
+            break;
+          case 'scenario':
+            componentSize = { width: 680, height: 540 }; // Reduced from previous size
+            break;
+          case 'seasonal':
+            componentSize = { width: 650, height: 500 }; // Reduced from previous size
+            break;
+          default:
+            componentSize = { width: 650, height: 500 };
+        }
+      }
+      
       setComponents(prev => [
         ...prev,
         {
           id,
           type: componentType,
           position: componentPosition,
-          size: { width: 500, height: 400 }, // Larger default size for forecast visualizations
+          size: componentSize,
           props: mergedProps,
           Component: componentRegistry[toolName][componentName]
         }
@@ -554,7 +575,7 @@ export default function ConversationalCanvas() {
                   backgroundColor: '#1E293B',
                   borderRadius: '8px',
                   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-                  overflow: 'hidden',
+                  overflow: 'visible',
                   display: 'flex',
                   flexDirection: 'column',
                   cursor: isDragging && activeComponent === component.id ? 'grabbing' : 'grab',
@@ -572,6 +593,9 @@ export default function ConversationalCanvas() {
                   padding: '10px 15px',
                   borderBottom: '1px solid #2D3748',
                   backgroundColor: '#161E2E',
+                  height: '40px',
+                  boxSizing: 'border-box',
+                  flexShrink: 0
                 }}>
                   <div style={{ color: '#E2E8F0', fontWeight: 500 }}>
                     {component.type.split('.')[1]}
@@ -594,18 +618,34 @@ export default function ConversationalCanvas() {
                 </div>
                 <div 
                   style={{ 
-                    padding: '15px', 
+                    padding: '12px', // Reduced padding
                     flex: 1,
-                    overflow: 'auto',
-                    height: 'calc(100% - 40px)'
+                    overflow: 'hidden', // Change to hidden to enforce boundaries
+                    height: 'calc(100% - 40px)',
+                    boxSizing: 'border-box',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    position: 'relative'
                   }}
                   onClick={() => bringToForeground(component.id)}
                 >
-                  <component.Component 
-                    {...component.props} 
-                    width={component.size.width - 30} // Account for padding
-                    height={component.size.height - 80} // Account for header and padding
-                  />
+                  <div style={{
+                    width: '100%',
+                    height: '100%', // Changed from auto to 100%
+                    overflow: 'hidden', // Enforce boundaries
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <component.Component 
+                      {...component.props} 
+                      width={component.size.width - 24} // Adjusted for reduced padding
+                      height={component.size.height - 52} // Adjusted for reduced padding
+                    />
+                  </div>
                 </div>
                 {/* Resize handle */}
                 <div 

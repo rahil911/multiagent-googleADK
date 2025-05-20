@@ -107,20 +107,21 @@ const ModelPerformanceScatter: React.FC<ModelPerformanceScatterProps> = ({
     >
       <ResponsiveContainer width="100%" height="100%">
         <ScatterChart
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          margin={{ top: 10, right: 10, bottom: 20, left: 10 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke={`${theme.colors.graphiteDark}33`} />
           <XAxis 
             type="number" 
             dataKey="actual" 
             name="Actual" 
-            tick={{ fill: theme.colors.cloudWhite }}
+            tick={{ fill: theme.colors.cloudWhite, fontSize: 10 }}
             stroke={theme.colors.cloudWhite}
             label={{
               value: 'Actual',
               position: 'insideBottomRight',
-              offset: -10,
+              offset: -5,
               fill: theme.colors.cloudWhite,
+              fontSize: 10
             }}
             tickFormatter={formatTick}
           />
@@ -128,17 +129,18 @@ const ModelPerformanceScatter: React.FC<ModelPerformanceScatterProps> = ({
             type="number" 
             dataKey="predicted" 
             name="Predicted" 
-            tick={{ fill: theme.colors.cloudWhite }}
+            tick={{ fill: theme.colors.cloudWhite, fontSize: 10 }}
             stroke={theme.colors.cloudWhite}
             label={{
               value: 'Predicted',
               angle: -90,
               position: 'insideLeft',
               fill: theme.colors.cloudWhite,
+              fontSize: 10
             }}
             tickFormatter={formatTick}
           />
-          <ZAxis range={[60, 60]} />
+          <ZAxis range={[40, 40]} />
           <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<CustomTooltip />} />
           
           {/* Perfect prediction reference line */}

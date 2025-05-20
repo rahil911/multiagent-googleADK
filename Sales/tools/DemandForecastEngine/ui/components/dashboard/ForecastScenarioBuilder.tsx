@@ -360,7 +360,7 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
     <ChartWrapper
       title="Forecast Scenario Builder"
       isLoading={loading}
-      height={560}
+      height={600}
       actions={
         <button
           style={buttonStyle(true)}
@@ -370,31 +370,51 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
         </button>
       }
     >
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '16px' }}>
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: '100%', 
+        gap: '12px',
+        width: '100%'
+      }}>
         {/* Scenario chart */}
-        <div style={{ flex: 1, minHeight: '300px' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
+        <div style={{ 
+          flex: 1, 
+          minHeight: 0,
+          position: 'relative',
+          width: '100%'
+        }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              margin={{ top: 5, right: 20, left: 20, bottom: 25 }}
+            >
               <CartesianGrid 
                 strokeDasharray="3 3" 
                 stroke={`${theme.colors.graphiteDark}33`} 
               />
-                <XAxis 
+              <XAxis 
                 dataKey="date" 
                 tickFormatter={formatXAxis}
                 stroke={theme.colors.cloudWhite}
                 tick={{ fill: theme.colors.cloudWhite, fontSize: 12 }}
                 allowDuplicatedCategory={false}
-                />
-                <YAxis 
+                height={35}
+                tickMargin={10}
+              />
+              <YAxis 
                 tickFormatter={(value) => formatTooltipValue(value)}
                 stroke={theme.colors.cloudWhite}
                 tick={{ fill: theme.colors.cloudWhite, fontSize: 12 }}
+                width={60}
+                tickMargin={5}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Legend formatter={(value) => value} />
+              <Legend 
+                formatter={(value) => value} 
+                verticalAlign="bottom"
+                height={30}
+                wrapperStyle={{ paddingTop: 10 }}
+              />
               
               {/* Today reference line - only show if we have historical data */}
               {todayReference && (
@@ -412,8 +432,8 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
               )}
               
               {/* Historical data - shown on all scenarios */}
-                  <Line
-                    type="monotone"
+              <Line
+                type="monotone"
                 data={baselineData.filter(d => d.actual > 0)}
                 dataKey="actual"
                 stroke={theme.colors.cloudWhite}
@@ -438,7 +458,7 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                       data={forecastData}
                       dataKey="forecast"
                       stroke={scenario.color}
-                  strokeWidth={2} 
+                      strokeWidth={2} 
                       strokeDasharray={scenarioName !== 'Baseline' ? "5 5" : undefined}
                       dot={{ r: 3, fill: scenario.color }}
                       activeDot={{ r: 5, fill: scenario.color }}
@@ -446,15 +466,18 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                     />
                   );
               })}
-              </LineChart>
-            </ResponsiveContainer>
+            </LineChart>
+          </ResponsiveContainer>
         </div>
 
         {/* Scenario controls */}
         <div style={{ 
           backgroundColor: theme.colors.midnight,
           borderRadius: '8px',
-          padding: theme.spacing[3]
+          padding: '12px',
+          flexShrink: 0,
+          maxHeight: '180px',
+          overflowY: 'auto'
         }}>
           {editingScenario ? (
             // Scenario form
@@ -607,7 +630,7 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                 marginBottom: '8px'
               }}>
                 Scenarios
-            </div>
+              </div>
             
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {Object.values(scenarios).map(scenario => (

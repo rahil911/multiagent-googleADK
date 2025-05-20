@@ -469,7 +469,8 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '16px',
-          flex: 1
+          flex: 1,
+          minHeight: 250 // Ensure minimum height for the chart containers
         }}>
           {/* Actual vs Predicted Scatter Plot */}
           <div style={{ height: '100%' }}>
@@ -486,7 +487,11 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
               }}>
                 Actual vs. Predicted
               </div>
-              <div style={{ flex: 1, minHeight: 0 }}>
+              <div style={{ 
+                flex: 1, 
+                minHeight: 200, // Ensure the chart has enough vertical space
+                position: 'relative' // Establish positioning context
+              }}>
                 <ModelPerformanceScatter 
                   data={scatterData} 
                   metric={metric}

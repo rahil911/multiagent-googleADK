@@ -403,9 +403,10 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
               </div>
             </div>
             
-            {/* Seasonal heatmap */}
-            <div style={{ flex: 1 }}>
+            {/* Seasonal heatmap - adjusted heights and margins */}
+            <div style={{ flex: 1, minHeight: 120 }}>
               <div style={{ height: '100%' }}>
+                {/* Reduced the height slightly to ensure it fits within the container */}
                 <SeasonalHeatmap 
                   data={heatmapData}
                   title="Multi-Year Pattern Analysis"

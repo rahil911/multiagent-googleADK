@@ -23,6 +23,9 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
   actions,
 }) => {
   const theme = useTheme();
+  
+  // Calculate a slightly smaller height when a number is provided
+  const adjustedHeight = typeof height === 'number' ? height - 40 : height;
 
   return (
     <div 
@@ -31,12 +34,13 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
         backgroundColor: theme.colors.graphite,
         borderRadius: '16px',
         boxShadow: theme.shadows.md,
-        overflow: 'hidden',
+        overflow: 'hidden', // Keep hidden to enforce boundaries
         display: 'flex',
         flexDirection: 'column',
         width,
-        height: height || 'auto',
+        height: typeof adjustedHeight === 'number' ? `${adjustedHeight}px` : adjustedHeight,
         position: 'relative',
+        boxSizing: 'border-box',
       }}
     >
       {/* Header with title */}
@@ -48,6 +52,8 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            flexShrink: 0, // Prevent header from shrinking
+            boxSizing: 'border-box',
           }}
         >
           <div>
@@ -90,6 +96,11 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
           flex: 1,
           padding: theme.spacing[4],
           position: 'relative',
+          boxSizing: 'border-box',
+          minHeight: 0, // Critical for flexbox children with percentage heights
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden', // Keep to enforce boundaries
         }}
       >
         {isLoading ? (
@@ -127,7 +138,16 @@ const ChartWrapper: React.FC<ChartWrapperProps> = ({
             `}</style>
           </div>
         ) : null}
-        {children}
+        <div style={{ 
+          width: '100%', 
+          height: '100%',
+          overflow: 'hidden', 
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0 // Critical for flex percentage-based content
+        }}>
+          {children}
+        </div>
       </div>
     </div>
   );
