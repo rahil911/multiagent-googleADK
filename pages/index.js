@@ -64,6 +64,19 @@ export default function ConversationalCanvas() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [initialSize, setInitialSize] = useState({ width: 0, height: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0 });
+  // State for z-index management
+  const [zIndexCounter, setZIndexCounter] = useState(1);
+  const [componentZIndices, setComponentZIndices] = useState({});
+
+  // Function to bring a component to the foreground
+  const bringToForeground = (componentId) => {
+    setZIndexCounter(prev => prev + 1);
+    setComponentZIndices(prev => ({
+      ...prev,
+      [componentId]: zIndexCounter
+    }));
+    setActiveComponent(componentId);
+  };
 
   // Function to handle fetch errors
   const handleFetchError = (error) => {
@@ -225,6 +238,9 @@ export default function ConversationalCanvas() {
         }
       ]);
       
+      // Assign the highest z-index to the new component
+      bringToForeground(id);
+      
       setLoading(false);
       return id;
     } catch (error) {
@@ -247,11 +263,17 @@ export default function ConversationalCanvas() {
   // Function to remove a component
   const removeComponent = (componentId) => {
     setComponents(prev => prev.filter(component => component.id !== componentId));
+    // Remove component from z-index tracking
+    setComponentZIndices(prev => {
+      const updatedZIndices = {...prev};
+      delete updatedZIndices[componentId];
+      return updatedZIndices;
+    });
   };
   
   // Function to start dragging a component
   const handleDragStart = (e, component) => {
-    setActiveComponent(component.id);
+    bringToForeground(component.id);
     setIsDragging(true);
     setDragOffset({
       x: e.clientX - component.position.x,
@@ -262,7 +284,7 @@ export default function ConversationalCanvas() {
   
   // Function to start resizing a component
   const handleResizeStart = (e, component) => {
-    setActiveComponent(component.id);
+    bringToForeground(component.id);
     setIsResizing(true);
     setInitialSize({
       width: component.size.width,
@@ -317,7 +339,6 @@ export default function ConversationalCanvas() {
     const handleMouseUp = () => {
       setIsDragging(false);
       setIsResizing(false);
-      setActiveComponent(null);
     };
     
     if (isDragging || isResizing) {
@@ -536,9 +557,14 @@ export default function ConversationalCanvas() {
                   overflow: 'hidden',
                   display: 'flex',
                   flexDirection: 'column',
-                  cursor: isDragging && activeComponent === component.id ? 'grabbing' : 'grab'
+                  cursor: isDragging && activeComponent === component.id ? 'grabbing' : 'grab',
+                  zIndex: componentZIndices[component.id] || 1,
+                  border: activeComponent === component.id ? '2px solid #3b82f6' : '1px solid #2d3748'
                 }}
-                onMouseDown={(e) => handleDragStart(e, component)}
+                onMouseDown={(e) => {
+                  bringToForeground(component.id);
+                  handleDragStart(e, component);
+                }}
               >
                 <div style={{
                   display: 'flex',
@@ -566,12 +592,15 @@ export default function ConversationalCanvas() {
                     ×
                   </button>
                 </div>
-                <div style={{ 
-                  padding: '15px', 
-                  flex: 1,
-                  overflow: 'auto',
-                  height: 'calc(100% - 40px)'
-                }}>
+                <div 
+                  style={{ 
+                    padding: '15px', 
+                    flex: 1,
+                    overflow: 'auto',
+                    height: 'calc(100% - 40px)'
+                  }}
+                  onClick={() => bringToForeground(component.id)}
+                >
                   <component.Component 
                     {...component.props} 
                     width={component.size.width - 30} // Account for padding
