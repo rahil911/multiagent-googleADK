@@ -4,11 +4,15 @@ import {
   Legend, ResponsiveContainer, ReferenceLine, Area,
   BarChart, Bar, Cell
 } from 'recharts';
+import { useSelector, useDispatch } from 'react-redux';
 import { ForecastHorizon, ForecastMetric, DimensionFilter, SeasonalPattern } from '../../types';
 import ChartWrapper from '../common/ChartWrapper';
 import { useTheme } from '../../../../../../ui-common/design-system/theme';
 import { formatCurrency, formatNumber, formatPercentage } from '../../utils/chartHelpers';
 import SeasonalHeatmap from '../visualizations/SeasonalHeatmap';
+// Import the API directly for standalone use
+import demandForecastAPI from '../../api/demandForecastApi';
+import { selectSeasonalPattern } from '../../state/demandForecastSlice';
 
 interface SeasonalPatternDetectorProps {
   horizon: ForecastHorizon;
@@ -18,12 +22,15 @@ interface SeasonalPatternDetectorProps {
 }
 
 const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
-  horizon,
-  metric,
-  filters,
+  horizon = 'month',
+  metric = 'quantity',
+  filters = {},
   data: externalData,
 }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const reduxData = useSelector(selectSeasonalPattern);
+  
   const [loading, setLoading] = useState<boolean>(true);
   const [seasonalPattern, setSeasonalPattern] = useState<SeasonalPattern | null>(null);
   const [seasonalData, setSeasonalData] = useState<any[]>([]);
@@ -31,75 +38,161 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
   const [viewType, setViewType] = useState<'monthly' | 'quarterly' | 'weekly'>('monthly');
 
   useEffect(() => {
+    // First priority: Use data passed directly as props
     if (externalData) {
+      console.log("Using external prop data for Seasonal Pattern Detector");
       setSeasonalPattern(externalData);
-      setLoading(false);
+      generateVisualizationData(externalData);
       return;
     }
     
-    setLoading(true);
+    // Second priority: Use data from Redux store if available
+    if (reduxData && reduxData.pattern) {
+      console.log("Using Redux data for Seasonal Pattern Detector", reduxData.pattern);
+      setSeasonalPattern(reduxData.pattern);
+      generateVisualizationData(reduxData.pattern);
+      return;
+    }
     
-    // This would be an API call in real implementation
-    const fetchData = () => {
-      // Generate mock data for the seasonal pattern
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      
-      // Create seasonal indices for each month/period
-      const seasonalIndices = months.map((month, index) => {
-        // Create a sine wave pattern with some randomness
-        const baseValue = Math.sin((index / 12) * Math.PI * 2);
-        const seasonalIndex = 1 + baseValue * 0.35 + (Math.random() * 0.15 - 0.075);
-        
-        return {
-          period: month,
-          index: seasonalIndex,
-          actual: seasonalIndex > 1.1,
-        };
-      });
-      
-      // Create heatmap data showing multiple years
-      const heatmapRows = [];
-      for (let year = 2019; year <= 2023; year++) {
-        const yearData: {[key: string]: any} = { year };
-        
-        // For each month, add a normalized value
-        months.forEach((month, index) => {
-          // Apply the seasonal pattern with some year-to-year variation
-          const basePattern = seasonalIndices[index].index;
-          const yearVariation = 1 + ((year - 2019) * 0.03);
-          const randomVariation = Math.random() * 0.2 - 0.1;
-          const intensity = basePattern * yearVariation + randomVariation;
-          
-          yearData[month] = intensity;
-        });
-        
-        heatmapRows.push(yearData);
+    // Third priority: Fetch data directly with API call as fallback
+    setLoading(true);
+    console.log("No redux or prop data available, fetching from API directly");
+    
+    const fetchData = async () => {
+      try {
+        // Use the actual API function that generates mock data
+        const patterns = await demandForecastAPI.fetchSeasonalPatterns(
+          horizon,
+          metric,
+          filters
+        );
+
+        // If we got proper data back, use it
+        if (patterns) {
+          console.log("Successfully loaded seasonal pattern data:", patterns);
+          setSeasonalPattern(patterns);
+          generateVisualizationData(patterns);
+        } else {
+          console.error("No data returned from API");
+          generateFallbackData();
+        }
+      } catch (error) {
+        console.error("Error fetching seasonal pattern data:", error);
+        generateFallbackData();
       }
-      
-      // Calculate strength of seasonality pattern
-      const maxIndex = Math.max(...seasonalIndices.map(d => d.index));
-      const minIndex = Math.min(...seasonalIndices.map(d => d.index));
-      const maxMonth = months[seasonalIndices.findIndex(d => d.index === maxIndex)];
-      const minMonth = months[seasonalIndices.findIndex(d => d.index === minIndex)];
-      
-      setSeasonalPattern({
-        strength: 0.75 + Math.random() * 0.2, // 75-95%
-        peakSeason: maxMonth,
-        lowSeason: minMonth,
-        amplitude: maxIndex / minIndex,
-      });
-      
-      setSeasonalData(seasonalIndices);
-      setHeatmapData(heatmapRows);
-      setLoading(false);
     };
     
-    // Simulate API delay
-    setTimeout(fetchData, 500);
-  }, [horizon, metric, filters, externalData]);
+    fetchData();
+  }, [horizon, metric, filters, externalData, reduxData]);
+
+  // Function to generate the visualization data from a pattern object
+  const generateVisualizationData = (pattern: SeasonalPattern) => {
+    // Generate seasonal data from the pattern
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const seasonalIndices = months.map((month, index) => {
+      // Create a sine wave pattern with amplitude based on pattern strength
+      const baseValue = Math.sin((index / 12) * Math.PI * 2);
+      const seasonalIndex = 1 + baseValue * pattern.strength * 0.5;
+      
+      return {
+        period: month,
+        index: seasonalIndex,
+        actual: seasonalIndex > 1.1,
+      };
+    });
+    
+    // Create heatmap data
+    const heatmapRows = [];
+    for (let year = 2019; year <= 2023; year++) {
+      const yearData: {[key: string]: any} = { year };
+      
+      // For each month, add a normalized value
+      months.forEach((month, index) => {
+        const basePattern = seasonalIndices[index].index;
+        const yearVariation = 1 + ((year - 2019) * 0.03);
+        const randomVariation = Math.random() * 0.2 - 0.1;
+        const intensity = basePattern * yearVariation + randomVariation;
+        
+        yearData[month] = intensity;
+      });
+      
+      heatmapRows.push(yearData);
+    }
+    
+    setSeasonalData(seasonalIndices);
+    setHeatmapData(heatmapRows);
+    setLoading(false);
+  };
+  
+  // Original implementation as fallback
+  const generateFallbackData = () => {
+    console.log("Generating fallback mock data for Seasonal Pattern Detector");
+    // Generate mock data for the seasonal pattern
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    // Create seasonal indices for each month/period
+    const seasonalIndices = months.map((month, index) => {
+      // Create a sine wave pattern with some randomness
+      const baseValue = Math.sin((index / 12) * Math.PI * 2);
+      const seasonalIndex = 1 + baseValue * 0.35 + (Math.random() * 0.15 - 0.075);
+      
+      return {
+        period: month,
+        index: seasonalIndex,
+        actual: seasonalIndex > 1.1,
+      };
+    });
+    
+    // Create heatmap data showing multiple years
+    const heatmapRows = [];
+    for (let year = 2019; year <= 2023; year++) {
+      const yearData: {[key: string]: any} = { year };
+      
+      // For each month, add a normalized value
+      months.forEach((month, index) => {
+        // Apply the seasonal pattern with some year-to-year variation
+        const basePattern = seasonalIndices[index].index;
+        const yearVariation = 1 + ((year - 2019) * 0.03);
+        const randomVariation = Math.random() * 0.2 - 0.1;
+        const intensity = basePattern * yearVariation + randomVariation;
+        
+        yearData[month] = intensity;
+      });
+      
+      heatmapRows.push(yearData);
+    }
+    
+    // Calculate strength of seasonality pattern
+    const maxIndex = Math.max(...seasonalIndices.map(d => d.index));
+    const minIndex = Math.min(...seasonalIndices.map(d => d.index));
+    const maxMonth = months[seasonalIndices.findIndex(d => d.index === maxIndex)];
+    const minMonth = months[seasonalIndices.findIndex(d => d.index === minIndex)];
+    
+    const pattern = {
+      strength: 0.75 + Math.random() * 0.2, // 75-95%
+      peakSeason: maxMonth,
+      lowSeason: minMonth,
+      amplitude: maxIndex / minIndex,
+    };
+    
+    setSeasonalPattern(pattern);
+    setSeasonalData(seasonalIndices);
+    setHeatmapData(heatmapRows);
+    setLoading(false);
+  };
 
   // Custom tooltip for line chart
-    const CustomTooltip = ({ active, payload, label }: any) => {    if (active && payload && payload.length) {      const data = payload[0].payload;      return (        <div style={{          backgroundColor: theme.colors.midnight,          padding: theme.spacing[3],          border: `1px solid ${theme.colors.electricCyan}`,          borderRadius: '8px',          boxShadow: theme.shadows.md        }}>
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div style={{
+          backgroundColor: theme.colors.midnight,
+          padding: theme.spacing[3],
+          border: `1px solid ${theme.colors.electricCyan}`,
+          borderRadius: '8px',
+          boxShadow: theme.shadows.md
+        }}>
           <p style={{ 
             color: theme.colors.cloudWhite, 
             fontWeight: theme.typography.fontWeight.semiBold,
@@ -184,9 +277,9 @@ const SeasonalPatternDetector: React.FC<SeasonalPatternDetectorProps> = ({
         {label}
       </div>
       <div style={{
-        fontSize: theme.typography.fontSize.lg,
-        fontWeight: theme.typography.fontWeight.semiBold,
-        color: theme.colors.electricCyan
+        fontSize: theme.typography.fontSize.xl,
+        color: theme.colors.electricCyan,
+        fontWeight: theme.typography.fontWeight.semiBold
       }}>
         {value}
       </div>

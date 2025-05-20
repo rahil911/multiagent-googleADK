@@ -4,11 +4,15 @@ import {
   Tooltip, Legend, ResponsiveContainer, ReferenceLine, 
   BarChart, Bar, Cell, LineChart, Line
 } from 'recharts';
+import { useSelector, useDispatch } from 'react-redux';
 import { ForecastHorizon, ForecastMetric, DimensionFilter, ModelType, ModelPerformance } from '../../types';
 import { formatCurrency, formatNumber, formatPercentage, getErrorColor } from '../../utils/chartHelpers';
 import ChartWrapper from '../common/ChartWrapper';
 import { useTheme } from '../../../../../../ui-common/design-system/theme';
 import ModelPerformanceScatter from '../visualizations/ModelPerformanceScatter';
+// Import the API directly for standalone use
+import demandForecastAPI from '../../api/demandForecastApi';
+import { selectModelPerformance } from '../../state/demandForecastSlice';
 
 interface ModelPerformanceAnalyzerProps {
   modelType: ModelType;
@@ -39,14 +43,16 @@ interface ModelHistoryPoint {
 }
 
 const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
-  modelType,
-  onModelTypeChange,
-  horizon,
-  metric,
-  filters,
+  modelType = 'movingAverage',
+  onModelTypeChange = () => {/* No-op default handler */},
+  horizon = 'month',
+  metric = 'quantity', 
+  filters = {},
   data: externalData,
 }) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const reduxData = useSelector(selectModelPerformance);
   
   // Mock state for model data
   const [scatterData, setScatterData] = useState<ScatterPoint[]>([]);
@@ -63,138 +69,174 @@ const ModelPerformanceAnalyzer: React.FC<ModelPerformanceAnalyzerProps> = ({
 
   // Generate mock data when parameters change
   useEffect(() => {
+    // First priority: Use data passed directly as props
     if (externalData) {
+      console.log("Using external prop data for Model Performance Analyzer");
       setModelMetrics(externalData);
-      setLoading(false);
+      generateVisualizationData(externalData);
       return;
     }
     
-    setLoading(true);
+    // Second priority: Use data from Redux store if available
+    if (reduxData && reduxData.performance) {
+      console.log("Using Redux data for Model Performance Analyzer", reduxData.performance);
+      setModelMetrics(reduxData.performance);
+      generateVisualizationData(reduxData.performance);
+      return;
+    }
     
-    // This would be an API call in real implementation
-    const fetchData = () => {
-      // Generate scatter plot data (actual vs predicted)
-      const scatterPoints: ScatterPoint[] = [];
-      const errorCounts: {[key: string]: number} = {};
-      
-      for (let i = 0; i < 30; i++) {
-        const actual = 500 + Math.random() * 1500;
-        
-        // Error varies by model type
-        let errorFactor;
-        switch(modelType) {
-          case 'movingAverage':
-            errorFactor = 0.15;
-            break;
-          case 'exponentialSmoothing':
-            errorFactor = 0.12;
-            break;
-          case 'arima':
-            errorFactor = 0.1;
-            break;
-          case 'machineLearning':
-            errorFactor = 0.08;
-            break;
-          default:
-            errorFactor = 0.15;
-        }
-        
-        // Add some randomness to the error
-        const errorPct = (Math.random() * errorFactor * 2) - errorFactor;
-        const predicted = actual * (1 + errorPct);
-        const error = Math.abs((predicted - actual) / actual);
-        
-        // Categorize error magnitude
-        let errorMagnitude: 'low' | 'medium' | 'high';
-        if (error < 0.05) {
-          errorMagnitude = 'low';
-        } else if (error < 0.1) {
-          errorMagnitude = 'medium';
+    // Third priority: Fetch data directly with API call as fallback
+    setLoading(true);
+    console.log("No redux or prop data available, fetching from API directly");
+    
+    const fetchData = async () => {
+      try {
+        // Use the actual API function that generates mock data
+        const performance = await demandForecastAPI.fetchModelPerformance(
+          modelType,
+          horizon,
+          metric,
+          filters
+        );
+
+        // If we got proper data back, use it
+        if (performance) {
+          console.log("Successfully loaded model performance data:", performance);
+          setModelMetrics(performance);
+          generateVisualizationData(performance);
         } else {
-          errorMagnitude = 'high';
+          console.error("No data returned from API");
+          generateFallbackData();
         }
-        
-        // Create date for this point
-        const date = new Date();
-        date.setDate(date.getDate() - (30 - i));
-        
-        scatterPoints.push({
-          actual,
-          predicted,
-          period: date.toISOString().split('T')[0],
-          error,
-          errorMagnitude,
-        });
-        
-        // Track error distribution
-        const errorBin = Math.floor(error * 100 / 2) * 2; // Group into 2% bins
-        const binKey = `${errorBin}%`;
-        errorCounts[binKey] = (errorCounts[binKey] || 0) + 1;
+      } catch (error) {
+        console.error("Error fetching model performance data:", error);
+        generateFallbackData();
+      }
+    };
+
+    fetchData();
+  }, [modelType, horizon, metric, filters, externalData, reduxData]);
+
+  // Generate the scatter, distribution and history data for visualizations
+  const generateVisualizationData = (performance: ModelPerformance) => {
+    // Generate scatter plot data (actual vs predicted)
+    const scatterPoints: ScatterPoint[] = [];
+    const errorCounts: {[key: string]: number} = {};
+    
+    // Use error metrics from the performance data to drive the visualization
+    const errorFactor = performance.mape / 100; // Convert to ratio
+    
+    for (let i = 0; i < 30; i++) {
+      const actual = 500 + Math.random() * 1500;
+      
+      // Add some randomness to the error but center around the known error rate
+      const errorPct = (Math.random() * errorFactor * 2) - errorFactor;
+      const predicted = actual * (1 + errorPct);
+      const error = Math.abs((predicted - actual) / actual);
+      
+      // Categorize error magnitude
+      let errorMagnitude: 'low' | 'medium' | 'high';
+      if (error < 0.05) {
+        errorMagnitude = 'low';
+      } else if (error < 0.1) {
+        errorMagnitude = 'medium';
+      } else {
+        errorMagnitude = 'high';
       }
       
-      // Convert error counts to distribution data
-      const errorDist: ErrorDistribution[] = Object.keys(errorCounts).map(bin => {
-        const error = parseInt(bin) / 100;
-        let errorMagnitude: 'low' | 'medium' | 'high';
-        if (error < 0.05) {
-          errorMagnitude = 'low';
-        } else if (error < 0.1) {
-          errorMagnitude = 'medium';
-        } else {
-          errorMagnitude = 'high';
-        }
-        
-        return {
-          bin,
-          count: errorCounts[bin],
-          errorMagnitude,
-        };
-      }).sort((a, b) => parseInt(a.bin) - parseInt(b.bin));
+      // Create date for this point
+      const date = new Date();
+      date.setDate(date.getDate() - (30 - i));
       
-      // Calculate model metrics
-      const errors = scatterPoints.map(point => Math.abs(point.actual - point.predicted));
-      const squaredErrors = errors.map(err => err * err);
-      const percentageErrors = scatterPoints.map(point => 
-        Math.abs((point.actual - point.predicted) / point.actual)
-      );
-      
-      const mae = errors.reduce((sum, err) => sum + err, 0) / errors.length;
-      const mse = squaredErrors.reduce((sum, err) => sum + err, 0) / squaredErrors.length;
-      const rmse = Math.sqrt(mse);
-      const mape = percentageErrors.reduce((sum, err) => sum + err, 0) / percentageErrors.length * 100;
-      
-      // Generate performance history
-      const history: ModelHistoryPoint[] = [];
-      for (let i = 0; i < 10; i++) {
-        const date = new Date();
-        date.setMonth(date.getMonth() - i);
-        
-        // Make the error improve over time (lower is better)
-        const baseError = 0.15 - (i * 0.005);
-        // Add some randomness
-        const error = baseError + (Math.random() * 0.03 - 0.015);
-        
-        history.unshift({
-          date: `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`,
-          error: error,
-        });
-      }
-      
-      setScatterData(scatterPoints);
-      setErrorDistribution(errorDist);
-      setModelMetrics({
-        mae,
-        mse,
-        rmse,
-        mape,
+      scatterPoints.push({
+        actual,
+        predicted,
+        period: date.toISOString().split('T')[0],
+        error,
+        errorMagnitude,
       });
-      setHistoryData(history);
-      setLoading(false);
+      
+      // Track error distribution
+      const errorBin = Math.floor(error * 100 / 2) * 2; // Group into 2% bins
+      const binKey = `${errorBin}%`;
+      errorCounts[binKey] = (errorCounts[binKey] || 0) + 1;
+    }
+    
+    // Convert error counts to distribution data
+    const errorDist: ErrorDistribution[] = Object.keys(errorCounts).map(bin => {
+      const error = parseInt(bin) / 100;
+      let errorMagnitude: 'low' | 'medium' | 'high';
+      if (error < 0.05) {
+        errorMagnitude = 'low';
+      } else if (error < 0.1) {
+        errorMagnitude = 'medium';
+      } else {
+        errorMagnitude = 'high';
+      }
+      
+      return {
+        bin,
+        count: errorCounts[bin],
+        errorMagnitude,
+      };
+    }).sort((a, b) => parseInt(a.bin) - parseInt(b.bin));
+    
+    // Generate performance history
+    const history: ModelHistoryPoint[] = [];
+    for (let i = 0; i < 10; i++) {
+      const date = new Date();
+      date.setMonth(date.getMonth() - i);
+      
+      // Make the error improve over time (lower is better)
+      const baseError = errorFactor - (i * 0.005);
+      // Add some randomness
+      const historyError = baseError + (Math.random() * 0.03 - 0.015);
+      
+      history.unshift({
+        date: `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`,
+        error: historyError,
+      });
+    }
+    
+    setScatterData(scatterPoints);
+    setErrorDistribution(errorDist);
+    setHistoryData(history);
+    setLoading(false);
+  };
+  
+  // Original implementation as fallback
+  const generateFallbackData = () => {
+    console.log("Generating fallback mock data for Model Performance Analyzer");
+    
+    // Generate model metrics based on model type
+    let baseError;
+    switch(modelType) {
+      case 'movingAverage':
+        baseError = 500 + Math.random() * 200;
+        break;
+      case 'exponentialSmoothing':
+        baseError = 400 + Math.random() * 150;
+        break;
+      case 'arima':
+        baseError = 300 + Math.random() * 100;
+        break;
+      case 'machineLearning':
+        baseError = 200 + Math.random() * 80;
+        break;
+      default:
+        baseError = 500;
+    }
+    
+    const fallbackMetrics = {
+      mae: baseError,
+      mse: baseError * baseError,
+      rmse: Math.sqrt(baseError * baseError),
+      mape: (baseError / 5000) * 100
     };
     
-    // Simulate API delay
-    setTimeout(fetchData, 500);
-  }, [modelType, horizon, metric, filters, validationPeriod, externalData]);
+    setModelMetrics(fallbackMetrics);
+    generateVisualizationData(fallbackMetrics);
+  };
 
   // Format value for error distribution chart
   const formatError = (error: string) => {

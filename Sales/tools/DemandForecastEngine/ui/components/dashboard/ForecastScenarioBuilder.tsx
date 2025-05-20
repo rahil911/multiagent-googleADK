@@ -279,21 +279,25 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
 
   // Start editing a scenario
   const startEditing = (scenarioName: string) => {
-    setEditingScenario(scenarioName);
+    // If 'New', initialize with default values
     if (scenarioName === 'New') {
-      // Initialize a new scenario form with default values
       setScenarioForm({
-        name: 'New Scenario',
-        color: '#00e0ff',
+        name: '',
+        color: '#00e0ff',  // Default to Electric Cyan
         growthAssumption: 0,
         seasonalityStrength: 100,
         priceAdjustment: 0,
-        customEvents: [],
+        customEvents: []
       });
     } else {
-      // Edit existing scenario
-      setScenarioForm(scenarios[scenarioName]);
+      // Find the existing scenario
+      const scenario = scenarios[scenarioName];
+      if (scenario) {
+        setScenarioForm({ ...scenario });
+      }
     }
+    
+    setEditingScenario(scenarioName);
   };
 
   // Save scenario changes
@@ -315,11 +319,24 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
 
   // Update form field
   const updateFormField = (field: keyof ScenarioParams, value: any) => {
-    if (!scenarioForm) return;
-    
-    setScenarioForm({
-      ...scenarioForm,
-      [field]: value
+    setScenarioForm(prev => {
+      if (!prev) {
+        // Initialize with default values if somehow prev is null/undefined
+        return {
+          name: '',
+          color: '#00e0ff',
+          growthAssumption: 0,
+          seasonalityStrength: 100,
+          priceAdjustment: 0,
+          customEvents: [],
+          [field]: value
+        };
+      }
+      
+      return {
+        ...prev,
+        [field]: value
+      };
     });
   };
 
@@ -462,7 +479,7 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                   </div>
                   <input
                     type="text"
-                    value={scenarioForm?.name || ''}
+                    value={scenarioForm?.name ?? ''}
                     onChange={(e) => updateFormField('name', e.target.value)}
                     style={{
                       width: '100%',
@@ -486,7 +503,7 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                   </div>
                   <input
                     type="color"
-                    value={scenarioForm?.color || '#00e0ff'}
+                    value={scenarioForm?.color ?? '#00e0ff'}
                     onChange={(e) => updateFormField('color', e.target.value)}
                     style={{
                       width: '60px',
@@ -506,17 +523,17 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                   color: theme.colors.cloudWhite,
                   marginBottom: '4px'
                 }}>
-                  Growth Assumption: {scenarioForm?.growthAssumption > 0 ? '+' : ''}{scenarioForm?.growthAssumption || 0}%
+                  Growth Assumption: {scenarioForm?.growthAssumption > 0 ? '+' : ''}{scenarioForm?.growthAssumption ?? 0}%
                 </div>
                 <input
                   type="range"
                   min="-30"
                   max="30"
-                  value={scenarioForm?.growthAssumption || 0}
+                  value={scenarioForm?.growthAssumption ?? 0}
                   onChange={(e) => updateFormField('growthAssumption', Number(e.target.value))}
                   style={{
                     width: '100%',
-                    accentColor: scenarioForm.growthAssumption >= 0 ? '#00C853' : '#FF5252'
+                    accentColor: (scenarioForm?.growthAssumption ?? 0) >= 0 ? '#00C853' : '#FF5252'
                   }}
                 />
               </div>
@@ -527,13 +544,13 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                   color: theme.colors.cloudWhite,
                   marginBottom: '4px'
                 }}>
-                  Seasonality Strength: {scenarioForm?.seasonalityStrength || 100}%
+                  Seasonality Strength: {scenarioForm?.seasonalityStrength ?? 100}%
                 </div>
                   <input 
                   type="range"
                   min="0"
                   max="200"
-                  value={scenarioForm?.seasonalityStrength || 100}
+                  value={scenarioForm?.seasonalityStrength ?? 100}
                   onChange={(e) => updateFormField('seasonalityStrength', Number(e.target.value))}
                   style={{
                     width: '100%',
@@ -549,17 +566,17 @@ const ForecastScenarioBuilder: React.FC<ForecastScenarioBuilderProps> = ({
                     color: theme.colors.cloudWhite,
                     marginBottom: '4px'
                   }}>
-                    Price Adjustment: {scenarioForm?.priceAdjustment > 0 ? '+' : ''}{scenarioForm?.priceAdjustment || 0}%
+                    Price Adjustment: {scenarioForm?.priceAdjustment > 0 ? '+' : ''}{scenarioForm?.priceAdjustment ?? 0}%
                   </div>
                   <input
                     type="range"
                     min="-20"
                     max="20"
-                    value={scenarioForm?.priceAdjustment || 0}
+                    value={scenarioForm?.priceAdjustment ?? 0}
                     onChange={(e) => updateFormField('priceAdjustment', Number(e.target.value))}
                     style={{
                       width: '100%',
-                      accentColor: scenarioForm.priceAdjustment >= 0 ? '#00C853' : '#FF5252'
+                      accentColor: (scenarioForm?.priceAdjustment ?? 0) >= 0 ? '#00C853' : '#FF5252'
                     }}
                   />
                 </div>

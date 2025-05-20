@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { 
   ForecastHorizon, 
   ForecastMetric, 
@@ -334,39 +334,111 @@ export const {
   toggleInsightPanel
 } = demandForecastSlice.actions;
 
-// Export selectors
-export const selectForecastParams = (state: { demandForecast: DemandForecastState }) => ({
-  horizon: state.demandForecast.forecastHorizon,
-  metric: state.demandForecast.forecastMetric,
-  confidenceLevel: state.demandForecast.confidenceLevel,
-  modelType: state.demandForecast.modelType,
-  filters: state.demandForecast.dimensionFilters,
-});
+// Base selectors (simple state access)
+const getState = (state: any) => state && state.demandForecast ? state.demandForecast : null;
 
-export const selectForecastData = (state: { demandForecast: DemandForecastState }) => ({
-  data: state.demandForecast.forecastData,
-  loading: state.demandForecast.forecastLoading,
-  error: state.demandForecast.forecastError,
-});
+// Use createSelector for improved performance and reliability
+export const selectForecastParams = createSelector(
+  [getState],
+  (demandForecast) => {
+    if (!demandForecast) {
+      // Return defaults if state is not available
+      return {
+        horizon: 'month' as ForecastHorizon,
+        metric: 'quantity' as ForecastMetric,
+        confidenceLevel: 95,
+        modelType: 'movingAverage' as ModelType,
+        filters: {},
+      };
+    }
+    
+    return {
+      horizon: demandForecast.forecastHorizon,
+      metric: demandForecast.forecastMetric,
+      confidenceLevel: demandForecast.confidenceLevel,
+      modelType: demandForecast.modelType,
+      filters: demandForecast.dimensionFilters,
+    };
+  }
+);
 
-export const selectModelPerformance = (state: { demandForecast: DemandForecastState }) => ({
-  performance: state.demandForecast.modelPerformance,
-  loading: state.demandForecast.modelPerformanceLoading,
-  error: state.demandForecast.modelPerformanceError,
-});
+export const selectForecastData = createSelector(
+  [getState],
+  (demandForecast) => {
+    if (!demandForecast) {
+      return {
+        data: [],
+        loading: false,
+        error: null,
+      };
+    }
+    
+    return {
+      data: demandForecast.forecastData,
+      loading: demandForecast.forecastLoading,
+      error: demandForecast.forecastError,
+    };
+  }
+);
 
-export const selectSeasonalPattern = (state: { demandForecast: DemandForecastState }) => ({
-  pattern: state.demandForecast.seasonalPattern,
-  loading: state.demandForecast.seasonalPatternLoading,
-  error: state.demandForecast.seasonalPatternError,
-});
+export const selectModelPerformance = createSelector(
+  [getState],
+  (demandForecast) => {
+    if (!demandForecast) {
+      return {
+        performance: null,
+        loading: false,
+        error: null,
+      };
+    }
+    
+    return {
+      performance: demandForecast.modelPerformance,
+      loading: demandForecast.modelPerformanceLoading,
+      error: demandForecast.modelPerformanceError,
+    };
+  }
+);
 
-export const selectScenarios = (state: { demandForecast: DemandForecastState }) => ({
-  scenarios: state.demandForecast.scenarios,
-  activeScenarioId: state.demandForecast.activeScenarioId,
-  loading: state.demandForecast.scenarioLoading,
-  error: state.demandForecast.scenarioError,
-});
+export const selectSeasonalPattern = createSelector(
+  [getState],
+  (demandForecast) => {
+    if (!demandForecast) {
+      return {
+        pattern: null,
+        loading: false,
+        error: null,
+      };
+    }
+    
+    return {
+      pattern: demandForecast.seasonalPattern,
+      loading: demandForecast.seasonalPatternLoading,
+      error: demandForecast.seasonalPatternError,
+    };
+  }
+);
+
+export const selectScenarios = createSelector(
+  [getState],
+  (demandForecast) => {
+    if (!demandForecast) {
+      return {
+        scenarios: [],
+        activeScenarioId: null,
+        loading: false,
+        error: null,
+      };
+    }
+    
+    return {
+      scenarios: demandForecast.scenarios,
+      activeScenarioId: demandForecast.activeScenarioId,
+      loading: demandForecast.scenarioLoading,
+      error: demandForecast.scenarioError,
+    };
+  }
+);
 
 // Export reducer
 export default demandForecastSlice.reducer;
