@@ -33,7 +33,7 @@ const componentRegistry = {
   'demand-forecast': {
     linechart: dynamic(() => import('../Sales/tools/DemandForecastEngine/ui/components/dashboard/ForecastHorizonExplorer')),
     performance: dynamic(() => import('../Sales/tools/DemandForecastEngine/ui/components/dashboard/ModelPerformanceAnalyzer')),
-    seasonal: dynamic(() => import('../Sales/tools/DemandForecastEngine/ui/components/dashboard/SeasonalPatternDetector')),
+    seasonal: dynamic(() => import('../Sales/tools/DemandForecastEngine/ui/components/dashboard/seasonalPatternDetector')),
     scenario: dynamic(() => import('../Sales/tools/DemandForecastEngine/ui/components/dashboard/ForecastScenarioBuilder')),
   }
   // Additional tools can be added here when components are available
