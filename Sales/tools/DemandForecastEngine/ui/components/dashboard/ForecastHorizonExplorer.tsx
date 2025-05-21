@@ -18,6 +18,7 @@ interface ForecastHorizonExplorerProps {
   onFilterChange: (filters: DimensionFilter) => void;
   onClearFilters: () => void;
   data?: ForecastData[]; // Optional prop for when data is passed from parent
+  enhanceSelectInteraction?: boolean; // Optional prop for improving select interaction
 }
 
 const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
@@ -31,6 +32,7 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
   onFilterChange,
   onClearFilters,
   data: externalData,
+  enhanceSelectInteraction,
 }) => {
   const theme = useTheme();
   const [forecastData, setForecastData] = useState<ForecastData[]>([]);
@@ -253,7 +255,14 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
           })}
           placeholder="Select product"
           size="sm"
-          style={{ width: '160px' }}
+          style={{ 
+            width: '160px', 
+            ...(enhanceSelectInteraction ? { 
+              zIndex: 9999,
+              position: 'relative'
+            } : {})
+          }}
+          className={enhanceSelectInteraction ? "enhanced-select" : ""}
         />
       );
     };
@@ -276,7 +285,14 @@ const ForecastHorizonExplorer: React.FC<ForecastHorizonExplorerProps> = ({
           })}
           placeholder="Select region"
           size="sm"
-          style={{ width: '160px' }}
+          style={{ 
+            width: '160px',
+            ...(enhanceSelectInteraction ? { 
+              zIndex: 9998,
+              position: 'relative'
+            } : {})
+          }}
+          className={enhanceSelectInteraction ? "enhanced-select" : ""}
         />
       );
     };

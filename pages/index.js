@@ -9,17 +9,26 @@ import { RobotCharacter } from '../ui-common/ai-interaction/RobotCharacter/Robot
 
 // Import reducers
 import purchaseFrequencyReducer from '../Customer/tools/purchase_frequency/ui/state/purchaseFrequencySlice';
+import demandForecastReducer from '../Sales/tools/DemandForecastEngine/ui/state/demandForecastSlice';
 
 // Configure Redux store
 const store = configureStore({
   reducer: {
     purchaseFrequency: purchaseFrequencyReducer,
+    demandForecast: demandForecastReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false, // Allow non-serializable values for demo
     }),
 });
+
+// Dispatch initial actions for demand forecast
+import { fetchSeasonalPatterns, fetchModelPerformance } from '../Sales/tools/DemandForecastEngine/ui/state/demandForecastSlice';
+
+// Initialize demand forecast data
+store.dispatch(fetchSeasonalPatterns());
+store.dispatch(fetchModelPerformance());
 
 // Define available tools with dynamic imports
 const componentRegistry = {
@@ -205,7 +214,9 @@ export default function ConversationalCanvas() {
               },
               onClearFilters: () => {
                 updateComponent(id, { filters: {} });
-              }
+              },
+              // Extra props to improve interaction handling with Select components
+              enhanceSelectInteraction: true
             };
             break;
           case 'performance':
@@ -225,7 +236,19 @@ export default function ConversationalCanvas() {
               data: data,
               horizon: 'month',
               metric: 'quantity',
-              filters: {}
+              filters: {},
+              onFilterChange: (newFilters) => {
+                // Get the current component to access its current filters
+                const currentComponent = components.find(comp => comp.id === id);
+                if (currentComponent) {
+                  updateComponent(id, { 
+                    filters: {...currentComponent.props.filters, ...newFilters} 
+                  });
+                }
+              },
+              onClearFilters: () => {
+                updateComponent(id, { filters: {} });
+              }
             };
             break;
           case 'scenario':
@@ -234,7 +257,19 @@ export default function ConversationalCanvas() {
               horizon: 'month',
               metric: 'quantity',
               confidenceLevel: 95,
-              filters: {}
+              filters: {},
+              onFilterChange: (newFilters) => {
+                // Get the current component to access its current filters
+                const currentComponent = components.find(comp => comp.id === id);
+                if (currentComponent) {
+                  updateComponent(id, { 
+                    filters: {...currentComponent.props.filters, ...newFilters} 
+                  });
+                }
+              },
+              onClearFilters: () => {
+                updateComponent(id, { filters: {} });
+              }
             };
             break;
           default:
@@ -648,7 +683,19 @@ export default function ConversationalCanvas() {
                     justifyContent: 'center',
                     position: 'relative'
                   }}
-                  onClick={() => bringToForeground(component.id)}
+                  onClick={(e) => {
+                    // Don't bring to foreground on dropdown clicks
+                    const target = e.target;
+                    const isSelectClick = target.closest('.enterprise-iq-select') !== null;
+                    
+                    // If clicking a dropdown, stop propagation
+                    if (isSelectClick) {
+                      e.stopPropagation();
+                      return;
+                    }
+                    
+                    bringToForeground(component.id);
+                  }}
                 >
                   <div style={{
                     width: '100%',
@@ -658,7 +705,15 @@ export default function ConversationalCanvas() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
-                  }}>
+                  }}
+                  onClick={(e) => {
+                    // Prevent bubbling if this is a Select component click
+                    const isSelectClick = e.target.closest('.enterprise-iq-select') !== null;
+                    if (isSelectClick) {
+                      e.stopPropagation();
+                    }
+                  }}
+                  >
                     <component.Component 
                       {...component.props} 
                       width={component.size.width - 24} // Adjusted for reduced padding
@@ -675,7 +730,8 @@ export default function ConversationalCanvas() {
                     width: '20px',
                     height: '20px',
                     cursor: 'nwse-resize',
-                    background: 'transparent'
+                    background: 'transparent',
+                    pointerEvents: 'auto' // Ensure resize handle works
                   }}
                   onMouseDown={(e) => {
                     e.stopPropagation();
@@ -686,6 +742,44 @@ export default function ConversationalCanvas() {
                     <path d="M10 2L2 10M6 2L2 6M10 6L6 10" stroke="#94A3B8" strokeWidth="1.5" />
                   </svg>
                 </div>
+                
+                {/* Add an invisible overlay that disables drag when hovering over select dropdowns  */}
+                {isDragging && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      zIndex: 999,
+                      pointerEvents: 'none', // Let clicks pass through to elements below
+                    }}
+                  />
+                )}
+                
+                {/* Special handler for Select components to prevent event conflicts */}
+                <div
+                  style={{
+                    display: 'none', // Don't actually render visibly
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%'
+                  }}
+                  onMouseDown={(e) => {
+                    // Check if the click is on a Select component or its dropdown
+                    const isSelectClick = e.target.closest('.enterprise-iq-select') !== null || 
+                                         e.target.closest('.select-dropdown') !== null ||
+                                         e.target.closest('.select-option') !== null;
+                    
+                    if (isSelectClick) {
+                      // Prevent the drag and focus behavior
+                      e.stopPropagation();
+                    }
+                  }}
+                />
               </div>
             ))}
             
@@ -720,6 +814,49 @@ export default function ConversationalCanvas() {
             @keyframes spin {
               0% { transform: rotate(0deg); }
               100% { transform: rotate(360deg); }
+            }
+            
+            /* Ensure Select dropdowns appear above other elements */
+            .enterprise-iq-select {
+              position: relative !important;
+            }
+            
+            .enterprise-iq-select .select-dropdown {
+              z-index: 9999 !important;
+              position: absolute !important;
+              pointer-events: auto !important;
+            }
+            
+            .select-trigger {
+              position: relative !important;
+              z-index: 1 !important;
+              pointer-events: auto !important;
+            }
+
+            /* Additional fixes for dropdown clicks */
+            .select-option {
+              pointer-events: auto !important;
+            }
+
+            /* Special enhanced styling for select components in dynamic components */
+            .enhanced-select {
+              isolation: isolate;
+            }
+
+            .enhanced-select .select-dropdown {
+              transform: translateY(0) !important;
+              isolation: isolate;
+              z-index: 10000 !important;
+            }
+
+            .enterprise-iq-select.enhanced-select .select-trigger {
+              isolation: isolate;
+              z-index: 999 !important;
+            }
+            
+            /* Fix for stacking context issues */
+            body #__next {
+              isolation: isolate;
             }
           `}</style>
         </div>
