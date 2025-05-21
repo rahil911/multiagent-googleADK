@@ -184,11 +184,28 @@ export default function ConversationalCanvas() {
               metric: 'quantity',
               confidenceLevel: 95,
               filters: {},
-              onHorizonChange: () => {},
-              onMetricChange: () => {},
-              onConfidenceLevelChange: () => {},
-              onFilterChange: () => {},
-              onClearFilters: () => {}
+              onHorizonChange: (newHorizon) => {
+                // Create a unique updater function for this specific component
+                updateComponent(id, { horizon: newHorizon });
+              },
+              onMetricChange: (newMetric) => {
+                updateComponent(id, { metric: newMetric });
+              },
+              onConfidenceLevelChange: (newLevel) => {
+                updateComponent(id, { confidenceLevel: newLevel });
+              },
+              onFilterChange: (newFilters) => {
+                // Get the current component to access its current filters
+                const currentComponent = components.find(comp => comp.id === id);
+                if (currentComponent) {
+                  updateComponent(id, { 
+                    filters: {...currentComponent.props.filters, ...newFilters} 
+                  });
+                }
+              },
+              onClearFilters: () => {
+                updateComponent(id, { filters: {} });
+              }
             };
             break;
           case 'performance':
@@ -198,7 +215,9 @@ export default function ConversationalCanvas() {
               horizon: 'month',
               metric: 'quantity',
               filters: {},
-              onModelTypeChange: () => {}
+              onModelTypeChange: (newModelType) => {
+                updateComponent(id, { modelType: newModelType });
+              }
             };
             break;
           case 'seasonal':
