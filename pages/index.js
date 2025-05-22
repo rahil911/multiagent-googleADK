@@ -125,15 +125,58 @@ export default function ConversationalCanvas() {
       } else if (toolName === 'customer-behaviour') {
         const response = await fetch(`/api/customer-behaviour/data`);
         if (!response.ok) throw new Error('Failed to fetch data');
-        const data = await response.json();
+        const data = await response.json(); // Full dataset for customer behaviour
+
+        // --- Debugging Log --- 
+        console.log('Customer Behaviour API Response (data):', JSON.stringify(data, null, 2));
+        if (componentName === 'histogram') {
+          console.log('Data for Histogram (data.patternIntervalHistogramData):', JSON.stringify(data.patternIntervalHistogramData, null, 2));
+        }
+        // --- End Debugging Log ---
+
+        let componentSpecificData = {};
+        let componentSize = { width: 900, height: 700 }; // Default for dashboard view
+
+        if (componentName === 'dashboard') {
+          componentSpecificData = data; // Dashboard gets all data
+        } else {
+          // Individual components get specific data and a smaller, more appropriate default size
+          componentSize = { width: 500, height: 400 }; 
+          switch (componentName) {
+            case 'radar':
+              // API returns data.patterns, component expects props.patterns
+              componentSpecificData = { patterns: data.patterns }; 
+              break;
+            case 'histogram':
+              // API returns data.patterns, component expects props.patterns
+              componentSpecificData = { patterns: data.patterns }; 
+              break;
+            case 'treemap':
+              // API returns data.patterns, component expects props.categories
+              componentSpecificData = { categories: data.patterns }; 
+              break;
+            case 'donut':
+              // API returns data.patterns, component expects props.channels
+              componentSpecificData = { channels: data.patterns }; 
+              break;
+            default:
+              console.warn(`Data mapping not defined for customer-behaviour component: ${componentName}. Using full data.`);
+              componentSpecificData = data; // Fallback to full data if unknown component
+              componentSize = { width: 400, height: 300 }; // Fallback size
+          }
+        }
+        
+        // Merge with any externally provided props for the component (props is the argument to spawnComponent)
+        const mergedProps = { ...componentSpecificData, ...props };
+
         setComponents(prev => [
           ...prev,
           {
             id,
             type: componentType,
             position: componentPosition,
-            size: { width: 900, height: 700 },
-            props: data,
+            size: componentSize,
+            props: mergedProps,
             Component: componentRegistry[toolName][componentName]
           }
         ]);
@@ -343,35 +386,35 @@ export default function ConversationalCanvas() {
           setRobotState({
             ...robotState,
             state: 'speaking',
-            message: 'Here\'s a histogram showing customer purchase frequency distribution based on real transaction data.',
+            message: "Here's a histogram showing customer purchase frequency distribution based on real transaction data.",
           });
         } else if (query.toLowerCase().includes('customer segment')) {
           const quadrantId = await spawnComponent('purchase-frequency.quadrant');
           setRobotState({
             ...robotState,
             state: 'speaking',
-            message: 'I\'ve added a customer segment quadrant visualization that plots customers by frequency and value.',
+            message: "I've added a customer segment quadrant visualization that plots customers by frequency and value.",
           });
         } else if (query.toLowerCase().includes('interval') || query.toLowerCase().includes('heatmap')) {
           const heatmapId = await spawnComponent('purchase-frequency.heatmap');
           setRobotState({
             ...robotState,
             state: 'speaking',
-            message: 'Here\'s a heatmap showing purchase intervals by day and hour.',
+            message: "Here's a heatmap showing purchase intervals by day and hour.",
           });
         } else if (query.toLowerCase().includes('value') || query.toLowerCase().includes('segment')) {
           const treemapId = await spawnComponent('purchase-frequency.treemap');
           setRobotState({
             ...robotState,
             state: 'speaking',
-            message: 'I\'ve created a treemap showing customer value segments.',
+            message: "I've created a treemap showing customer value segments.",
           });
         } else if (query.toLowerCase().includes('regularity')) {
           const regularityId = await spawnComponent('purchase-frequency.regularity');
           setRobotState({
             ...robotState,
             state: 'speaking',
-            message: 'Here\'s a radar chart showing purchase regularity across different timeframes.',
+            message: "Here's a radar chart showing purchase regularity across different timeframes.",
           });
         } else if (query.toLowerCase().includes('churn')) {
           const pyramidId = await spawnComponent('churn-prediction.riskPyramid');
@@ -379,14 +422,6 @@ export default function ConversationalCanvas() {
             ...robotState,
             state: 'speaking',
             message: 'Here is a churn risk pyramid showing customer risk distribution.'
-          });
-          setLoading(false);
-        } else if (query.toLowerCase().includes('customer behaviour') || query.toLowerCase().includes('behavior')) {
-          const radarId = await spawnComponent('customer-behaviour.radar');
-          setRobotState({
-            ...robotState,
-            state: 'speaking',
-            message: 'Here is a radar chart showing customer behaviour patterns.'
           });
           setLoading(false);
         } else if (query.toLowerCase().includes('behaviour histogram')) {
@@ -411,6 +446,14 @@ export default function ConversationalCanvas() {
             ...robotState,
             state: 'speaking',
             message: 'Here is a donut chart of channel usage.'
+          });
+          setLoading(false);
+        } else if (query.toLowerCase().includes('customer behaviour') || query.toLowerCase().includes('behavior')) {
+          const radarId = await spawnComponent('customer-behaviour.radar');
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here is a radar chart showing customer behaviour patterns.'
           });
           setLoading(false);
         } else {

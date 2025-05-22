@@ -1,40 +1,57 @@
 import React, { useMemo } from 'react';
 import Plot from 'react-plotly.js';
-import { BehaviourPattern } from '../../types';
+import { PatternIntervalHistogramProps } from '../../types';
 
-interface PatternIntervalHistogramProps {
-  patterns: BehaviourPattern[];
-  highlights?: { customer_id?: string };
-  width?: number;
-  height?: number;
-}
+const PatternIntervalHistogram: React.FC<PatternIntervalHistogramProps> = ({ patterns, layoutProps, configProps }) => {
+  // Ensure patterns is an array before mapping, default to empty array if undefined or not an array
+  const safePatterns = Array.isArray(patterns) ? patterns : [];
 
-const PatternIntervalHistogram: React.FC<PatternIntervalHistogramProps> = ({ patterns, highlights, width = 600, height = 300 }) => {
-  const recencies = useMemo(() => patterns.map(p => p.recency), [patterns]);
+  const recencies = useMemo(() => safePatterns.map(p => p.recency), [safePatterns]);
+  const frequencies = useMemo(() => safePatterns.map(p => p.frequency), [safePatterns]);
+  const monetaryValues = useMemo(() => safePatterns.map(p => p.monetary_value), [safePatterns]);
+
+  // Default layout and config if not provided
+  const defaultLayout = {
+    width: 500,
+    height: 400,
+    title: 'Pattern Interval Histogram',
+    barmode: 'stack',
+    xaxis: { title: 'Value' },
+    yaxis: { title: 'Count' },
+    paper_bgcolor: '#1E293B', 
+    plot_bgcolor: '#1E293B',
+    font: { color: '#E2E8F0' }
+  };
+
+  const defaultProps = {
+    displayModeBar: false,
+  };
+
   return (
     <Plot
-      data={[{
-        x: recencies,
-        type: 'histogram',
-        marker: {
-          color: 'rgba(0,224,255,0.7)',
-          line: { color: '#00e0ff', width: 1 }
+      data={[
+        {
+          x: recencies,
+          type: 'histogram',
+          name: 'Recency',
+          marker: { color: '#00e0ff' }, // Electric Cyan
         },
-        name: 'Recency',
-        opacity: 0.8,
-      }]}
-      layout={{
-        width,
-        height,
-        title: 'Purchase Interval Histogram',
-        xaxis: { title: 'Days Since Last Purchase', range: [0, Math.max(...recencies, 30)] },
-        yaxis: { title: 'Customer Count' },
-        paper_bgcolor: '#232a36',
-        plot_bgcolor: '#232a36',
-        font: { family: 'inherit', color: '#f7f9fb' },
-        margin: { t: 40, l: 40, r: 40, b: 40 },
-      }}
-      config={{ responsive: true, displayModeBar: false }}
+        {
+          x: frequencies,
+          type: 'histogram',
+          name: 'Frequency',
+          marker: { color: '#e930ff' }, // Signal Magenta
+        },
+        {
+          x: monetaryValues,
+          type: 'histogram',
+          name: 'Monetary Value',
+          marker: { color: '#34D399' }, // A shade of green for contrast
+        },
+      ]}
+      layout={{ ...defaultLayout, ...layoutProps }}
+      config={{ ...defaultProps, ...configProps }}
+      style={{ width: '100%', height: '100%' }}
     />
   );
 };
