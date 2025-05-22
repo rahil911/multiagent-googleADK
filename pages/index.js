@@ -49,6 +49,10 @@ const componentRegistry = {
   'churn-prediction': {
     dashboard: dynamic(() => import('../Customer/tools/churn_prediction/pages/index.page')),
     riskPyramid: dynamic(() => import('../Customer/tools/churn_prediction/ui/components/visualizations/ChurnRiskPyramid'), { ssr: false }),
+    featureImportance: dynamic(() => import('../Customer/tools/churn_prediction/ui/components/visualizations/FeatureImportance'), { ssr: false }),
+    probabilityHistogram: dynamic(() => import('../Customer/tools/churn_prediction/ui/components/visualizations/ProbabilityHistogram'), { ssr: false }),
+    temporalRisk: dynamic(() => import('../Customer/tools/churn_prediction/ui/components/visualizations/TemporalRiskPattern'), { ssr: false }),
+    segmentMatrix: dynamic(() => import('../Customer/tools/churn_prediction/ui/components/visualizations/SegmentMatrix'), { ssr: false }),
   },
 };
 
@@ -185,15 +189,30 @@ export default function ConversationalCanvas() {
       } else if (toolName === 'churn-prediction') {
         const response = await fetch(`/api/churn-prediction/data`);
         if (!response.ok) throw new Error('Failed to fetch data');
-        const data = await response.json();
+        const data = await response.json(); // Full dataset for churn prediction
+
+        let componentSpecificData = data; // By default, pass all data
+        let componentSize = { width: 500, height: 400 }; // Default for individual components
+
+        if (componentName === 'dashboard') {
+          componentSize = { width: 900, height: 700 };
+        } else {
+          // For individual churn components, we'll pass the full data object.
+          // The components themselves should be responsible for picking the data they need.
+          // This mirrors the approach for customer-behaviour individual components.
+        }
+        
+        // Merge with any externally provided props
+        const mergedProps = { ...componentSpecificData, ...props };
+
         setComponents(prev => [
           ...prev,
           {
             id,
             type: componentType,
             position: componentPosition,
-            size: { width: 900, height: 700 },
-            props: data,
+            size: componentSize,
+            props: mergedProps,
             Component: componentRegistry[toolName][componentName]
           }
         ]);
@@ -416,6 +435,38 @@ export default function ConversationalCanvas() {
             state: 'speaking',
             message: "Here's a radar chart showing purchase regularity across different timeframes.",
           });
+        } else if (query.toLowerCase().includes('feature importance')) {
+          const featureId = await spawnComponent('churn-prediction.featureImportance');
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Displaying feature importance for churn prediction.'
+          });
+          setLoading(false);
+        } else if (query.toLowerCase().includes('probability histogram')) {
+          const probHistId = await spawnComponent('churn-prediction.probabilityHistogram');
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Showing a histogram of churn probabilities.'
+          });
+          setLoading(false);
+        } else if (query.toLowerCase().includes('temporal risk')) {
+          const tempRiskId = await spawnComponent('churn-prediction.temporalRisk');
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Here is the temporal risk pattern for churn.'
+          });
+          setLoading(false);
+        } else if (query.toLowerCase().includes('segment matrix')) {
+          const segMatId = await spawnComponent('churn-prediction.segmentMatrix');
+          setRobotState({
+            ...robotState,
+            state: 'speaking',
+            message: 'Displaying the churn segment matrix.'
+          });
+          setLoading(false);
         } else if (query.toLowerCase().includes('churn')) {
           const pyramidId = await spawnComponent('churn-prediction.riskPyramid');
           setRobotState({

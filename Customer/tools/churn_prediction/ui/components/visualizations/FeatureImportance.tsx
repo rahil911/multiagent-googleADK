@@ -14,7 +14,11 @@ export interface FeatureImportanceProps {
   onSortChange?: (sortBy: 'importance' | 'alphabetical') => void;
 }
 
-export default function FeatureImportance({ features, sortBy = 'importance', onSortChange }: FeatureImportanceProps) {
+export default function FeatureImportance(props: FeatureImportanceProps) {
+  const { sortBy = 'importance', onSortChange } = props;
+  // Extract features from props, provide default if not found
+  const features = props.features || [];
+
   const sorted = useMemo(() => {
     if (sortBy === 'alphabetical') {
       return [...features].sort((a, b) => a.feature.localeCompare(b.feature));

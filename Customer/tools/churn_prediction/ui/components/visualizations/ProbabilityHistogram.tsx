@@ -15,13 +15,16 @@ export interface ProbabilityHistogramProps {
 const colors = ['#00e0ff', '#5fd4d6', '#aa45dd', '#e930ff'];
 const riskLabels = ['Low', 'Medium', 'High', 'Very High'];
 
-export default function ProbabilityHistogram({
-  probabilities,
-  thresholds = [0.3, 0.6, 0.8],
-  onThresholdChange,
-  binCount = 30,
-  onBinCountChange
-}: ProbabilityHistogramProps) {
+export default function ProbabilityHistogram(props: ProbabilityHistogramProps) {
+  const {
+    thresholds = [0.3, 0.6, 0.8],
+    onThresholdChange,
+    binCount = 30,
+    onBinCountChange
+  } = props;
+  // Extract probabilities from props, provide default if not found
+  const probabilities = props.probabilities || [];
+
   const bins = useMemo(() => {
     if (!probabilities.length) return [];
     const min = 0, max = 1;
