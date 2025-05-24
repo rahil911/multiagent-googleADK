@@ -8,6 +8,8 @@ const IntervalHeatmap = forwardRef<any, IntervalHeatmapProps>(({
   height = 320,
   colorScale = ['#0a1224', '#3a4459', '#00e0ff'],
   onCellClick,
+  onChartElementClick,
+  componentId,
   onDateRangeChange,
   highlightCells = [],
   focusRegion
@@ -58,11 +60,11 @@ const IntervalHeatmap = forwardRef<any, IntervalHeatmapProps>(({
   });
   
   // Get unique days and hours
-  const days = [...new Set(data.map(d => d.day))];
-  const hours = [...new Set(data.map(d => d.hour))].sort((a, b) => a - b);
+  const days = Array.from(new Set(data.map(d => d.day)));
+  const hours = Array.from(new Set(data.map(d => d.hour))).sort((a, b) => a - b);
   
   // Calculate the maximum value for color scaling
-  const maxValue = Math.max(...data.map(d => d.value));
+  const maxValue = Math.max(...data.map(d => d.volume));
   
   // Helper function to get color based on value
   const getColor = (value: number) => {
@@ -102,7 +104,9 @@ const IntervalHeatmap = forwardRef<any, IntervalHeatmapProps>(({
   };
   
   // Handle cell interactions
-  const handleCellClick = (day: string, hour: number) => {
+  const handleCellClick = (day: string, hour: number, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent background click
+    
     const cell = { day, hour };
     // Toggle selection if cell is already selected, otherwise set as new selection
     setSelectedCells(prev => 
@@ -113,6 +117,42 @@ const IntervalHeatmap = forwardRef<any, IntervalHeatmapProps>(({
     
     if (onCellClick) {
       onCellClick(day, hour);
+    }
+
+    // Send click data for laser functionality
+    if (onChartElementClick) {
+      const containerElement = event.currentTarget.closest('.interval-heatmap');
+      
+      if (containerElement) {
+        const containerRect = containerElement.getBoundingClientRect();
+        
+        // Calculate cell center coordinates
+        const dayIndex = days.indexOf(day);
+        const hourIndex = hours.indexOf(hour);
+        const cellCenterX = 80 + (hourIndex * totalCellSize) + (cellSize / 2);
+        const cellCenterY = 40 + (dayIndex * totalCellSize) + (cellSize / 2);
+        
+        const pointData = {
+          datasetIndex: 0,
+          index: dayIndex * hours.length + hourIndex,
+          day: day,
+          hour: hour,
+          label: `${day} at ${hour}:00`,
+          value: dataMap.get(day)?.get(hour)?.volume || 0,
+          x: cellCenterX + 16, // Account for container padding
+          y: cellCenterY + 40, // Account for title height
+          chartLabel: 'Purchase Interval Analysis'
+        };
+
+        onChartElementClick({
+          event: event.nativeEvent,
+          pointData: pointData,
+          componentId: componentId || 'interval-heatmap',
+          chartId: 'heatmap',
+          chartRect: containerRect,
+          elementRect: containerRect
+        });
+      }
     }
   };
   
@@ -259,7 +299,7 @@ const IntervalHeatmap = forwardRef<any, IntervalHeatmapProps>(({
               <div
                 key={`cell-${day}-${hour}`}
                 style={cellStyle}
-                onClick={() => handleCellClick(day, hour)}
+                onClick={(event) => handleCellClick(day, hour, event)}
                 onMouseEnter={() => handleCellMouseEnter(day, hour)}
                 onMouseLeave={handleCellMouseLeave}
               />

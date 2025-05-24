@@ -69,6 +69,7 @@ export default function ConversationalCanvas() {
     laserTarget: null,
     isVisible: true
   });
+  const [userSelectedChartPoints, setUserSelectedChartPoints] = useState([]);
 
   // State for drag and resize
   const [activeComponent, setActiveComponent] = useState(null);
@@ -77,6 +78,23 @@ export default function ConversationalCanvas() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [initialSize, setInitialSize] = useState({ width: 0, height: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0 });
+
+  // Monitor userSelectedChartPoints changes and update robot state
+  useEffect(() => {
+    console.log('userSelectedChartPoints changed:', userSelectedChartPoints);
+    if (userSelectedChartPoints.length > 0) {
+      setRobotState(prev => ({
+        ...prev,
+        state: 'thinking'
+      }));
+    } else {
+      setRobotState(prev => ({
+        ...prev,
+        state: 'idle',
+        message: null
+      }));
+    }
+  }, [userSelectedChartPoints]);
 
   // Function to handle fetch errors
   const handleFetchError = (error) => {
@@ -336,6 +354,8 @@ export default function ConversationalCanvas() {
     try {
       // In a production environment, this would call an LLM to process the query
       // For now, we'll use keyword matching for demonstration
+      // Clear user selections when AI starts processing a new general query
+      setUserSelectedChartPoints([]);
       
       setTimeout(async () => {
         if (query.toLowerCase().includes('purchase') && query.toLowerCase().includes('frequency')) {
@@ -427,7 +447,109 @@ export default function ConversationalCanvas() {
       handleFetchError(error);
     }
   };
-  
+
+  const handleRobotQuerySubmit = (query, selectedPoints) => {
+    console.log('Query from Robot:', query);
+    console.log('Context from Robot:', selectedPoints);
+    // Here you can decide if you want to process this query differently,
+    // or perhaps clear selections, etc.
+    // For now, let's clear selections after a robot query is submitted via its own input
+    setUserSelectedChartPoints([]);
+    // Optionally, you might want to re-trigger a general query processing if needed
+    // handleQuerySubmit(query); // This might cause a loop if not careful
+  };
+
+  // Function to handle clicks coming from within chart components
+  const handleChartElementClick = (clickData) => {
+    console.log('Chart element click received:', clickData);
+    
+    // clickData should contain: { event, elements, chart, canvasElement, chartId, componentId, ...any other useful data }
+    // For now, we expect pre-calculated targetCoords from the chart component itself.
+    // A more robust way is for the chart to send raw click event and its own rect, and this function calculates targetCoords.
+
+    if (!clickData || !clickData.pointData) {
+      // If no specific point data, maybe it was a click outside, or a general chart click.
+      // Optionally, clear selections if the click was on the chart background (needs more info from clickData)
+      if (!clickData.event || !clickData.event.shiftKey) {
+        console.log('Clearing user selections - background click');
+        setUserSelectedChartPoints([]); 
+      }
+      return;
+    }
+
+    const { pointData, componentId, chartId, chartRect, elementRect } = clickData; 
+    // pointData is expected to be an object like: 
+    // { datasetIndex, index, label, value, x, y } (x, y relative to chart canvas)
+    // chartRect: getBoundingClientRect of the chart canvas
+    // elementRect: getBoundingClientRect of the chart container
+
+    // Calculate page coordinates for the target point
+    let targetCoords = pointData.targetCoords;
+    if (!targetCoords && pointData.x !== undefined && pointData.y !== undefined && chartRect) {
+      // Calculate page-relative coordinates from chart-relative coordinates
+      targetCoords = {
+        x: chartRect.left + pointData.x,
+        y: chartRect.top + pointData.y
+      };
+      console.log('Calculated target coords:', targetCoords, 'from chart coords:', pointData.x, pointData.y);
+    }
+
+    if (!targetCoords) {
+      console.warn('Could not determine target coordinates for chart element click');
+      return;
+    }
+
+    // Create a unique ID for the selection if not provided
+    const selectionId = pointData.id || `${componentId}-${chartId}-${pointData.datasetIndex}-${pointData.index}`;
+
+    const newSelection = {
+      id: selectionId,
+      componentId: componentId,
+      chartId: chartId,
+      chartLabel: pointData.chartLabel || `Chart ${chartId}`,
+      label: pointData.label,
+      value: pointData.value,
+      datasetIndex: pointData.datasetIndex,
+      index: pointData.index,
+      targetCoords: targetCoords, // Page-relative coordinates
+    };
+
+    // Handle multi-select with Shift key
+    const isShiftPressed = clickData.event && clickData.event.shiftKey;
+    
+    if (isShiftPressed) {
+      // Add/remove from current selections
+      setUserSelectedChartPoints(prev => {
+        const existingIndex = prev.findIndex(p => p.id === selectionId);
+        if (existingIndex > -1) {
+          // Remove if already selected
+          console.log('Removing selection:', selectionId);
+          const newSelections = prev.filter(p => p.id !== selectionId);
+          console.log('New selections:', newSelections);
+          return newSelections;
+        } else {
+          // Add to selection
+          console.log('Adding to selection:', selectionId);
+          const newSelections = [...prev, newSelection];
+          console.log('New selections:', newSelections);
+          return newSelections;
+        }
+      });
+    } else {
+      // Replace selections with single selection
+      console.log('Setting single selection:', selectionId, newSelection);
+      setUserSelectedChartPoints([newSelection]);
+    }
+
+    // Clear AI laser/message when user clicks a chart
+    setRobotState(prev => ({
+      ...prev,
+      laserTarget: null,
+      message: null,
+      state: 'thinking' // Always set to thinking when user interacts with charts
+    }));
+  };
+
   return (
     <Provider store={store}>
       <ThemeProvider>
@@ -552,6 +674,8 @@ export default function ConversationalCanvas() {
                     {...component.props} 
                     width={component.size.width - 30} // Account for padding
                     height={component.size.height - 80} // Account for header and padding
+                    onChartElementClick={handleChartElementClick}
+                    componentId={component.id}
                   />
                 </div>
                 {/* Resize handle */}
@@ -584,6 +708,8 @@ export default function ConversationalCanvas() {
               message={robotState.message}
               laserTarget={robotState.laserTarget}
               isVisible={robotState.isVisible}
+              userSelectedPoints={userSelectedChartPoints}
+              onQuerySubmit={handleRobotQuerySubmit}
             />
           </div>
           

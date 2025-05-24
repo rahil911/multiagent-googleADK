@@ -10,6 +10,8 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
   height = 300,
   colorScale = ['#0a1224', '#00e0ff'],
   onBarClick,
+  onChartElementClick,
+  componentId,
   highlightBins = [],
   focusRegion
 }, ref) => {
@@ -67,7 +69,9 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
     setHoveredBin(null);
   };
   
-  const handleBarClick = (bin: number, event: React.MouseEvent) => {
+  const handleBarClick = (bin: number, event: React.MouseEvent, barIndex: number) => {
+    event.stopPropagation(); // Prevent background click
+    
     if (event.ctrlKey || event.metaKey) {
       // Add to selection if Ctrl/Cmd key is pressed
       setSelectedBins(prev => 
@@ -82,6 +86,42 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
     
     if (onBarClick) {
       onBarClick(bin);
+    }
+
+    // Send click data for laser functionality
+    if (onChartElementClick) {
+      const svgElement = event.currentTarget.closest('svg');
+      const containerElement = event.currentTarget.closest('.frequency-histogram');
+      
+      if (svgElement && containerElement) {
+        const svgRect = svgElement.getBoundingClientRect();
+        const containerRect = containerElement.getBoundingClientRect();
+        
+        // Calculate bar center coordinates relative to SVG
+        const barCenterX = barIndex * barWidth + actualBarWidth / 2 + margin.left;
+        const barHeight = (data[barIndex].count / maxCount) * innerHeight;
+        const barCenterY = innerHeight - barHeight / 2 + margin.top;
+        
+        const pointData = {
+          datasetIndex: 0,
+          index: barIndex,
+          bin: bin,
+          label: `Frequency ${bin}`,
+          value: data[barIndex].count,
+          x: barCenterX, // SVG-relative coordinates
+          y: barCenterY,
+          chartLabel: 'Purchase Frequency Distribution'
+        };
+
+        onChartElementClick({
+          event: event.nativeEvent,
+          pointData: pointData,
+          componentId: componentId || 'frequency-histogram',
+          chartId: 'histogram',
+          chartRect: svgRect,
+          elementRect: containerRect
+        });
+      }
     }
   };
   
@@ -110,6 +150,23 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
   // Generate gradient ID
   const gradientId = `frequency-histogram-gradient-${Math.random().toString(36).substr(2, 9)}`;
 
+  const handleBackgroundClick = (event: React.MouseEvent) => {
+    // Only clear if clicking on SVG background, not on a bar
+    if (event.target === event.currentTarget) {
+      setSelectedBins([]);
+      
+      // Send background click to canvas to clear user selections
+      if (onChartElementClick) {
+        onChartElementClick({
+          event: event.nativeEvent,
+          pointData: null, // No point data indicates background click
+          componentId: componentId || 'frequency-histogram',
+          chartId: 'histogram'
+        });
+      }
+    }
+  };
+
   return (
     <div 
       className="frequency-histogram"
@@ -135,7 +192,7 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
         Purchase Frequency Distribution
       </h3>
       
-      <svg width={width - 32} height={height - 60}>
+      <svg width={width - 32} height={height - 60} onClick={handleBackgroundClick}>
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stopColor={colorScale[1]} />
@@ -259,7 +316,7 @@ const FrequencyHistogram = forwardRef<any, FrequencyHistogramProps>(({
                   filter={isHighlighted ? 'drop-shadow(0 0 8px #00e0ff)' : undefined}
                   onMouseEnter={() => handleBarMouseEnter(d.bin)}
                   onMouseLeave={handleBarMouseLeave}
-                  onClick={(e) => handleBarClick(d.bin, e)}
+                  onClick={(e) => handleBarClick(d.bin, e, i)}
                   onDoubleClick={handleBarDoubleClick}
                   onMouseDown={() => handleMouseDown(d.bin)}
                   onMouseUp={() => handleMouseUp(d.bin)}

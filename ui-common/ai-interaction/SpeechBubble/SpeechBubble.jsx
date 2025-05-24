@@ -73,6 +73,9 @@ export const SpeechBubble = ({
     if (!anchorElement || !bubbleRef.current || positionCoords) return;
     
     const calculatePosition = () => {
+      // Add null checks before calling getBoundingClientRect
+      if (!anchorElement || !bubbleRef.current) return;
+      
       const anchorRect = anchorElement.getBoundingClientRect();
       const bubbleRect = bubbleRef.current.getBoundingClientRect();
       

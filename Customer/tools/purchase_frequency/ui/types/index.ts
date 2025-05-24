@@ -59,8 +59,10 @@ export interface HighlightedElements {
 
 export interface HistogramData {
   frequency: number;
+  bin: number;
   count: number;
   percentage: number;
+  segmentType?: 'high' | 'medium' | 'low';
 }
 
 export interface FrequencyHistogramProps {
@@ -72,6 +74,8 @@ export interface FrequencyHistogramProps {
   height?: number;
   colorScale?: string[];
   onBarClick?: (frequency: number) => void;
+  onChartElementClick?: (clickData: any) => void;
+  componentId?: string;
   highlightBins?: number[];
   focusRegion?: {start: number; end: number};
 }
@@ -90,6 +94,8 @@ export interface IntervalHeatmapProps {
   height?: number;
   colorScale?: string[];
   onCellClick?: (day: string, hour: number) => void;
+  onChartElementClick?: (clickData: any) => void;
+  componentId?: string;
   onDateRangeChange?: (newRange: DateRange) => void;
   highlightCells?: Array<{day: string; hour: number}>;
   focusRegion?: {
@@ -104,9 +110,11 @@ export interface CustomerSegment {
   segment: string;
   frequency: number;
   recency: number;
+  monetary: number;
   count: number;
   percentage: number;
   avg_value: number;
+  id?: string;
 }
 
 export interface SegmentQuadrantProps {
@@ -115,6 +123,8 @@ export interface SegmentQuadrantProps {
   height?: number;
   onSegmentClick?: (segment: string) => void;
   onCustomerClick?: (customerId: string) => void;
+  onChartElementClick?: (clickData: any) => void;
+  componentId?: string;
   highlightSegments?: string[];
   focusRegion?: {
     xStart: number;
@@ -137,6 +147,8 @@ export interface RegularityChartProps {
   height?: number;
   showComparison?: boolean;
   onAxisClick?: (timeframe: string) => void;
+  onChartElementClick?: (clickData: any) => void;
+  componentId?: string;
 }
 
 export interface ValueSegment {
@@ -151,6 +163,8 @@ export interface ValueTreemapProps {
   width?: number;
   height?: number;
   onSegmentClick?: (segment: string) => void;
+  onChartElementClick?: (clickData: any) => void;
+  componentId?: string;
   highlightSegments?: string[];
 }
 

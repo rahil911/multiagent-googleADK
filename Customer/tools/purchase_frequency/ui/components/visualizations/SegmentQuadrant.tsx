@@ -7,6 +7,8 @@ const SegmentQuadrant = forwardRef<any, SegmentQuadrantProps>(({
   height = 480,
   onSegmentClick,
   onCustomerClick,
+  onChartElementClick,
+  componentId,
   highlightSegments = [],
   focusRegion
 }, ref) => {
@@ -108,7 +110,7 @@ const SegmentQuadrant = forwardRef<any, SegmentQuadrantProps>(({
   const meanMonetary = data.reduce((sum, d) => sum + d.monetary, 0) / data.length;
   
   // Group data by segment for legend
-  const segments = [...new Set(data.map(d => d.segment))];
+  const segments = Array.from(new Set(data.map(d => d.segment)));
   const segmentCounts = segments.reduce((acc, segment) => {
     acc[segment] = data.filter(d => d.segment === segment).length;
     return acc;
@@ -123,7 +125,11 @@ const SegmentQuadrant = forwardRef<any, SegmentQuadrantProps>(({
     setHoveredPoint(null);
   };
   
-  const handlePointClick = (segment: string, customerId: string) => {
+  const handlePointClick = (event: React.MouseEvent, segment: string, customerId: string, customer: CustomerSegment) => {
+    // Prevent event propagation
+    event.preventDefault();
+    event.stopPropagation();
+    
     // Toggle segment selection
     setSelectedSegments(prev => 
       prev.includes(segment)
@@ -131,12 +137,55 @@ const SegmentQuadrant = forwardRef<any, SegmentQuadrantProps>(({
         : [...prev, segment]
     );
     
+    // Call existing handlers
     if (onSegmentClick) {
       onSegmentClick(segment);
     }
     
     if (onCustomerClick) {
       onCustomerClick(customerId);
+    }
+    
+    // Call laser pointer integration handler
+    if (onChartElementClick) {
+      // Get the SVG element and its bounding rect for coordinate calculation
+      const svgElement = event.currentTarget.closest('svg');
+      const chartContainer = event.currentTarget.closest('.segment-quadrant');
+      
+      if (svgElement && chartContainer) {
+        const svgRect = svgElement.getBoundingClientRect();
+        const chartRect = chartContainer.getBoundingClientRect();
+        
+        // Calculate the point position within the chart
+        const x = xScale(customer.frequency);
+        const y = yScale(customer.monetary);
+        
+        // Convert to page coordinates
+        const pageX = svgRect.left + margin.left + x;
+        const pageY = svgRect.top + margin.top + y;
+        
+        const clickData = {
+          event: event,
+          pointData: {
+            id: customerId,
+            label: `${segment} (ID: ${customerId})`,
+            value: `F:${customer.frequency.toFixed(1)} M:$${customer.monetary.toFixed(0)} R:${customer.recency.toFixed(1)}`,
+            x: x, // Chart-relative coordinates
+            y: y,
+            targetCoords: { x: pageX, y: pageY }, // Page-relative coordinates
+            datasetIndex: 0,
+            index: customerId,
+            chartLabel: 'Customer Segment Quadrant'
+          },
+          componentId: componentId,
+          chartId: 'segment-quadrant',
+          chartRect: svgRect,
+          elementRect: chartRect
+        };
+        
+        console.log('SegmentQuadrant: Calling onChartElementClick with:', clickData);
+        onChartElementClick(clickData);
+      }
     }
   };
   
@@ -165,6 +214,17 @@ const SegmentQuadrant = forwardRef<any, SegmentQuadrantProps>(({
         borderRadius: '12px',
         padding: '16px',
         boxShadow: '0 4px 16px rgba(0,0,0,0.1)'
+      }}
+      onClick={(event) => {
+        // Clear selections when clicking on background
+        if (event.target === event.currentTarget && onChartElementClick) {
+          onChartElementClick({
+            event: event,
+            pointData: null,
+            componentId: componentId,
+            chartId: 'segment-quadrant'
+          });
+        }
       }}
     >
       <h3 
@@ -310,7 +370,7 @@ const SegmentQuadrant = forwardRef<any, SegmentQuadrantProps>(({
               <g 
                 key={`point-${d.id}`}
                 transform={`translate(${x}, ${y})`}
-                onClick={() => handlePointClick(d.segment, d.id)}
+                onClick={(event) => handlePointClick(event, d.segment, d.id, d)}
                 onMouseEnter={() => handlePointMouseEnter(d.id)}
                 onMouseLeave={handlePointMouseLeave}
                 style={{ cursor: 'pointer' }}
@@ -354,8 +414,10 @@ const SegmentQuadrant = forwardRef<any, SegmentQuadrantProps>(({
               opacity: selectedSegments.length > 0 && !selectedSegments.includes(segment) ? 0.5 : 1,
               cursor: 'pointer'
             }}
-            onClick={() => {
-              if (onSegmentClick) onSegmentClick(segment);
+            onClick={(event) => {
+              if (onSegmentClick) {
+                onSegmentClick(segment);
+              }
               setSelectedSegments(prev => 
                 prev.includes(segment)
                   ? prev.filter(s => s !== segment)

@@ -6,6 +6,8 @@ const ValueTreemap = forwardRef<any, ValueTreemapProps>(({
   width = 380,
   height = 300,
   onSegmentClick,
+  onChartElementClick,
+  componentId,
   highlightSegments = []
 }, ref) => {
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
@@ -112,7 +114,9 @@ const ValueTreemap = forwardRef<any, ValueTreemapProps>(({
     setHoveredSegment(null);
   };
   
-  const handleSegmentClick = (segment: string) => {
+  const handleSegmentClick = (segment: string, event: React.MouseEvent, item: any) => {
+    event.stopPropagation(); // Prevent background click
+    
     // Toggle segment selection
     setSelectedSegments(prev => 
       prev.includes(segment)
@@ -122,6 +126,39 @@ const ValueTreemap = forwardRef<any, ValueTreemapProps>(({
     
     if (onSegmentClick) {
       onSegmentClick(segment);
+    }
+
+    // Send click data for laser functionality
+    if (onChartElementClick) {
+      const containerElement = event.currentTarget.closest('.value-treemap');
+      
+      if (containerElement) {
+        const containerRect = containerElement.getBoundingClientRect();
+        
+        // Calculate center of the clicked segment
+        const segmentCenterX = item.x + (item.width / 2);
+        const segmentCenterY = item.y + (item.height / 2);
+        
+        const pointData = {
+          datasetIndex: 0,
+          index: treemapLayout.findIndex(layoutItem => layoutItem.segment === segment),
+          segment: segment,
+          label: `${segment.charAt(0).toUpperCase() + segment.slice(1)} Segment`,
+          value: item.percentage,
+          x: segmentCenterX + chartMargin.left + 16, // Account for container padding
+          y: segmentCenterY + chartMargin.top + 40, // Account for title height
+          chartLabel: 'Value Segment Treemap'
+        };
+
+        onChartElementClick({
+          event: event.nativeEvent,
+          pointData: pointData,
+          componentId: componentId || 'value-treemap',
+          chartId: 'treemap',
+          chartRect: containerRect,
+          elementRect: containerRect
+        });
+      }
     }
   };
 
@@ -195,7 +232,7 @@ const ValueTreemap = forwardRef<any, ValueTreemapProps>(({
               }}
               onMouseEnter={() => handleSegmentMouseEnter(item.segment)}
               onMouseLeave={handleSegmentMouseLeave}
-              onClick={() => handleSegmentClick(item.segment)}
+              onClick={(event) => handleSegmentClick(item.segment, event, item)}
             >
               <div 
                 style={{ 
@@ -272,7 +309,7 @@ const ValueTreemap = forwardRef<any, ValueTreemapProps>(({
               opacity: selectedSegments.length > 0 && !selectedSegments.includes(item.segment) ? 0.6 : 1,
               cursor: 'pointer'
             }}
-            onClick={() => handleSegmentClick(item.segment)}
+            onClick={(event) => handleSegmentClick(item.segment, event, item)}
           >
             <div 
               style={{
