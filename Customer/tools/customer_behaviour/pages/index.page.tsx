@@ -188,7 +188,7 @@ const CustomerBehaviourDashboardPage = () => {
               <PlaceholderComponent name="Recency histogram (side panel)" height="400px"/>
               <PlaceholderComponent name="Engagement metrics summary" />
             </div>
-          </div>
+      </div>
           <PlaceholderComponent name="Frequency histogram (top panel)" width="100%" height="160px" />
           <PlaceholderComponent name="Segment selector" width="100%" height="80px" />
         </section>

@@ -191,15 +191,40 @@ export default function ConversationalCanvas() {
         if (!response.ok) throw new Error('Failed to fetch data');
         const data = await response.json(); // Full dataset for churn prediction
 
-        let componentSpecificData = data; // By default, pass all data
+        let componentSpecificData = {};
         let componentSize = { width: 500, height: 400 }; // Default for individual components
 
         if (componentName === 'dashboard') {
+          componentSpecificData = data; // Dashboard gets all data
           componentSize = { width: 900, height: 700 };
         } else {
-          // For individual churn components, we'll pass the full data object.
-          // The components themselves should be responsible for picking the data they need.
-          // This mirrors the approach for customer-behaviour individual components.
+          // Individual components get specific data and a smaller, more appropriate default size
+          switch (componentName) {
+            case 'riskPyramid':
+              // API returns data.customers, component expects props.customers
+              componentSpecificData = { customers: data.customers || [] };
+              break;
+            case 'featureImportance':
+              // API returns data.feature_importance, component expects props.features
+              componentSpecificData = { features: data.feature_importance || [] };
+              break;
+            case 'probabilityHistogram':
+              // API returns data.probabilities, component expects props.probabilities
+              componentSpecificData = { probabilities: data.probabilities || [] };
+              break;
+            case 'temporalRisk':
+              // API returns data.risk_time_series, component expects props.riskTimeSeries
+              componentSpecificData = { riskTimeSeries: data.risk_time_series || [] };
+              break;
+            case 'segmentMatrix':
+              // API returns data.segment_matrix, component expects props.segmentMatrix
+              componentSpecificData = { segmentMatrix: data.segment_matrix || [] };
+              break;
+            default:
+              console.warn(`Data mapping not defined for churn-prediction component: ${componentName}. Using full data.`);
+              componentSpecificData = data; // Fallback to full data if unknown component
+              componentSize = { width: 400, height: 300 }; // Fallback size
+          }
         }
         
         // Merge with any externally provided props
@@ -435,7 +460,7 @@ export default function ConversationalCanvas() {
             state: 'speaking',
             message: "Here's a radar chart showing purchase regularity across different timeframes.",
           });
-        } else if (query.toLowerCase().includes('feature importance')) {
+        } else if (query.toLowerCase().includes('feature importance') || query.toLowerCase().includes('churn feature') || query.toLowerCase().includes('importance')) {
           const featureId = await spawnComponent('churn-prediction.featureImportance');
           setRobotState({
             ...robotState,
@@ -443,7 +468,7 @@ export default function ConversationalCanvas() {
             message: 'Displaying feature importance for churn prediction.'
           });
           setLoading(false);
-        } else if (query.toLowerCase().includes('probability histogram')) {
+        } else if (query.toLowerCase().includes('probability histogram') || query.toLowerCase().includes('churn histogram')) {
           const probHistId = await spawnComponent('churn-prediction.probabilityHistogram');
           setRobotState({
             ...robotState,
@@ -451,7 +476,7 @@ export default function ConversationalCanvas() {
             message: 'Showing a histogram of churn probabilities.'
           });
           setLoading(false);
-        } else if (query.toLowerCase().includes('temporal risk')) {
+        } else if (query.toLowerCase().includes('temporal risk') || query.toLowerCase().includes('churn temporal') || query.toLowerCase().includes('risk pattern') || query.toLowerCase().includes('time risk')) {
           const tempRiskId = await spawnComponent('churn-prediction.temporalRisk');
           setRobotState({
             ...robotState,
@@ -459,7 +484,7 @@ export default function ConversationalCanvas() {
             message: 'Here is the temporal risk pattern for churn.'
           });
           setLoading(false);
-        } else if (query.toLowerCase().includes('segment matrix')) {
+        } else if (query.toLowerCase().includes('segment matrix') || query.toLowerCase().includes('churn segment') || query.toLowerCase().includes('segment comparison') || query.toLowerCase().includes('matrix')) {
           const segMatId = await spawnComponent('churn-prediction.segmentMatrix');
           setRobotState({
             ...robotState,
@@ -467,7 +492,7 @@ export default function ConversationalCanvas() {
             message: 'Displaying the churn segment matrix.'
           });
           setLoading(false);
-        } else if (query.toLowerCase().includes('churn')) {
+        } else if (query.toLowerCase().includes('churn risk') || query.toLowerCase().includes('risk pyramid') || (query.toLowerCase().includes('churn') && !query.toLowerCase().includes('histogram'))) {
           const pyramidId = await spawnComponent('churn-prediction.riskPyramid');
           setRobotState({
             ...robotState,

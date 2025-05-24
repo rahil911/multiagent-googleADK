@@ -18,10 +18,7 @@ export interface SegmentMatrixProps {
 const colors = ['#00e0ff', '#5fd4d6', '#aa45dd', '#e930ff'];
 const riskLabels = ['Low', 'Medium', 'High', 'Very High'];
 
-export default function SegmentMatrix(props: SegmentMatrixProps) {
-  // Extract segmentMatrix from props, provide default if not found
-  const segmentMatrix = props.segmentMatrix || [];
-
+export default function SegmentMatrix({ segmentMatrix }: SegmentMatrixProps) {
   const z = [
     segmentMatrix.map(s => s.low),
     segmentMatrix.map(s => s.medium),

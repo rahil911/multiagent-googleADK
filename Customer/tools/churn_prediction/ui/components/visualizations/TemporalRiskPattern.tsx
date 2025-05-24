@@ -18,9 +18,7 @@ export interface TemporalRiskPatternProps {
 const colors = ['#00e0ff', '#5fd4d6', '#aa45dd', '#e930ff'];
 const riskLabels = ['Low', 'Medium', 'High', 'Very High'];
 
-export default function TemporalRiskPattern(props: TemporalRiskPatternProps) {
-  // Extract riskTimeSeries from props, provide default if not found
-  const riskTimeSeries = props.riskTimeSeries || []; 
+export default function TemporalRiskPattern({ riskTimeSeries }: TemporalRiskPatternProps) {
   const dates = riskTimeSeries.map(d => d.date);
   return (
     <Card style={{ background: '#232a36', padding: 16 }}>
